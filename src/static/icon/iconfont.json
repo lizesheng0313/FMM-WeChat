@@ -1,0 +1,16 @@
+{
+  "id": "3941116",
+  "name": "shop",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "493479",
+      "name": "搜索",
+      "font_class": "sousuo",
+      "unicode": "e7a6",
+      "unicode_decimal": 59302
+    }
+  ]
+}
