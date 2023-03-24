@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-07 12:01:55
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-03-08 09:34:15
+ * @LastEditTime: 2023-03-11 17:49:45
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/app.config.ts
@@ -17,11 +17,11 @@ export default {
     backgroundTextStyle: 'light',
     navigationBarBackgroundColor: '#fff',
     navigationBarTitleText: 'WeChat',
-    navigationBarTextStyle: 'black'
+    navigationBarTextStyle: 'black',
   },
   tabBar: {
     color: "#8a8a8a",
-    selectedColor: "#ff3433",
+    selectedColor: "#E50F86",
     backgroundColor: "#fff",
     list: [
       {
