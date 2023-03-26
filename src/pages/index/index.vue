@@ -2,26 +2,26 @@
  * @Author: lizesheng
  * @Date: 2023-03-07 12:01:55
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-03-19 20:53:14
+ * @LastEditTime: 2023-03-26 20:05:18
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/index/index.vue
 -->
 <template>
   <view class="home">
-    <view>
+    <view class="p20">
       <view class="header-top"></view>
       <view class="header">
         <view class="title" :style="{ height: `${navHeight}px`, paddingTop: `${statusHeight}px` }">
           <text class="top">爱秘商城</text>
           <text class="tip">私密发货</text>
         </view>
-        <view class="search">
+        <view class="search" @tap="handleJumpSearch">
           <child-icon value="icon-sousuo" size="16" />
           <view class="search-icon">搜索商品</view>
         </view>
         <view class="swiper">
-          <swiper class='test-h' indicator-active-color='#fff' :circular="true" :indicator-dots="true" :autoplay="false">
+          <swiper class='test-h' indicator-active-color='#fff' :circular="true" :indicator-dots="true" :autoplay="true">
             <swiper-item v-for="item in swiperList" :key="item.id">
               <image :src="item.url" mode="widthFix"></image>
             </swiper-item>
@@ -29,8 +29,8 @@
         </view>
       </view>
     </view>
-    <view class="classifcation" v-show="iconList?.length > 0">
-      <view v-for="item in iconList" :key="item.value" class="class-item">
+    <view class="classifcation p20" v-show="iconList?.length > 0">
+      <view v-for="item in iconList" :key="item.id" class="class-item" @tap="handleJumpGoodsDetails(item.id)">
         <view class="icon">
           <child-icon color="#e50f86" :value="item.icon" :size="item.size" class="icon" />
         </view>
@@ -44,25 +44,51 @@
       </view>
     </view>
     <view class="line"></view>
-    <view class="scroll-view">
+    <view class="scroll-view p20">
       <view class="title">热卖推荐</view>
-      <scroll-view :scroll-x="true" @scroll="scroll" style="width: 100%">
-        <view class="scroll-item" v-for="item in recommendList">
-          <image src="item.url"></image>
-          <view>{{ item.title }}</view>
-          <view>{{ item.price }}</view>
+      <scroll-view :scroll-x="true" class="scroll-view-warp">
+        <view className='flex-container'>
+          <view class="scroll-item" v-for="item in recommendList" @tap="handleJumpGoodsDetails(item.id)">
+            <image :src="item.pictureUrl"></image>
+            <view class="name text-ellipsis">{{ item.name }}</view>
+            <view class="price">¥{{ item.skuPrice.toFixed(2) }}</view>
+          </view>
         </view>
       </scroll-view>
+    </view>
+    <view class="line"></view>
+    <view class="scroll-view p20">
+      <view class="title">新品推荐</view>
+      <scroll-view :scroll-x="true" class="scroll-view-warp">
+        <view className='flex-container'>
+          <view class="scroll-item" v-for="item in latestList" @tap="handleJumpGoodsDetails(item.id)">
+            <image :src="item.pictureUrl"></image>
+            <view class="name text-ellipsis">{{ item.name }}</view>
+            <view class="price">¥{{ item.skuPrice.toFixed(2) }}</view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+    <scroll-view :scroll-x="true">
+      <view class="home_type">
+        <view v-for="(item, index) in randomList" :key="item.value" class="home_item"
+          :class="{ 'active': currentSelect === index }" @tap="toggleSelect(index, item.value)">
+          <view>{{ item.label }}</view>
+        </view>
+      </view>
+    </scroll-view>
+    <view class="product_box">
+      <product-vue :product-list="classificationList"></product-vue>
     </view>
   </view>
 </template>
 
 <script setup>
 import { get, post } from '../../utils/request'
-import { useRouter } from '@tarojs/taro';
 import Taro from '@tarojs/taro'
 import childIcon from '../../components/Icon.vue'
-import { ref } from 'vue'
+import productVue from '../../components/Product.vue'
+import { ref, watch } from 'vue'
 
 const sysinfo = Taro.getSystemInfoSync()
 const statusHeight = ref(sysinfo.statusBarHeight)
@@ -70,34 +96,150 @@ const isiOS = sysinfo.system.indexOf('iOS') > -1
 const navHeight = ref(!isiOS ? 46 : 44)
 const swiperList = ref('')
 const iconList = ref('')
-const recommendList = ref([])
+const recommendList = ref([]) //推荐
+const latestList = ref([]) // 最新
+const randomList = ref([])
+const currentSelect = ref(0)
+const classificationList = ref([])
+const currentWatch = ref('')
 get('/api/home/getBanner').then(res => {
   swiperList.value = res.data.list
 })
 get('/api/home/getClassifcation', {
   typeId: 1,
-  number: 9,
+  is_show_home: 1,
 }).then(res => {
   iconList.value = res.data.list
 })
+get('/api/home/getClassifcation', {
+  typeId: 1,
+}).then(res => {
+  randomList.value = getRandomItems(res.data.list, 7)
+  currentWatch.value = randomList.value[0].value
+})
+get('/api/home/getHomeGoods', { recommend: 1 }).then(res => {
+  recommendList.value = res.data.list
+})
+get('/api/home/getHomeGoods', { latest: 1 }).then(res => {
+  latestList.value = res.data.list
+})
 
+// 商品分类
 const handleJumpClass = () => {
   Taro.switchTab({
     url: '/pages/classification/index'
   })
 }
+
+// 商品详情
+const handleJumpGoodsDetails = (id) => {
+  Taro.navigateTo({
+    url: '/pages/goodsDetails/index?id=' + id
+  })
+}
+
+// 搜索页面
+const handleJumpSearch = () => {
+  Taro.navigateTo({
+    url: '/pages/goodsSearch/index'
+  })
+}
+
+// 分类查询页面
+const handleJumpGoods = () => {
+  Taro.navigateTo({
+    url: '/pages/goodsList/index'
+  })
+}
+
+watch(currentWatch, (newValue, oldValue) => {
+  get('/api/home/getClassGoods', { classification: newValue }).then(res => {
+    classificationList.value = res.data.list
+  })
+}
+);
+
+function getRandomItems(arr, count) {
+  const result = [];
+  while (result.length < count) {
+    const randomIndex = Math.floor(Math.random() * arr.length);
+    const randomItem = arr[randomIndex];
+    if (!result.includes(randomItem)) {
+      result.push(randomItem);
+    }
+  }
+  return result;
+}
+
+function toggleSelect(index, value) {
+  currentSelect.value = index
+  currentWatch.value = value
+}
+
+
+
+
 </script>
 
 <style lang="scss" >
 .home {
   background: #fff;
   position: relative;
-  padding: 0 20px;
+
+  .p20 {
+    padding: 0 20px;
+    box-sizing: border-box;
+  }
+
+  .home_type {
+    display: flex;
+
+    .home_item {
+      background: #F5F5F5;
+      height: 75px;
+      align-items: center;
+      display: flex;
+      padding: 0 20px;
+      flex-shrink: 0;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .active {
+      color: #F06292;
+      border-radius: 10px;
+    }
+  }
 
   .scroll-view {
     padding-top: 20px;
 
-    .scroll-item {}
+    .scroll-view-warp {
+      margin-top: 20px;
+      display: flex;
+
+    }
+
+    .scroll-item {
+      width: 160px;
+      margin-right: 10px;
+      margin-left: 5px;
+
+      .name {
+        font-size: 28px;
+      }
+
+      .price {
+        color: #E50F86;
+        margin-top: 10px;
+      }
+
+      image {
+        width: 160px;
+        height: 160px;
+        border-radius: 10px;
+      }
+    }
 
     .title {
       font-weight: bold;
@@ -109,7 +251,12 @@ const handleJumpClass = () => {
   .line {
     background: #F5F5F5;
     height: 10px;
-    margin: 30px -20px 0 -20px;
+    margin-top: 30px;
+  }
+
+  .product_box {
+    background: #F5F5F5;
+    padding-bottom: 30px;
   }
 
   .header {

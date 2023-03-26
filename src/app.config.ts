@@ -2,22 +2,24 @@
  * @Author: lizesheng
  * @Date: 2023-03-07 12:01:55
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-03-11 17:49:45
+ * @LastEditTime: 2023-03-25 19:18:36
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/app.config.ts
  */
 export default {
   pages: [
-    'pages/index/index',
-    'pages/classification/index',
-    'pages/myIndex/index'
+    "pages/index/index",
+    "pages/classification/index",
+    "pages/myIndex/index",
+    "pages/goodsDetails/index",
+    "pages/goodsList/index",
+    "pages/goodsSearch/index",
   ],
   window: {
-    backgroundTextStyle: 'light',
-    navigationBarBackgroundColor: '#fff',
-    navigationBarTitleText: 'WeChat',
-    navigationBarTextStyle: 'black',
+    backgroundTextStyle: "light",
+    navigationBarBackgroundColor: "#fff",
+    navigationBarTextStyle: "black",
   },
   tabBar: {
     color: "#8a8a8a",
@@ -25,23 +27,23 @@ export default {
     backgroundColor: "#fff",
     list: [
       {
-        "pagePath": "pages/index/index",
-        "text": "首页",
-        "iconPath": "./static/images/index.png",
-        "selectedIconPath": "./static/images/index_select.png"
+        pagePath: "pages/index/index",
+        text: "首页",
+        iconPath: "./static/images/index.png",
+        selectedIconPath: "./static/images/index_select.png",
       },
       {
-        "pagePath": "pages/classification/index",
-        "text": "分类",
-        "iconPath": "./static/images/coterie.png",
-        "selectedIconPath": "./static/images/coterie_select.png"
+        pagePath: "pages/classification/index",
+        text: "分类",
+        iconPath: "./static/images/coterie.png",
+        selectedIconPath: "./static/images/coterie_select.png",
       },
       {
-        "pagePath": "pages/myIndex/index",
-        "text": "我的",
-        "iconPath": "./static/images/my.png",
-        "selectedIconPath": "./static/images/my_select.png"
-      }
-    ]
+        pagePath: "pages/myIndex/index",
+        text: "我的",
+        iconPath: "./static/images/my.png",
+        selectedIconPath: "./static/images/my_select.png",
+      },
+    ],
   },
-}
+};

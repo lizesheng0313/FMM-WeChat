@@ -1,3 +1,12 @@
+/*
+ * @Author: lizesheng
+ * @Date: 2023-03-11 11:22:38
+ * @LastEditors: lizesheng
+ * @LastEditTime: 2023-03-25 20:21:47
+ * @important: 重要提醒
+ * @Description: 备注内容
+ * @FilePath: /shop/src/utils/request.js
+ */
 
 import constConfig from '../config/confg'
 const post = (url, data = {}) => {
@@ -17,16 +26,15 @@ const post = (url, data = {}) => {
         }
         else {
           wx.showToast({
-            title: res.data.message,
+            title: res?.data?.message || '未知错误',
             icon: 'none'
           })
           reject(res)
         }
       },
       fail(err) {
-        console.log(err, '-----err')
         wx.showToast({
-          title: err.data.message,
+          title: err?.data?.message || '未知错误',
           icon: 'none'
         })
       }
@@ -50,16 +58,15 @@ const get = (url, data = {}) => {
         }
         else {
           wx.showToast({
-            title: res.data.message,
+            title: res?.data?.message || '未知错误',
             icon: 'none'
           })
           reject(res)
         }
       },
       fail(err) {
-        console.log(err, '-----err')
         wx.showToast({
-          title: err.data.message,
+          title: err?.data?.message || '未知错误',
           icon: 'none'
         })
       }

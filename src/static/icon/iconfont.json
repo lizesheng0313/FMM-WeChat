@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "2423300",
+      "name": "无数据",
+      "font_class": "wushuju",
+      "unicode": "e642",
+      "unicode_decimal": 58946
+    },
+    {
       "icon_id": "5739060",
       "name": "运动-79",
       "font_class": "yundong-",
