@@ -21,6 +21,8 @@ specifiers:
   '@types/webpack-env': ^1.13.6
   '@typescript-eslint/eslint-plugin': ^5.20.0
   '@typescript-eslint/parser': ^5.20.0
+  '@vant/area-data': ^1.4.1
+  '@vant/weapp': ^1.10.14
   '@vue/babel-plugin-jsx': ^1.0.6
   '@vue/compiler-sfc': ^3.0.0
   babel-preset-taro: 3.6.2
@@ -30,6 +32,7 @@ specifiers:
   eslint-plugin-vue: ^8.0.0
   pinia: ^2.0.10
   postcss: ^8.4.18
+  sass-resources-loader: ^2.2.5
   style-loader: 1.3.0
   stylelint: 9.3.0
   taro-ui: ^2.3.4
@@ -56,7 +59,10 @@ dependencies:
   '@tarojs/runtime': 3.6.2
   '@tarojs/shared': 3.6.2
   '@tarojs/taro': 3.6.2_vue@3.2.47
+  '@vant/area-data': 1.4.1
+  '@vant/weapp': 1.10.14
   pinia: 2.0.33_hmuptsblhheur2tugfgucj7gc4
+  sass-resources-loader: 2.2.5
   taro-ui: 2.3.4
   tarojs-request: 1.0.0_@tarojs+taro@3.6.2
   vant: 4.1.0_vue@3.2.47
@@ -2681,12 +2687,20 @@ packages:
       eslint-visitor-keys: 3.3.0
     dev: true
 
+  /@vant/area-data/1.4.1:
+    resolution: {integrity: sha512-D8zI/rfxREhnIKGoYzsEJZ73fte4JARhFeFftLIH7ynu1sPrCBEgPkLEbwPyvw3VC4JdSIuzaK5uOhu+BcoPXw==}
+    dev: false
+
   /@vant/popperjs/1.3.0:
     resolution: {integrity: sha512-hB+czUG+aHtjhaEmCJDuXOep0YTZjdlRR+4MSmIFnkCQIxJaXLQdSsR90XWvAI2yvKUI7TCGqR8pQg2RtvkMHw==}
     dev: false
 
   /@vant/use/1.5.0:
     resolution: {integrity: sha512-Dk7aMn7gLpoDew2tix/mjXpP0PoERWcxWh+pRY4xxl0MG4eeByAAyZSE6PgMpof4Yorqn7yq8KmeQcaVnxq2cg==}
+    dev: false
+
+  /@vant/weapp/1.10.14:
+    resolution: {integrity: sha512-5usuhoN1kiOV6pzrdVzHrAux6DupKlGd9w+yYc992Zy1n1wHLZMb1dGM3+xtbNE3tpWE2qv95vIFSMpJRFyE7Q==}
     dev: false
 
   /@vue/babel-helper-vue-transform-on/1.0.2:
@@ -3276,7 +3290,6 @@ packages:
 
   /async/3.2.4:
     resolution: {integrity: sha512-iAB+JbDEGXhyIUavoDl9WP/Jj106Kz9DEn1DPgYw5ruDn0e3Wgi3sKFm55sASdGBNOQB8F59d9qQ7deqrHA8wQ==}
-    dev: true
 
   /asynckit/0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
@@ -3799,7 +3812,6 @@ packages:
 
   /big.js/5.2.2:
     resolution: {integrity: sha512-vyL2OymJxmarO8gxMr0mhChsO9QGwhynfuu4+MHTAW6czfq9humCB7rKpUjDd9YUiDPU4mzpyupFSvOClAwbmQ==}
-    dev: true
 
   /binary-extensions/2.2.0:
     resolution: {integrity: sha512-jDctJ/IVQbZoJykoeHbhXpOlNBqGNcwXJKJog42E5HDPUwQTSdjCHdihjj0DlnheQ7blbT6dHOafNAiS8ooQKA==}
@@ -4186,7 +4198,6 @@ packages:
     dependencies:
       ansi-styles: 4.3.0
       supports-color: 7.2.0
-    dev: true
 
   /character-entities-html4/1.1.4:
     resolution: {integrity: sha512-HRcDxZuZqMx3/a+qrzxdBKBPUpxWEq9xw2OPZ3a/174ihfrQKVsFhqtthBInFy1zZ9GgZyFXOatNujm8M+El3g==}
@@ -5452,7 +5463,6 @@ packages:
   /emojis-list/3.0.0:
     resolution: {integrity: sha512-/kyM18EfinwXZbno9FyUGeFh87KC8HRQBQGildHZbEuRyWFOmv1U10o9BBp8XVZDVNNuQKyIGIu5ZYAAXJ0V2Q==}
     engines: {node: '>= 4'}
-    dev: true
 
   /encodeurl/1.0.2:
     resolution: {integrity: sha512-TPJXq8JqFaVYm2CWmPvnP2Iyo4ZSM7/QKcSmuMLDObfpH5fi7RUGmd/rTDf+rut/saiDiQEeVTNgAmJEdAOx0w==}
@@ -8579,7 +8589,6 @@ packages:
       big.js: 5.2.2
       emojis-list: 3.0.0
       json5: 2.2.3
-    dev: true
 
   /locate-path/2.0.0:
     resolution: {integrity: sha512-NCI2kiDkyR7VeEKm27Kda/iQHyKJe1Bu0FlTbYp3CqJu+9IFe9bLyAjMxf5ZDDbEg+iMPzB5zYyUTSm8wVTKmA==}
@@ -11299,6 +11308,15 @@ packages:
       sass: 1.50.0
       webpack: 5.69.0
     dev: true
+
+  /sass-resources-loader/2.2.5:
+    resolution: {integrity: sha512-po8rfETH9cOQACWxubT/1CCu77KjxwRtCDm6QAXZH99aUHBydwSoxdIjC40SGp/dcS/FkSNJl0j1VEojGZqlvQ==}
+    dependencies:
+      async: 3.2.4
+      chalk: 4.1.2
+      glob: 7.2.3
+      loader-utils: 2.0.4
+    dev: false
 
   /sass/1.50.0:
     resolution: {integrity: sha512-cLsD6MEZ5URXHStxApajEh7gW189kkjn4Rc8DQweMyF+o5HF5nfEz8QYLMlPsTOD88DknatTmBWkOcw5/LnJLQ==}

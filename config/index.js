@@ -1,3 +1,4 @@
+
 const config = {
   projectName: 'shop',
   date: '2023-3-7',
@@ -24,7 +25,7 @@ const config = {
     enable: false // Webpack 持久化缓存配置，建议开启。默认配置请参考：https://docs.taro.zone/docs/config-detail#cache
   },
   mini: {
-    webpackChain (chain) {
+    webpackChain(chain) {
       chain.merge({
         module: {
           rule: {
@@ -36,9 +37,9 @@ const config = {
                   loader: require.resolve('babel-loader')
                 }
               }
-            }
-          }
-        }
+            },
+          },
+        },
       })
     },
     postcss: {

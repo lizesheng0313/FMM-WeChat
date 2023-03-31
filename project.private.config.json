@@ -23,6 +23,13 @@
           "query": "",
           "launchMode": "default",
           "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/address/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
         }
       ]
     }

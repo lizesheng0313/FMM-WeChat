@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:43:40
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-03-30 18:10:09
+ * @LastEditTime: 2023-03-31 14:52:15
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/goodsDetails/index.vue
@@ -139,6 +139,7 @@ const handleJumpOrder = () => {
     goodsInfo: {
       ...currentSelect.value
     },
+    name: goodsDetils.value.name,
     totalNumber: state.totalNumber
   }
   Taro.setStorageSync('goodsInfo', JSON.stringify(info))

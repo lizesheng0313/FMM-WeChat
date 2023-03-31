@@ -9,7 +9,7 @@
     "css": "sass"
   },
   "scripts": {
-    "build:weapp": "taro build --type weapp",
+    "build": "taro build --type weapp",
     "build:swan": "taro build --type swan",
     "build:alipay": "taro build --type alipay",
     "build:tt": "taro build --type tt",
@@ -17,7 +17,7 @@
     "build:rn": "taro build --type rn",
     "build:qq": "taro build --type qq",
     "build:quickapp": "taro build --type quickapp",
-    "dev": "npm run build:weapp -- --watch NODE_ENV=production",
+    "dev": "npm run build -- --watch NODE_ENV=production",
     "dev:swan": "npm run build:swan -- --watch",
     "dev:alipay": "npm run build:alipay -- --watch",
     "dev:tt": "npm run build:tt -- --watch",
@@ -48,7 +48,10 @@
     "@tarojs/runtime": "3.6.2",
     "@tarojs/shared": "3.6.2",
     "@tarojs/taro": "3.6.2",
+    "@vant/area-data": "^1.4.1",
+    "@vant/weapp": "^1.10.14",
     "pinia": "^2.0.10",
+    "sass-resources-loader": "^2.2.5",
     "taro-ui": "^2.3.4",
     "tarojs-request": "^1.0.0",
     "vant": "^4.1.0",

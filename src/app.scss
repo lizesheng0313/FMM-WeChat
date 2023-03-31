@@ -1,3 +1,5 @@
+// #A8A8A8
+
 page{
   background:#fff;
   font-size:28px;
@@ -42,3 +44,25 @@ page{
   align-items:center;
   justify-content:space-between;
 }
+
+.flexSpaceStart{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+}
+
+.flexDSpaceStart{
+  display:flex;
+  flex-direction: column;
+  align-items:flex-start;
+  justify-content:space-between;
+}
+
+.flexDSpaceEnd{
+  display:flex;
+  flex-direction: column;
+  align-items:flex-end;
+  justify-content:space-between;
+}
+
+
