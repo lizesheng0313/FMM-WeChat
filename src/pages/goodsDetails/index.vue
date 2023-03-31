@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:43:40
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-03-30 09:35:56
+ * @LastEditTime: 2023-03-30 18:10:09
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/goodsDetails/index.vue
@@ -78,7 +78,7 @@
             <view class="flex tag_children">
               <view v-for="(it, colIndex) in item.tag">
                 <view class="tag_select" :class="{ active: activeArray[rowIndex] === colIndex }"
-                  @tap="handleSelectSpec(it, rowIndex, colIndex)">
+                  @tap="handleSelectSpec(item, it, rowIndex, colIndex)">
                   {{ it }}
                 </view>
               </view>
@@ -113,16 +113,38 @@ const activeArray = ref([0, 0])
 const state = reactive({
   totalNumber: 1
 })
+const skuId = ref('')
 get('/api/goods/getDetails', {
   id: router.params.id
 }).then(res => {
-  res.data.specification = JSON.parse(res?.data?.specification) || []
+  const items = res.data.specification.split('|');
+  const result = [];
+  for (let i = 0; i < items.length; i += 2) {
+    const name = items[i];
+    const tagStr = items[i + 1];
+    const tags = tagStr ? tagStr.split('!') : [];
+    result.push({
+      name,
+      tag: tags,
+    });
+  }
+  res.data.specification = result
   goodsDetils.value = res.data
   currentSelect.value = goodsDetils.value?.sku[0]
 })
 
 const handleJumpOrder = () => {
-
+  const info = {
+    goodsId: goodsDetils.value.id,
+    goodsInfo: {
+      ...currentSelect.value
+    },
+    totalNumber: state.totalNumber
+  }
+  Taro.setStorageSync('goodsInfo', JSON.stringify(info))
+  Taro.navigateTo({
+    url: '/pages/order/index'
+  })
 }
 
 Taro.showShareMenu({
@@ -139,11 +161,14 @@ const handleShowPopup = () => {
   isShowPopup.value = true
 }
 
-const handleSelectSpec = (item, rowIndex, colIndex) => {
+const handleSelectSpec = (item, it, rowIndex, colIndex) => {
   activeArray.value[rowIndex] = colIndex
-  if (rowIndex === 0) {
-    currentSelect.value = goodsDetils.value?.sku.filter(it => it.name0.includes(item) && it.goods_picture)[0]
-  }
+  let skuId = ''
+  activeArray.value.forEach((item, index) => {
+    skuId += goodsDetils.value.specification[index].tag[item] + ",";
+  })
+  skuId = skuId.slice(0, -1);
+  currentSelect.value = goodsDetils.value.sku.filter(item => item.skuId === skuId)[0]
 }
 
 const handleOverly = (event) => {

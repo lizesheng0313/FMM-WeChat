@@ -16,6 +16,13 @@
           "query": "id=37",
           "launchMode": "default",
           "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/order/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
         }
       ]
     }
