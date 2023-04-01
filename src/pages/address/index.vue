@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-03-31 17:50:13
+ * @LastEditTime: 2023-04-01 19:11:32
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/address/index.vue
@@ -18,7 +18,8 @@
     </view>
     <view class="line"></view>
     <view>
-      <view v-for="item in addressList" :key="item?.id" class="flexBetWeenCenter address_box">
+      <view v-for="item in addressList" :key="item?.id" class="flexBetWeenCenter address_box"
+        @tap="handleConfirmAddress(item)">
         <view class="flexDSpaceStart">
           <view class="flexCenter contact">
             <view>{{ item?.name }}</view>
@@ -27,12 +28,14 @@
           <view class="address_info">{{ item.address }}</view>
         </view>
         <view class="flexCenter">
-          <child-icon @tap="handleEditAddress(item.id)" value="icon-edit" size="16"></child-icon>
-          <child-icon @tap="handleDelAddress(item.id)" value="icon-shanchu" size="16" class="del"></child-icon>
+          <child-icon @tap="(event) => { handleJumpAddressManage(event, item.id) }" value="icon-edit"
+            size="23"></child-icon>
+          <child-icon @tap="(event) => { handleDelAddress(event, item.id) }" value="icon-shanchu" size="23"
+            class="del"></child-icon>
         </view>
       </view>
     </view>
-    <view class="add_address">新建快递地址</view>
+    <view class="add_address" @tap="handleJumpAddressManage">新建快递地址</view>
   </view>
 </template>
 
@@ -54,32 +57,52 @@ const fetchList = () => {
   })
 }
 
-const handleDelAddress = (id) => {
-  post('/api/address/delete', {
-    id
-  }).then(res => {
-    fetchList()
-    Taro.showToast({
-      title: '删除成功'
-    })
+const handleDelAddress = (e, id) => {
+  e.stopPropagation()
+  Taro.showModal({
+    title: '确认删除该地址吗?',
+    success(res) {
+      if (res.confirm) {
+        post('/api/address/delete', {
+          id
+        }).then(res => {
+          fetchList()
+        })
+      }
+    }
   })
 }
 
-const handleEditAddress = (id) => {
+const handleJumpAddressManage = (e, id) => {
+  e.stopPropagation()
   Taro.navigateTo({
     url: '/pages/addressManage/index?id=' + id
   })
 }
 
+const handleConfirmAddress = (item) => {
+  Taro.setStorageSync('addressInfo', JSON.stringify(item))
+  Taro.navigateBack()
+}
+
 const handleChooseAddress = () => {
   wx.chooseAddress({
     success(res) {
-
+      post('/api/address/add', {
+        name: res.userName,
+        address: res.cityName + res.countyName + res.detailInfo,
+        phone: res.telNumber,
+      }).then(result => {
+        handleConfirmAddress({
+          id: result.id,
+          name: res.userName,
+          address: res.cityName + res.countyName + res.detailInfo,
+          phone: res.telNumber,
+        })
+      })
     },
     fail() {
-      Taro.showToast({
-        title: '请重试,刚刚手机卡了一下'
-      })
+
     },
   })
 }
@@ -120,7 +143,7 @@ const handleChooseAddress = () => {
   }
 
   .del {
-    margin-left: 10px;
+    margin-left: 20px;
   }
 
   .add_address {
@@ -128,7 +151,7 @@ const handleChooseAddress = () => {
     left: 20px;
     right: 20px;
     bottom: 20px;
-    height: 60px;
+    height: 90px;
     background: #E50F86;
     color: #fff;
     display: flex;

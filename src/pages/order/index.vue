@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-03-31 16:44:45
+ * @LastEditTime: 2023-04-01 19:41:50
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/order/index.vue
@@ -10,32 +10,42 @@
 <template>
   <view class="order">
     <view class="header">
-      <navTitle title="确认订单" color="#fff"></navTitle>
+      <navTitle rightColor="#fff" title="确认订单" color="#fff"></navTitle>
       <view class="contact_box" @tap="handleJumpAddress">
-        <view class="flexBetWeenCenter padding_box">
+        <view class="padding_box flexBetWeenCenter" v-if="contactInfo?.name">
           <view>
             <view class="flexCenter name">
-              <view>{{ contactInfo.name }}</view>
-              <view class="phone">{{ contactInfo.phone }}</view>
+              <view>{{ contactInfo?.name }}</view>
+              <view class="phone">{{ contactInfo?.phone }}</view>
             </view>
-            <view class="address">{{ contactInfo.address }}</view>
+            <view class="address">{{ contactInfo?.address }}</view>
           </view>
           <child-icon class="right_arrow grey" value="icon-youjiantou" size="12"></child-icon>
         </view>
-        <image class="border_image" src="../../assets/images/border.png"></image>
+        <view v-else class="address_info" @tap="handleJumpAddress">
+          <view class="address_border">+添加地址</view>
+        </view>
+        <view class="border_image"></view>
       </view>
       <view class="flexSpaceStart order_goods">
         <image class="sku_image" :src="goodsDetails?.goodsInfo?.goods_picture"></image>
         <view class="sku_info">
           <view class="text-ellipsis">{{ goodsDetails?.name }}</view>
-          <view class="sku">{{ goodsDetails?.goodsInfo?.skuId }}</view>
+          <view class="flex" v-if="goodsDetails?.specification?.length > 0">
+            <view class="sku" v-for="(item, index) in goodsDetails?.specification">
+              {{ item.name }}:{{ skuList[index] }}
+            </view>
+          </view>
+          <view v-else class="sku">{{ goodsDetails?.skuId }} </view>
         </view>
         <view class="flexDSpaceEnd">
           <view class="price"><text class="txt">预估</text><text class="symbol">￥</text>{{ currentPrice }}</view>
-          <view class="flexCenter oper">
-            <view class="btn" @tap="handleMinus">-</view>
-            <view class="total">{{ state.totalNumber }}</view>
-            <view class="btn" @tap="handlePlus">+</view>
+          <view class="flexBetWeenCenter total_setting">
+            <view class="flexCenter border_number">
+              <child-icon class="btn" value="icon-jianhao" size="18" @tap="handleMinus" />
+              <view class="total">{{ state.totalNumber }}</view>
+              <child-icon class="btn" size="19" value="icon-jiahao1" @tap="handlePlus" />
+            </view>
           </view>
         </view>
       </view>
@@ -44,14 +54,14 @@
         <input class="input" maxlength="100" placeholder="请输入留言信息给卖家" @input="handleChange">
       </view>
       <view class="remark pay flexBetWeenCenter">
-        <view>支付总计</view>
-        <view>￥{{ currentPrice }}</view>
+        <view>金额总计</view>
+        <view>￥{{ currentPrice.toFixed() }}</view>
       </view>
     </view>
     <view class="footer flexBetWeenCenter">
       <view class="flexCenter">
         <view>合计:</view>
-        <view class="total_price"><text class="total_symbol">￥</text>{{ currentPrice }}</view>
+        <view class="total_price"><text class="total_symbol">￥</text>{{ currentPrice.toFixed(2) }}</view>
       </view>
       <view class="submit_order" @tap="handleSubmitOrder">提交订单</view>
     </view>
@@ -60,21 +70,33 @@
 
 <script setup>
 import Taro from '@tarojs/taro'
+import { useDidShow } from '@tarojs/taro'
 import { get, post } from '../../utils/request'
 import { ref, reactive, watch } from 'vue'
 import childIcon from '../../components/Icon.vue'
 import navTitle from '../../components/navTitle.vue'
 const goodsDetails = ref(JSON.parse(Taro.getStorageSync('goodsInfo')))
-const contactInfo = ref({
-  id: 2,
-  name: '李泽胜',
-  phone: '18210572133',
-  address: '北京市朝阳区烟厂宿舍'
-})
+const contactInfo = ref()
 const state = reactive({
   totalNumber: goodsDetails.value?.totalNumber || 1
 })
+
+useDidShow(() => {
+  const info = Taro.getStorageSync('addressInfo')
+  if (info) {
+    contactInfo.value = JSON.parse(info)
+    Taro.removeStorageSync('addressInfo')
+    return
+  }
+  get('/api/address/get').then(res => {
+    const defaultAdress = res.data.list.filter(item => item.is_default === '1')[0]
+    contactInfo.value = defaultAdress || res.data.list[0]
+  })
+})
+
 const currentPrice = ref(goodsDetails.value.goodsInfo.skuPrice * state.totalNumber)
+const skuList = goodsDetails.value?.goodsInfo?.skuId?.split(',')
+
 function handleMinus() {
   if (state.totalNumber > 1) {
     state.totalNumber--
@@ -87,14 +109,14 @@ function handlePlus() {
 
 const handleJumpAddress = () => {
   Taro.navigateTo({
-    url: '/paegs/address/index'
+    url: '/pages/address/index'
   })
 }
 
 const handleSubmitOrder = () => {
   post('/api/order/createOrder', {
-    goodsId: goodsDetails.goodsId,
-    skuId: goodsDetails.skuId,
+    goodsId: goodsDetails.value.goodsId,
+    skuId: goodsDetails.value.skuId,
     quantity: state.totalNumber,
     address_id: contactInfo.id,
     total_price: currentPrice,
@@ -104,8 +126,8 @@ const handleSubmitOrder = () => {
   })
 }
 
-watch(state.totalNumber, (newValue, oldValue) => {
-  currentPrice.value = goodsDetails.value.skuPrice * newValue
+watch(state, (newValue, oldValue) => {
+  currentPrice.value = goodsDetails.value.goodsInfo.skuPrice * state.totalNumber
 }
 );
 
@@ -130,12 +152,47 @@ const handleChange = (e) => {
     }
   }
 
+  .address_info {
+    padding: 30px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #323232;
+    height: 100%;
+  }
+
+  .border_image {
+    background-image: url('../../assets/images/border.png');
+    background-size: cover;
+    background-repeat: repeat-x;
+    height: 10px;
+    position: relative;
+    top: 5px;
+    z-index: 2;
+    width: 100%;
+  }
+
+  .address_border {
+    margin-top: 20px;
+    height: 60px;
+    width: 250px;
+    border-radius: 6px;
+    border: 2px dashed #bcbcbc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .total_setting {
+    margin-top: 60px;
+  }
+
   .oper {
     margin-top: 80px;
   }
 
   .header {
-    height: 300px;
+    height: 250px;
     background: linear-gradient(to bottom, #E50F86, #F06292);
     padding: 0 30px;
   }
@@ -164,19 +221,13 @@ const handleChange = (e) => {
       font-size: 28px;
       color: #9C9BA1;
     }
-
-    .border_image {
-      position: relative;
-      height: 5px;
-      top: 10px;
-    }
   }
 
   .order_goods {
     background: #fff;
     margin: 20px 0px;
     border-radius: 10px;
-    padding: 12px 20px;
+    padding: 20px 20px;
 
     .sku_image {
       width: 180px;
@@ -187,11 +238,16 @@ const handleChange = (e) => {
     }
 
     .sku {
-      margin-top: 30px;
-      color: #919094;
+      color: #aeadb2;
+      font-size: 24px;
+      margin-right: 10px;
     }
 
-    .sku_info {}
+    .sku_info {
+      .text-ellipsis {
+        margin-bottom: 30px;
+      }
+    }
 
     .stock {
       color: #b5b4b4;
@@ -211,16 +267,31 @@ const handleChange = (e) => {
     }
 
     .total {
-      margin: 0 10px;
+      width: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .border_number {
+      height: 60px;
+      display: flex;
+      align-items: center;
+      border-radius: 10px;
+      border: 2px solid #eee;
     }
 
     .btn {
-      width: 30px;
-      height: 30px;
-      line-height: 30px;
-      text-align: center;
-      border: 1px solid #ccc;
-      margin: 0 10px;
+      border-right: 2px solid #eee;
+      border-radius: 0 10px 10px 0;
+      width: 60px;
+      height: 60px;
+      border-right: none;
+      border-left: 2px solid #eee;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #F9F9F9;
     }
   }
 
@@ -228,6 +299,7 @@ const handleChange = (e) => {
     background: #fff;
     margin-top: 20px;
     padding: 20px;
+    text-align: right;
 
     .title,
     .pay {

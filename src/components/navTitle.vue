@@ -2,16 +2,19 @@
  * @Author: lizesheng
  * @Date: 2023-03-30 18:16:15
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-03-31 13:30:53
+ * @LastEditTime: 2023-04-01 19:58:13
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/components/navTitle.vue
 -->
 <template>
-  <view class="title" :style="{ height: `${navHeight}px`, paddingTop: `${statusHeight}px`, color: color }">{{ title }}
+  <view class="title-container" :style="{ height: `${navHeight}px`, paddingTop: `${statusHeight}px`, color: color }">
+    <child-icon @tap="handleBack" class="right_arrow" value="icon-youjiantou" :color="rightColor" size="20"></child-icon>
+    <view v-if="title" class="title">{{ title }}</view>
   </view>
 </template>
 <script setup>
+import childIcon from './Icon.vue'
 import { defineProps } from 'vue';
 import Taro from '@tarojs/taro'
 import { ref } from 'vue'
@@ -24,16 +27,38 @@ const props = defineProps({
     type: String,
     default: '#333',
   },
+  rightColor: {
+    type: String,
+    default: '#333',
+  },
   title: {
     type: String,
     default: '',
   },
 });
+const handleBack = () => {
+  Taro.navigateBack()
+}
 </script>
-<style>
-.title {
+<style lang="scss">
+.title-container {
   display: flex;
   align-items: center;
-  justify-content: center;
+
+  .title {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    position: relative;
+    left: -20px;
+  }
+
+  .right_arrow {
+    position: relative;
+    z-index: 2;
+    transform: rotate(180deg);
+  }
 }
 </style>

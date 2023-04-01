@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:43:40
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-03-31 14:52:15
+ * @LastEditTime: 2023-04-01 19:59:25
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/goodsDetails/index.vue
@@ -17,8 +17,8 @@
       </swiper>
     </view>
     <view class="info">
-      <view class="price"><text class="symbol">￥</text>{{ goodsDetils?.sku[0]?.skuPrice?.toFixed(2) }}<text
-          class="q">起</text></view>
+      <view class="price"><text class="symbol">￥</text>{{ goodsDetils?.sku[0]?.skuPrice?.toFixed(2) }}<text class="q"
+          v-if="goodsDetils?.sku?.length > 0">起</text></view>
       <view class="name">{{ goodsDetils?.name }}</view>
       <view class="stock">
         <view>原价:￥{{ goodsDetils?.sku[0]?.skuOriginPrice }}</view>
@@ -28,7 +28,7 @@
     </view>
     <view class="line"></view>
     <view class="select-box" @tap="handleShowPopup">
-      <view class="grey select_name">已选择: </view>
+      <view class="grey select_name">{{ goodsDetils?.sku?.length === 1 ? '已' : '请' }}选择: </view>
       <view>
         <view class="current_name">{{ currentSelect?.name }}</view>
         <view class="flexCenter">
@@ -48,28 +48,27 @@
       <rich-text style="font-size:0" :nodes="goodsDetils?.introduction"></rich-text>
     </view>
     <view class="footer">
-      <view class="footer-icon">
+      <view class="footer-icon" @tap="handleJumpHome">
         <child-icon value="icon-shouye1" size="18" class="icon" />
         <view class="footer_title">首页</view>
       </view>
       <view class="service footer-icon">
-        <child-icon value="icon-kefu" size="17" class="icon service_icon" />
+        <child-icon value="icon-kefu" size="18" class="icon service_icon" />
         <view class="footer_title">客服</view>
       </view>
       <view class="button_buy" @tap="handleShowPopup">立即购买</view>
     </view>
-    <page-container :show="isShowPopup" :round="true" :overlay="true" position="bottom" class="popup"
-      @clickoverlay="handleOverly">
+    <view class="mask" v-show="isShowPopup"></view>
+    <view class="popup" v-show="isShowPopup" @clickoverlay="handleOverly">
       <view>
         <view @tap="() => {
           isShowPopup = false
         }"> <child-icon class="close" value="icon-guanbi1" size="18"></child-icon></view>
-        <view class="flexCenter">
+        <view class="flex">
           <image class="sku_image" :src="currentSelect?.goods_picture"></image>
           <view class="sku_info">
-            <view class="text-ellipsis1">{{ goodsDetils?.name }}</view>
-            <view class="price"><text class="symbol">￥</text>{{ currentSelect?.skuPrice }}</view>
-            <view class="stock">库存：{{ currentSelect?.skuStock }}</view>
+            <view class="price"><text class="symbol">￥</text>{{ currentSelect?.skuPrice?.toFixed(2) }}</view>
+            <view class="stock grey">库存{{ currentSelect?.skuStock }}件</view>
           </view>
         </view>
         <view class="spec_box">
@@ -85,17 +84,17 @@
             </view>
           </view>
         </view>
-        <view class="flexBetWeenCenter">
-          <view>数量</view>
-          <view class="flexCenter">
-            <view class="btn" @tap="handleMinus">-</view>
+        <view class="flexBetWeenCenter total_setting">
+          <view class="total_txt">数量</view>
+          <view class="flexCenter border_number">
+            <child-icon class="btn" value="icon-jianhao" size="18" @tap="handleMinus" />
             <view class="total">{{ state.totalNumber }}</view>
-            <view class="btn" @tap="handlePlus">+</view>
+            <child-icon class="btn" size="19" value="icon-jiahao1" @tap="handlePlus" />
           </view>
         </view>
         <view class="btn_buy" @tap="handleJumpOrder">确定购买</view>
       </view>
-    </page-container>
+    </view>
   </view>
 </template>
 <script setup>
@@ -105,9 +104,11 @@ import { ref, reactive } from 'vue'
 import { get, post } from '../../utils/request'
 import childIcon from '../../components/Icon.vue'
 import popup from '../../components/Popup.vue'
+import navTitle from '../../components/navTitle.vue'
+
 const router = useRouter()
 const goodsDetils = ref()
-const isShowPopup = ref(true)
+const isShowPopup = ref(false)
 const currentSelect = ref({})
 const activeArray = ref([0, 0])
 const state = reactive({
@@ -139,6 +140,7 @@ const handleJumpOrder = () => {
     goodsInfo: {
       ...currentSelect.value
     },
+    specification: goodsDetils.value.specification,
     name: goodsDetils.value.name,
     totalNumber: state.totalNumber
   }
@@ -146,6 +148,7 @@ const handleJumpOrder = () => {
   Taro.navigateTo({
     url: '/pages/order/index'
   })
+  isShowPopup.value = false
 }
 
 Taro.showShareMenu({
@@ -159,6 +162,10 @@ Taro.updateShareMenu({
 })
 
 const handleShowPopup = () => {
+  if (goodsDetils.value?.sku.length === 1) {
+    handleJumpOrder()
+    return
+  }
   isShowPopup.value = true
 }
 
@@ -183,49 +190,109 @@ function handleMinus() {
   }
 }
 
+const handleJumpHome = () => {
+  Taro.switchTab({
+    url: '/pages/index/index'
+  })
+}
+
 function handlePlus() {
+  if (state.totalNumber + 1 > currentSelect.value.skuStock) {
+    Taro.showToast({
+      title: '库存不足',
+      icon: 'none'
+    })
+    return
+  }
   state.totalNumber++
 }
 
 </script>
 <style lang="scss">
 .goods_details {
+  padding-bottom: 200px;
 
   .popup {
-    position: relative;
+    position: fixed;
+    height: 900px;
+    right: 0;
+    left: 0;
+    background: #fff;
+    border-radius: 30px 30px 0 0;
+    z-index: 2;
+    padding-top: 30px;
+    animation: myfirst 0.3s ease-in forwards;
 
     .flexBetWeenCenter {
       margin-top: 20px;
-      padding: 0 30px;
+      padding: 0 20px;
+    }
+
+    .total_txt {
+      font-weight: bold;
+    }
+
+    .border_number {
+      height: 60px;
+      display: flex;
+      align-items: center;
+      border-radius: 10px;
+      border: 2px solid #eee;
+    }
+
+    .btn {
+      border-right: 2px solid #eee;
+      border-radius: 0 10px 10px 0;
+      width: 60px;
+      height: 60px;
+      border-right: none;
+      border-left: 2px solid #eee;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #F9F9F9;
+    }
+
+    .btn:first-child {
+      border-left: none;
+      border-right: 2px solid #eee;
+      border-radius: 10px 0 0 10px;
     }
 
     .total {
       margin: 0 10px;
+      width: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .btn_buy {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
       background: #E50F86;
       display: flex;
       align-items: center;
       justify-content: center;
       color: #fff;
-      height: 60px;
+      height: 80px;
       margin: 20px 30px 30px 30px;
       border-radius: 100px;
     }
 
-    .btn {
-      width: 30px;
-      height: 30px;
-      line-height: 30px;
-      text-align: center;
-      border: 1px solid #ccc;
-      margin: 0 10px;
+
+
+    .total_setting {
+      padding-top: 20px;
+      padding-bottom: 20px;
     }
 
     .tag {
+      margin-top: 30px;
       margin-bottom: 10px;
-      color: #979797;
+      font-weight: bold;
     }
 
     .tag_children {
@@ -233,7 +300,7 @@ function handlePlus() {
     }
 
     .spec_box {
-      padding-top: 40px;
+      padding-top: 20px;
       padding-left: 20px;
     }
 
@@ -267,27 +334,30 @@ function handlePlus() {
       font-size: 24px;
     }
 
-    .symbol {
-      font-size: 24px;
-      margin-right: 6px;
-    }
 
-    .price {
-      font-size: 30px;
-      color: #E50F86;
-    }
 
     .sku_image {
-      width: 130px;
-      height: 130px;
+      width: 160px;
+      height: 160px;
       border-radius: 10px;
       flex-shrink: 0;
+      border: 1px solid #eee;
       margin-top: 20px;
       margin-left: 20px;
     }
 
     .sku_info {
       padding: 20px 50px 0px 20px;
+
+      .symbol {
+        font-size: 28px;
+        margin-right: 6px;
+      }
+
+      .price {
+        font-size: 40px;
+        color: #E50F86;
+      }
     }
   }
 
@@ -295,8 +365,10 @@ function handlePlus() {
     padding: 10px 20px;
     display: flex;
     position: relative;
+    align-items: flex-start;
 
     .select_name {
+      padding-top: 20px;
       margin-right: 30px;
     }
 
@@ -324,9 +396,11 @@ function handlePlus() {
     }
 
     .spec {
+      display: flex;
+      align-items: center;
       background: #faf6f6;
       height: 50px;
-      padding: 10px 10px;
+      padding: 5px 20px;
       margin-left: 10px;
       border-radius: 15px;
       color: #777;
@@ -342,8 +416,9 @@ function handlePlus() {
     align-items: center;
     display: flex;
     right: 0;
-    height: 90px;
+    height: 140px;
     background: #fff;
+    opacity: 0.9;
 
     .button_buy {
       flex: 1;
@@ -353,12 +428,12 @@ function handlePlus() {
       justify-content: center;
       align-items: center;
       border-radius: 100px;
-      height: 70px;
+      height: 90px;
     }
 
     .footer_title {
-      color: #b5b4b4;
-      font-size: 24px;
+      color: #232323;
+      font-size: 26px;
     }
 
     .footer-icon {
@@ -371,13 +446,13 @@ function handlePlus() {
 
     .service {
       position: relative;
-      margin-left: 10px;
+      margin-left: 20px;
       margin-right: 20px;
     }
 
     .service_icon {
       position: relative;
-      top: 4px;
+      top: 2px;
     }
   }
 
@@ -403,7 +478,7 @@ function handlePlus() {
 
     .price {
       margin-top: 20px;
-      font-size: 36px;
+      font-size: 45px;
       color: #E50F86;
     }
 
@@ -414,6 +489,7 @@ function handlePlus() {
 
     .q {
       font-size: 24px;
+      margin-left: 10px;
     }
 
     .name {
@@ -444,4 +520,24 @@ function handlePlus() {
     display: block;
   }
 }
+
+@keyframes myfirst {
+  from {
+    bottom: -100px;
+  }
+
+  to {
+    bottom: 0px;
+  }
+}
+
+
+// EA4B83 渐变起色
+// EA453F 渐变终色
+
+// EB4C82 渐变起色
+// F14339 渐变终色
+
+// EF504E 字符色
 </style>
+
