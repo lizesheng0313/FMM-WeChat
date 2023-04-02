@@ -6,6 +6,83 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "2076271",
+      "name": "退出",
+      "font_class": "tuichu",
+      "unicode": "e892",
+      "unicode_decimal": 59538
+    },
+    {
+      "icon_id": "14112844",
+      "name": "爱心",
+      "font_class": "aixin",
+      "unicode": "e63c",
+      "unicode_decimal": 58940
+    },
+    {
+      "icon_id": "14112845",
+      "name": "爱心",
+      "font_class": "aixin1",
+      "unicode": "e63d",
+      "unicode_decimal": 58941
+    },
+    {
+      "icon_id": "14112849",
+      "name": "待付款",
+      "font_class": "daifukuan",
+      "unicode": "e63e",
+      "unicode_decimal": 58942
+    },
+    {
+      "icon_id": "14112852",
+      "name": "待评价",
+      "font_class": "daipingjia",
+      "unicode": "e63f",
+      "unicode_decimal": 58943
+    },
+    {
+      "icon_id": "14112853",
+      "name": "更多",
+      "font_class": "gengduo",
+      "unicode": "e640",
+      "unicode_decimal": 58944
+    },
+    {
+      "icon_id": "14112854",
+      "name": "待收货",
+      "font_class": "daishouhuo",
+      "unicode": "e641",
+      "unicode_decimal": 58945
+    },
+    {
+      "icon_id": "14112856",
+      "name": "分享",
+      "font_class": "fenxiang1",
+      "unicode": "e643",
+      "unicode_decimal": 58947
+    },
+    {
+      "icon_id": "14112864",
+      "name": "扫一扫",
+      "font_class": "saoyisao",
+      "unicode": "e644",
+      "unicode_decimal": 58948
+    },
+    {
+      "icon_id": "14112869",
+      "name": "待发货",
+      "font_class": "daifahuo",
+      "unicode": "e645",
+      "unicode_decimal": 58949
+    },
+    {
+      "icon_id": "14196361",
+      "name": "选择时间",
+      "font_class": "xuanzeshijian",
+      "unicode": "e647",
+      "unicode_decimal": 58951
+    },
+    {
       "icon_id": "577313",
       "name": "加号1",
       "font_class": "jiahao1",

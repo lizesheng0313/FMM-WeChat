@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-11 11:22:38
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-03-25 20:21:47
+ * @LastEditTime: 2023-04-02 09:29:19
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/utils/request.js
@@ -21,12 +21,13 @@ const post = (url, data = {}) => {
         'authorization': wx.getStorageSync('authorization') || '',
       },
       success: function (res) {
+        wx.hideLoading()
         if (res.data.code === 0) {
           resolve(res.data)
         }
         else {
           wx.showToast({
-            title: res?.data?.message || '未知错误',
+            title: res?.data?.message || res?.data?.msg || '未知错误',
             icon: 'none'
           })
           reject(res)
@@ -58,7 +59,7 @@ const get = (url, data = {}) => {
         }
         else {
           wx.showToast({
-            title: res?.data?.message || '未知错误',
+            title: res?.data?.message || res?.data?.msg || '未知错误',
             icon: 'none'
           })
           reject(res)

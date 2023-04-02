@@ -30,6 +30,20 @@
           "query": "",
           "launchMode": "default",
           "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/addressManage/index",
+          "query": "id=undefined",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/myIndex/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
         }
       ]
     }

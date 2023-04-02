@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-01 19:41:50
+ * @LastEditTime: 2023-04-02 00:27:05
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/order/index.vue
@@ -70,7 +70,7 @@
 
 <script setup>
 import Taro from '@tarojs/taro'
-import { useDidShow } from '@tarojs/taro'
+import { useDidShow, useLoad } from '@tarojs/taro'
 import { get, post } from '../../utils/request'
 import { ref, reactive, watch } from 'vue'
 import childIcon from '../../components/Icon.vue'
@@ -81,17 +81,19 @@ const state = reactive({
   totalNumber: goodsDetails.value?.totalNumber || 1
 })
 
+useLoad(() => {
+  get('/api/address/get').then(res => {
+    const defaultAdress = res.data.list.filter(item => item.is_default === '1')[0]
+    contactInfo.value = defaultAdress || res.data.list[0]
+  })
+})
+
 useDidShow(() => {
   const info = Taro.getStorageSync('addressInfo')
   if (info) {
     contactInfo.value = JSON.parse(info)
     Taro.removeStorageSync('addressInfo')
-    return
   }
-  get('/api/address/get').then(res => {
-    const defaultAdress = res.data.list.filter(item => item.is_default === '1')[0]
-    contactInfo.value = defaultAdress || res.data.list[0]
-  })
 })
 
 const currentPrice = ref(goodsDetails.value.goodsInfo.skuPrice * state.totalNumber)
@@ -114,12 +116,17 @@ const handleJumpAddress = () => {
 }
 
 const handleSubmitOrder = () => {
+
+  if (!contactInfo.value.id) return Taro.showToast({ title: '请填写收货地址', icon: 'none' })
+  Taro.showLoading({
+    title: "下单中"
+  })
   post('/api/order/createOrder', {
     goodsId: goodsDetails.value.goodsId,
-    skuId: goodsDetails.value.skuId,
+    skuId: goodsDetails.value.goodsInfo.skuId,
     quantity: state.totalNumber,
-    address_id: contactInfo.id,
-    total_price: currentPrice,
+    address_id: contactInfo.value.id,
+    total_price: currentPrice.value,
     remark: searchValue.value
   }).then(res => {
     console.log(res)

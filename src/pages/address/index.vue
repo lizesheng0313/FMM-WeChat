@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-01 19:11:32
+ * @LastEditTime: 2023-04-01 23:53:01
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/address/index.vue
@@ -24,12 +24,12 @@
           <view class="flexCenter contact">
             <view>{{ item?.name }}</view>
             <view class="phone">{{ item?.phone }}</view>
+            <view v-if="item.is_default === '1'" class="default">默认</view>
           </view>
-          <view class="address_info">{{ item.address }}</view>
+          <view class="address_info">{{ item?.province + item?.city + item?.streetName + item.address }}</view>
         </view>
         <view class="flexCenter">
-          <child-icon @tap="(event) => { handleJumpAddressManage(event, item.id) }" value="icon-edit"
-            size="23"></child-icon>
+          <child-icon @tap="(event) => { handleJumpAddressManage(event, item) }" value="icon-edit" size="23"></child-icon>
           <child-icon @tap="(event) => { handleDelAddress(event, item.id) }" value="icon-shanchu" size="23"
             class="del"></child-icon>
         </view>
@@ -73,10 +73,11 @@ const handleDelAddress = (e, id) => {
   })
 }
 
-const handleJumpAddressManage = (e, id) => {
+const handleJumpAddressManage = (e, item) => {
   e.stopPropagation()
+  Taro.setStorageSync('addressEditInfo', JSON.stringify(item))
   Taro.navigateTo({
-    url: '/pages/addressManage/index?id=' + id
+    url: `/pages/addressManage/index${item?.id ? '?id=' + item.id : ''}`
   })
 }
 
@@ -116,7 +117,20 @@ const handleChooseAddress = () => {
   .address_info {
     margin-top: 10px;
     font-size: 24px;
+    display: flex;
+    padding-right: 20px;
+    flex-wrap: wrap;
     color: #A8A8A8;
+  }
+
+  .default {
+    border: 1px solid #E50F86;
+    color: #E50F86;
+    font-size: 24px;
+    margin-left: 10px;
+    padding: 2px 8px;
+    border-radius: 5px;
+
   }
 
   .contact {
