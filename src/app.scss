@@ -1,3 +1,5 @@
+// #E8443A 主色
+
 // #A8A8A8
 
 page{
@@ -42,7 +44,6 @@ page{
   background:rgba(0,0,0,0.7);
   z-index:1
 }
-
 .flexCenter{
   display:flex;
   align-items:center;
@@ -88,6 +89,13 @@ page{
   justify-content:space-between;
 }
 
+.flexDCenterCenter{
+  display:flex;
+  flex-direction: column;
+  align-items:center;
+  justify-content:center;
+}
+
 
 .footer_submit_btn{
     position: fixed;
@@ -95,7 +103,7 @@ page{
     right: 20px;
     bottom: 20px;
     height: 90px;
-    background: #E50F86;
+    background: #E8443A;
     color: #fff;
     display: flex;
     align-items: center;

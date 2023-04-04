@@ -144,7 +144,7 @@ function onPullDownRefresh() {
     }
 
     .price {
-      color: #E50F86;
+      color: #E8443A;
       font-size: 32px;
     }
 

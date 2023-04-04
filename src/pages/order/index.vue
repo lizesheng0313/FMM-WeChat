@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-02 00:27:05
+ * @LastEditTime: 2023-04-03 15:24:22
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/order/index.vue
@@ -150,7 +150,7 @@ const handleChange = (e) => {
   min-height: 100vh;
 
   .total_price {
-    color: #E50F86;
+    color: #E8443A;
     font-size: 40px;
     margin-left: 15px;
 
@@ -200,7 +200,7 @@ const handleChange = (e) => {
 
   .header {
     height: 250px;
-    background: linear-gradient(to bottom, #E50F86, #F06292);
+    background: linear-gradient(to bottom, #E8443A, #F06292);
     padding: 0 30px;
   }
 
@@ -264,13 +264,13 @@ const handleChange = (e) => {
     .symbol {
       font-size: 24px;
       margin-right: 6px;
-      color: #E50F86;
+      color: #E8443A;
     }
 
     .price {
       padding-top: 0px;
       font-size: 26px;
-      color: #E50F86;
+      color: #E8443A;
     }
 
     .total {
@@ -330,7 +330,7 @@ const handleChange = (e) => {
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #E50F86;
+      background: #E8443A;
     }
   }
 }

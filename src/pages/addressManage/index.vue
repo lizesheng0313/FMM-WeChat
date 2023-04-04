@@ -35,7 +35,7 @@
     </view>
     <view class="flexBetWeenCenter address_box">
       <view class="title">设为默认地址</view>
-      <switch :checked="addressInfo.is_default" className='my-switch' color="#E50F86" size="small"
+      <switch :checked="addressInfo.is_default" className='my-switch' color="#E8443A" size="small"
         @change="handleChangeDefault"></switch>
     </view>
     <view class="footer_submit_btn" @tap="handleSave">保存</view>

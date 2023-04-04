@@ -32,7 +32,7 @@
     <view class="classifcation p20" v-show="iconList?.length > 0">
       <view v-for="item in iconList" :key="item.id" class="class-item" @tap="handleJumpGoodsDetails(item.id)">
         <view class="icon">
-          <child-icon color="#e50f86" :value="item.icon" :size="item.size" class="icon" />
+          <child-icon color="#E8443A" :value="item.icon" :size="item.size" class="icon" />
         </view>
         <view>{{ item.label }}</view>
       </view>
@@ -230,7 +230,7 @@ function toggleSelect(index, value) {
       }
 
       .price {
-        color: #E50F86;
+        color: #E8443A;
         margin-top: 10px;
       }
 
@@ -300,7 +300,7 @@ function toggleSelect(index, value) {
     left: 0;
     right: 0;
     height: 350px;
-    background: linear-gradient(to bottom, #E50F86, #F06292);
+    background: linear-gradient(to bottom, #E8443A, #F06292);
     border-radius: 0 0 100px 100px;
     padding: 0 30px;
 

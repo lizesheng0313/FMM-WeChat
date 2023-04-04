@@ -124,8 +124,8 @@ const handleChooseAddress = () => {
   }
 
   .default {
-    border: 1px solid #E50F86;
-    color: #E50F86;
+    border: 1px solid #E8443A;
+    color: #E8443A;
     font-size: 24px;
     margin-left: 10px;
     padding: 2px 8px;
@@ -166,7 +166,7 @@ const handleChooseAddress = () => {
     right: 20px;
     bottom: 20px;
     height: 90px;
-    background: #E50F86;
+    background: #E8443A;
     color: #fff;
     display: flex;
     align-items: center;

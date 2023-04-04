@@ -272,7 +272,7 @@ function handlePlus() {
       bottom: 0;
       left: 0;
       right: 0;
-      background: #E50F86;
+      background: #E8443A;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -320,7 +320,7 @@ function handlePlus() {
     .active {
       background: #F06292;
       color: #fff;
-      border: 1px solid #E50F86;
+      border: 1px solid #E8443A;
     }
 
     .close {
@@ -356,7 +356,7 @@ function handlePlus() {
 
       .price {
         font-size: 40px;
-        color: #E50F86;
+        color: #E8443A;
       }
     }
   }
@@ -422,7 +422,7 @@ function handlePlus() {
 
     .button_buy {
       flex: 1;
-      background: #E50F86;
+      background: #E8443A;
       color: #fff;
       display: flex;
       justify-content: center;
@@ -479,7 +479,7 @@ function handlePlus() {
     .price {
       margin-top: 20px;
       font-size: 45px;
-      color: #E50F86;
+      color: #E8443A;
     }
 
     .symbol {
