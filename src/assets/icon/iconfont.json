@@ -6,6 +6,27 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "201579",
+      "name": "3.1定位",
+      "font_class": "31dingwei",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "6102963",
+      "name": "客服",
+      "font_class": "kefu1",
+      "unicode": "e646",
+      "unicode_decimal": 58950
+    },
+    {
+      "icon_id": "13332684",
+      "name": "商城",
+      "font_class": "shangcheng",
+      "unicode": "e60c",
+      "unicode_decimal": 58892
+    },
+    {
       "icon_id": "2076271",
       "name": "退出",
       "font_class": "tuichu",

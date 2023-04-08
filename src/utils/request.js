@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-11 11:22:38
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-02 09:29:19
+ * @LastEditTime: 2023-04-08 14:59:55
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/utils/request.js
@@ -43,7 +43,7 @@ const post = (url, data = {}) => {
   })
 }
 
-const get = (url, data = {}) => {
+const get = (url, data = {}, returnAll = false) => {
   return new Promise(function (resolve, reject) {
     wx.request({
       url: constConfig.host + url,
@@ -54,8 +54,12 @@ const get = (url, data = {}) => {
         'authorization': wx.getStorageSync('authorization') || '',
       },
       success: function (res) {
+        wx.hideLoading()
         if (res.data.code === 0) {
-          resolve(res.data)
+          if (!returnAll) {
+            resolve(res.data)
+          }
+          else { resolve(res) }
         }
         else {
           wx.showToast({
@@ -66,6 +70,7 @@ const get = (url, data = {}) => {
         }
       },
       fail(err) {
+        wx.hideLoading()
         wx.showToast({
           title: err?.data?.message || '未知错误',
           icon: 'none'

@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-07 12:29:47
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-03 15:04:40
+ * @LastEditTime: 2023-04-08 22:27:31
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/myIndex/index.vue
@@ -10,7 +10,7 @@
 <template>
   <view class="my-index">
     <view class="header flexCenter">
-      <!-- <image src="../../assets/images/header/header1.png" class="header_img"></image> -->
+      <image src="https://static.zjkdongao.com/image/tmp_74a9501757289358b6455212f2553567.jpg" class="header_img"></image>
       <view class="user-info">
         <view>快乐小白兔</view>
         <view class="vip flexCenterAll">普通用户</view>
@@ -19,17 +19,17 @@
     <view class="order_box">
       <view class="flexBetWeenCenter">
         <view class="title">我的订单</view>
-        <view class="flexCenter right_order">
+        <view class="flexCenter right_order" @tap="handleJumpOrderList">
           全部订单
-          <child-icon @tap="handleJumpOrderList" class="right_arrow" value="icon-youjiantou" size="10"></child-icon>
+          <child-icon class="right_arrow" value="icon-youjiantou" size="10"></child-icon>
         </view>
       </view>
     </view>
     <view class="order_list flexCenter">
-      <view v-for="item in orderList" :key="item.order" class="order-box flexDSpaceCenterEnd relative">
-        <child-icon :color="item?.color" @tap="handleJumpOrderList(item.order)" :value="item.icon" size="30"></child-icon>
+      <view v-for="item in orderList" :key="item?.order" class="order-box flexDSpaceCenterEnd relative">
+        <child-icon :color="item?.color" @tap="handleJumpOrderList(item)" :value="item?.icon" size="30"></child-icon>
         <view>
-          <view>{{ item.title }}</view>
+          <view>{{ item?.title }}</view>
           <view v-if="item?.value" class="total flexCenterAll">{{ item?.value }}</view>
         </view>
       </view>
@@ -51,52 +51,65 @@ import childIcon from '../../components/Icon.vue'
 
 useDidShow(() => {
   get('/api/order/getOrderStatusCount').then(res => {
-    orderList[0].value = res.pending_payment_count
-    orderList[1].value = res.pending_delivery_count
-    orderList[2].value = res.shipped_order_count
-    orderList[3].value = res.return_order_count
+    orderList.value[0].value = res.data.pending_payment_count
+    orderList.value[1].value = res.data.pending_delivery_count
+    orderList.value[2].value = res.data.shipped_order_count
+    orderList.value[4].value = res.data.return_order_count
   })
 })
 
-const handleJumpOrderList = () => {
+const handleJumpOrderList = (item) => {
+  if (item.title === '退换货') {
+    Taro.navigateTo({
+      url: '/pages/returnList/index'
+    })
+    return
+  }
   Taro.navigateTo({
-    url: '/pages/orderList/index'
+    url: `/pages/orderList/index?order=${item.order}&order_status=${item.order_status || ''}&pay_status=${item.pay_status || ''}`
   })
 }
 
-const orderList = [
+const orderList = ref([
   {
     title: '待付款',
     icon: 'icon-daifukuan',
-    order: 0,
+    order: 1,
     value: 0,
+    pay_status: '0',
+    order_status: ''
   },
   {
     title: '待发货',
     icon: 'icon-daifahuo',
-    order: 1,
+    order: 2,
     value: 0,
+    pay_status: '',
+    order_status: '10'
   },
   {
     title: '待收货',
     icon: 'icon-daifahuo',
-    order: 2,
-    value: 0,
-  },
-  {
-    title: '退换货',
-    icon: 'icon-tuichu',
     order: 3,
-    color: '#000',
     value: 0,
+    pay_status: '',
+    order_status: '20'
   },
   {
     title: '已完成',
     icon: 'icon-daipingjia',
     order: 4,
     value: 0,
+    pay_status: '',
+    order_status: '40'
   },
-]
+  {
+    title: '退换货',
+    icon: 'icon-tuichu',
+    color: '#000',
+    value: 0,
+  },
+])
 
 </script>
 <style lang="scss">

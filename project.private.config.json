@@ -44,8 +44,39 @@
           "query": "",
           "launchMode": "default",
           "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/orderList/index",
+          "query": "order=0",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/orderDetails/index",
+          "query": "id=230405193420720155",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/index/index",
+          "query": "ch=123",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/orderDetails/index",
+          "query": "id=230408153307318221",
+          "launchMode": "default",
+          "scene": null
         }
       ]
     }
+  },
+  "setting": {
+    "compileHotReLoad": false
   }
 }

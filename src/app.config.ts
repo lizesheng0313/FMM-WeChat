@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-07 12:01:55
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-03-31 16:44:57
+ * @LastEditTime: 2023-04-08 22:35:12
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/app.config.ts
@@ -20,11 +20,14 @@ export default {
     "pages/addressManage/index",
     "pages/orderList/index",
     "pages/orderDetails/index",
+    "pages/returnList/index",
+    "pages/returnGoods/index",
   ],
   window: {
     backgroundTextStyle: "light",
     navigationBarBackgroundColor: "#fff",
     navigationBarTextStyle: "black",
+    onReachBottomDistance: 50,
   },
   tabBar: {
     color: "#8a8a8a",

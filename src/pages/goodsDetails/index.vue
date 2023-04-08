@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:43:40
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-01 23:02:37
+ * @LastEditTime: 2023-04-08 15:30:57
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/goodsDetails/index.vue
@@ -27,7 +27,7 @@
       </view>
     </view>
     <view class="line"></view>
-    <view class="select-box" @tap="handleShowPopup">
+    <view class="select-box" @tap="handleShowPopupPlease">
       <view class="grey select_name">{{ goodsDetils?.sku?.length === 1 ? '已' : '请' }}选择: </view>
       <view>
         <view class="current_name">{{ currentSelect?.name }}</view>
@@ -140,6 +140,7 @@ const handleJumpOrder = () => {
     goodsInfo: {
       ...currentSelect.value
     },
+    freight: goodsDetils.value.freight,
     specification: goodsDetils.value.specification,
     name: goodsDetils.value.name,
     totalNumber: state.totalNumber
@@ -160,6 +161,10 @@ Taro.updateShareMenu({
   imageUrl: goodsDetils?.sku && goodsDetils?.sku[0]?.goods_picture,
   path: '/pages/goodsDetails/index' + goodsDetils?.id
 })
+
+const handleShowPopupPlease= ()=>{
+  isShowPopup.value = true
+}
 
 const handleShowPopup = () => {
   if (goodsDetils.value?.sku.length === 1) {

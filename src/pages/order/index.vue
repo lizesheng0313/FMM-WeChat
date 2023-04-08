@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-03 15:24:22
+ * @LastEditTime: 2023-04-08 15:32:05
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/order/index.vue
@@ -70,7 +70,7 @@
 
 <script setup>
 import Taro from '@tarojs/taro'
-import { useDidShow, useLoad } from '@tarojs/taro'
+import { useDidShow } from '@tarojs/taro'
 import { get, post } from '../../utils/request'
 import { ref, reactive, watch } from 'vue'
 import childIcon from '../../components/Icon.vue'
@@ -81,18 +81,17 @@ const state = reactive({
   totalNumber: goodsDetails.value?.totalNumber || 1
 })
 
-useLoad(() => {
-  get('/api/address/get').then(res => {
-    const defaultAdress = res.data.list.filter(item => item.is_default === '1')[0]
-    contactInfo.value = defaultAdress || res.data.list[0]
-  })
-})
-
 useDidShow(() => {
   const info = Taro.getStorageSync('addressInfo')
   if (info) {
     contactInfo.value = JSON.parse(info)
     Taro.removeStorageSync('addressInfo')
+  }
+  else {
+    get('/api/address/get').then(res => {
+      const defaultAdress = res.data.list.filter(item => item.is_default === '1')[0]
+      contactInfo.value = defaultAdress || res.data.list[0]
+    })
   }
 })
 
@@ -114,20 +113,34 @@ const handleJumpAddress = () => {
     url: '/pages/address/index'
   })
 }
-
 const handleSubmitOrder = () => {
-
-  if (!contactInfo.value.id) return Taro.showToast({ title: '请填写收货地址', icon: 'none' })
+  if (!contactInfo?.value?.id) return Taro.showToast({ title: '请填写收货地址', icon: 'none' })
   Taro.showLoading({
     title: "下单中"
   })
+  let skuString
+
+  if (goodsDetails.value?.specification?.length > 0) {
+    skuString = goodsDetails.value.specification.reduce((result, item, index) => {
+      const skuValue = skuList[index] || '';
+      const separator = index === 0 ? '' : ',';
+      return `${result}${separator}${item.name}:${skuValue}`;
+    }, '');
+  }
+  else {
+    skuString = goodsDetails.value?.skuId
+  }
+
   post('/api/order/createOrder', {
+    freight: goodsDetails.value.freight,
+    goods_name: goodsDetails.value.name,
     goodsId: goodsDetails.value.goodsId,
     skuId: goodsDetails.value.goodsInfo.skuId,
     quantity: state.totalNumber,
     address_id: contactInfo.value.id,
     total_price: currentPrice.value,
-    remark: searchValue.value
+    remark: searchValue.value,
+    sku_string: skuString
   }).then(res => {
     console.log(res)
   })
@@ -241,7 +254,7 @@ const handleChange = (e) => {
       height: 180px;
       border-radius: 10px;
       flex-shrink: 0;
-      margin-left: 20px;
+      margin-right: 20px;
     }
 
     .sku {

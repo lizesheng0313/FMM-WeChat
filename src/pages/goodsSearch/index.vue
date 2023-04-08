@@ -33,7 +33,7 @@
 </template>
 
 <script setup>
-import Taro from '@tarojs/taro'
+import Taro, { useReachBottom } from '@tarojs/taro'
 import { get } from '../../utils/request'
 import { ref, reactive } from 'vue'
 import childIcon from '../../components/Icon.vue'
@@ -72,8 +72,8 @@ const handleSearch = () => {
 }
 
 // 下拉加载事件
-function onPullDownRefresh() {
-  if (searchList.value?.length < total) {
+useReachBottom(() => {
+  if (searchList.value?.length < total.value) {
     Taro.showLoading({
       title: '搜索中...',
       mask: true
@@ -89,7 +89,7 @@ function onPullDownRefresh() {
       total.value = res.data.total
     })
   }
-}
+})
 
 
 </script>
