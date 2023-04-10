@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-07 12:29:47
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-08 22:27:31
+ * @LastEditTime: 2023-04-09 11:14:44
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/myIndex/index.vue
@@ -77,7 +77,8 @@ const orderList = ref([
     order: 1,
     value: 0,
     pay_status: '0',
-    order_status: ''
+    order_status: '',
+
   },
   {
     title: '待发货',
@@ -85,7 +86,7 @@ const orderList = ref([
     order: 2,
     value: 0,
     pay_status: '',
-    order_status: '10'
+    order_status: '10',
   },
   {
     title: '待收货',
@@ -106,8 +107,8 @@ const orderList = ref([
   {
     title: '退换货',
     icon: 'icon-tuichu',
-    color: '#000',
     value: 0,
+    color: "#000"
   },
 ])
 
@@ -141,7 +142,7 @@ const orderList = ref([
   }
 
   .order-box {
-    color: #9C9BA1;
+    color: #333;
     flex-basis: 25%;
   }
 

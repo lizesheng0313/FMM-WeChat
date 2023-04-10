@@ -1,3 +1,12 @@
+/*
+ * @Author: lizesheng
+ * @Date: 2023-03-11 11:22:38
+ * @LastEditors: lizesheng
+ * @LastEditTime: 2023-04-09 10:07:17
+ * @important: 重要提醒
+ * @Description: 备注内容
+ * @FilePath: /shop/src/utils/utils.js
+ */
 export const formatDate = (val = null, noYear = false) => {
   let date = new Date()
   if (val) {
@@ -19,8 +28,9 @@ export const formatDate = (val = null, noYear = false) => {
 
 }
 
-export const getCurrentDate = (d,flag) => {
-  const date = new Date(d || new Date())
+export const getCurrentDate = (d, flag) => {
+  if (!d) return
+  const date = new Date(d)
   const year = date.getFullYear()
   let month = date.getMonth() + 1
   if (month < 10) {

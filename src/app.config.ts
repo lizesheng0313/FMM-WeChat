@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-07 12:01:55
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-08 22:35:12
+ * @LastEditTime: 2023-04-09 09:35:02
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/app.config.ts
@@ -22,6 +22,7 @@ export default {
     "pages/orderDetails/index",
     "pages/returnList/index",
     "pages/returnGoods/index",
+    "pages/returnDetails/index",
   ],
   window: {
     backgroundTextStyle: "light",

@@ -2,45 +2,55 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-09 11:16:48
+ * @LastEditTime: 2023-04-09 21:29:59
  * @important: 重要提醒
  * @Description: 备注内容
- * @FilePath: /shop/src/pages/orderDetails/index.vue
+ * @FilePath: /shop/src/pages/returnDetails/index.vue
 -->
 <template>
   <view class="order-details">
     <view class="header">
-      <navTitle rightColor="#fff" title="订单详情" color="#fff"></navTitle>
-      <view class="status">{{ ORDERSTATUS[goodsDetails.order_status] }}</view>
-      <view class="address_info_box">
-        <view class="name flexCenter">
-          <child-icon value="icon-31dingwei"></child-icon>
-          {{ goodsDetails?.address_name }}
-          <view class="phone">{{ goodsDetails?.address_phone }}</view>
+      <navTitle rightColor="#fff" :title="goodsDetails.status === '2' ? RETURNSTATUS[goodsDetails.status] : '退货详情'"
+        color="#fff"></navTitle>
+      <view class="status">{{ goodsDetails.status === '2' ? '请将商品邮寄到以下地址' : RETURNSTATUS[goodsDetails.status] }}
+        <view v-if="goodsDetails.status === '2'" class="return_address">
+          <view class="flexCenter">
+            <view>退货地址：</view>
+            {{ goodsDetails?.return_address }}
+            <view class="phone">{{ goodsDetails?.return_address_phone }}</view>
+          </view>
         </view>
-        <view class="info">{{ goodsDetails?.province }}{{ goodsDetails?.city }}{{ goodsDetails?.streetName
-        }}{{ goodsDetails?.address_detail }}</view>
       </view>
       <view class="goods_info" @tap="handleJumpGoodsDetails">
         <image :src="goodsDetails.goods_picture"></image>
         <view>
-          <view class="name">{{ goodsDetails?.name }}</view>
+          <view class="name">{{ goodsDetails?.goods_name }}</view>
           <view class="sku">数量：{{ goodsDetails?.quantity }}{{ goodsDetails?.sku_string }}</view>
           <view class="price"><text class="symbol">￥</text>{{ goodsDetails?.total_price?.toFixed(2) }}</view>
+        </view>
+      </view>
+      <view class="order_info">
+        <view class="time"><text class="title">退货原因：</text>{{ goodsDetails.reason }}</view>
+        <view class="time" v-if="goodsDetails?.memo"><text class="title">退货描述：</text>{{ goodsDetails.memo }}</view>
+        <view class="time" v-if="goodsDetails?.picture_list?.lenght > 0"><text class="title">退货凭证：</text>
+          <view v-for="item in goodsDetails.picture_list">
+            <image :src="item" class="certificate"></image>
+          </view>
         </view>
       </view>
       <view class="order_info">
         <view class="flexBetWeenCenter">
           <view>
             <text class="title">订单编号：</text>
-            {{ goodsDetails?.id }}
+            {{ goodsDetails?.order_id }}
           </view>
-          <view class="copy" @tap="handleCopyTextToClipboard">复制</view>
+          <view class="copy" @tap="() => { handleCopyTextToClipboard(goodsDetails?.order_id) }">复制</view>
         </view>
         <view class="time"><text class="title">下单时间：</text>{{ getCurrentDate(goodsDetails?.create_time) }}</view>
-        <view class="time" v-if="goodsDetails?.pay_status === 1"><text class="title">支付时间：</text>{{
-          getCurrentDate(goodsDetails?.payment_time) }}
-        </view>
+        <view class="time"><text class="title">支付时间：</text>{{ getCurrentDate(goodsDetails?.payment_time) }}</view>
+        <view class="time"><text class="title">退货/退款申请：</text>{{ getCurrentDate(goodsDetails?.apply_time) }}</view>
+        <view class="time" v-if="goodsDetails?.refund_time"><text class="title">退款时间：</text>{{
+          getCurrentDate(goodsDetails?.refund_time) }}</view>
       </view>
       <view class="order_price">
         <view class="flexBetWeenCenter">运费：<text>{{ goodsDetails?.freight || '免运费' }}</text>
@@ -57,98 +67,32 @@
         </view>
       </view>
     </view>
-    <view class="footer">
-      <view v-if="goodsDetails?.pay_status === '0' && goodsDetails?.order_status === '10'" class="flexCenter">
-        <view class="btn_grey" @tap="handleCancleOrder">取消订单</view>
-        <view class="btn_red">立即支付</view>
-      </view>
-      <view class="btn_grey" v-if="goodsDetails?.order_status === '10' && goodsDetails?.pay_status === '1'">申请退款</view>
-      <view class="btn_red" v-if="goodsDetails?.order_status === '20'" @tap="handleSubmitReceipt">确认收货</view>
-      <view class="btn_grey" v-if="goodsDetails?.order_status === '30' || goodsDetails?.order_status === '40'">申请退货</view>
-      <view class="btn_grey" v-if="goodsDetails.order_status !== '10' && goodsDetails?.order_status !== '60'">查看物流</view>
-      <view class="btn_grey" v-if="goodsDetails.order_status === '40' || goodsDetails.order_status === '60'"
-        @tap="handleDeleteOrder">删除订单</view>
-      <view class="btn_red_border" v-if="goodsDetails.order_status === '60'" @tap="handleRepurchase">再次购买</view>
+    <view class="footer" v-if="goodsDetails?.status !== '5'">
+      <view class="btn_grey">上传凭证</view>
     </view>
   </view>
 </template>
 
 <script setup>
-import Taro, { useLoad } from '@tarojs/taro'
+import Taro from '@tarojs/taro'
+import { useLoad } from '@tarojs/taro'
 import { get } from '../../utils/request'
 import { ref, reactive } from 'vue'
 import childIcon from '../../components/Icon.vue'
 import navTitle from '../../components/navTitle.vue'
-import { ORDERSTATUS } from '../orderList/constant'
+import { RETURNSTATUS } from '../returnList/constant'
 import { getCurrentDate } from '../../utils/utils'
 
 const goodsDetails = ref('')
 useLoad((e) => {
-  fetchDetails(e.id)
-})
-
-const fetchDetails = (id) => {
-  get('/api/order/getOrderDetails', {
-    id
+  get('/api/order/getReturnDetails', {
+    id: e.id
   }).then(res => {
     goodsDetails.value = res.data
   })
-}
-
-const handleJumpGoodsDetails = () => {
-  Taro.navigateTo({
-    url: '/pages/goodsDetails/index?id=' + goodsDetails.value.goods_id
-  })
-}
-
-
-const handleCancleOrder = () => {
-  e.stopPropagation()
-  Taro.showModal({
-    title: '确认取消订单吗?',
-    success(res) {
-      if (res.confirm) {
-        post('/api/order/cancleOrder', {
-          id: goodsDetails.value.id
-        }).then(res => {
-          fetchDetails(goodsDetails.value.id)
-        })
-      }
-    }
-  })
-}
-const handleDeleteOrder = () => {
-  Taro.showModal({
-    title: '确认删除订单吗?',
-    success(res) {
-      if (res.confirm) {
-        post('/api/order/deleteOrder', {
-          id: goodsDetails.value.id
-        }).then(res => {
-          Taro.navigateBack()
-        })
-      }
-    }
-  })
-}
-
-const handleSubmitReceipt = () => {
-  Taro.showModal({
-    title: '确认收货吗?',
-    success(res) {
-      if (res.confirm) {
-        post('/api/order/confirmReceipt', {
-          id: goodsDetails.value.id
-        }).then(res => {
-          fetchDetails(goodsDetails.value.id)
-        })
-      }
-    }
-  })
-}
-
+})
 const handleCopyTextToClipboard = () => {
-  Taro.setClipboardData({ data: goodsDetails.value?.id })
+  Taro.setClipboardData({ data: goodsDetails.value?.order_id })
     .then(() => {
       Taro.showToast({
         title: '复制成功',
@@ -156,6 +100,11 @@ const handleCopyTextToClipboard = () => {
         duration: 1000
       })
     })
+}
+const handleJumpGoodsDetails = () => {
+  Taro.navigateTo({
+    url: '/pages/goodsDetails/index?id=' + goodsDetails.value.goods_id
+  })
 }
 const handleOpenService = async () => {
   const token = await get('/api/program/getToken')
@@ -180,6 +129,7 @@ const handleOpenService = async () => {
 .order-details {
   background: #F0F1F3;
   min-height: 100vh;
+  padding-bottom: 80px;
   width: 100vw;
   overflow-x: hidden;
 
@@ -230,7 +180,7 @@ const handleOpenService = async () => {
       }
 
       .time {
-        margin-top: 20px;
+        margin-top: 10px;
       }
 
       .copy {
@@ -254,28 +204,10 @@ const handleOpenService = async () => {
       left: 40px;
     }
 
-    .address_info_box {
-      margin-top: 100px;
-      padding: 20px 0px;
-      border-radius: 20px;
-      background: #fff;
-
-      .name {
-        font-weight: bold;
-        margin-left: 20px;
-        font-size: 32px;
-      }
-
-      .phone {
-        margin-left: 10px;
-      }
-
-      .info {
-        margin-top: 10px;
-        margin-left: 50px;
-        font-size: 28px;
-        color: #A8A8A8;
-      }
+    .return_address {
+      font-size: 28px;
+      margin-top: 10px;
+      margin-bottom: 30px;
     }
 
     .goods_info {
@@ -288,6 +220,7 @@ const handleOpenService = async () => {
       image {
         width: 150px;
         height: 150px;
+        flex-shrink: 0;
         border-radius: 10px;
         margin-right: 20px;
       }
@@ -298,7 +231,7 @@ const handleOpenService = async () => {
 
       .sku {
         color: #A8A8A8;
-        font-size: 24px;
+        font-size: 26px;
       }
 
       .price {
@@ -315,6 +248,8 @@ const handleOpenService = async () => {
     }
   }
 
+
+
   .footer {
     position: fixed;
     bottom: 0;
@@ -324,10 +259,9 @@ const handleOpenService = async () => {
     justify-content: flex-end;
     align-items: center;
     background: #fff;
+    padding-right: 20px;
     height: 80px;
     font-size: 24px;
-    padding-right: 20px;
-    box-sizing: border-box;
 
     .btn_red {
       background: #E8443A;
@@ -366,6 +300,11 @@ const handleOpenService = async () => {
       color: #E8443A;
       border-radius: 100px;
     }
+  }
+
+  .certificate {
+    width: 100px;
+    height: 100px;
   }
 }
 </style>
