@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-09 11:16:48
+ * @LastEditTime: 2023-04-11 15:23:25
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/orderDetails/index.vue
@@ -25,7 +25,9 @@
         <image :src="goodsDetails.goods_picture"></image>
         <view>
           <view class="name">{{ goodsDetails?.name }}</view>
-          <view class="sku">数量：{{ goodsDetails?.quantity }}{{ goodsDetails?.sku_string }}</view>
+          <view class="sku">数量：{{ goodsDetails?.quantity }}<text class="sku_string">{{
+            goodsDetails?.sku_string.split(',').join(';') }}</text>
+          </view>
           <view class="price"><text class="symbol">￥</text>{{ goodsDetails?.total_price?.toFixed(2) }}</view>
         </view>
       </view>
@@ -62,13 +64,18 @@
         <view class="btn_grey" @tap="handleCancleOrder">取消订单</view>
         <view class="btn_red">立即支付</view>
       </view>
-      <view class="btn_grey" v-if="goodsDetails?.order_status === '10' && goodsDetails?.pay_status === '1'">申请退款</view>
+      <view class="btn_grey" v-if="goodsDetails?.order_status === '10' && goodsDetails?.pay_status === '1'"
+        @tap="handleApplyRefund">申请退款</view>
       <view class="btn_red" v-if="goodsDetails?.order_status === '20'" @tap="handleSubmitReceipt">确认收货</view>
       <view class="btn_grey" v-if="goodsDetails?.order_status === '30' || goodsDetails?.order_status === '40'">申请退货</view>
-      <view class="btn_grey" v-if="goodsDetails.order_status !== '10' && goodsDetails?.order_status !== '60'">查看物流</view>
+      <view class="btn_grey" v-if="goodsDetails.order_status !== '10' && goodsDetails?.order_status !== '60'"
+        @tap="handleChecklogistics">查看物流</view>
       <view class="btn_grey" v-if="goodsDetails.order_status === '40' || goodsDetails.order_status === '60'"
         @tap="handleDeleteOrder">删除订单</view>
       <view class="btn_red_border" v-if="goodsDetails.order_status === '60'" @tap="handleRepurchase">再次购买</view>
+      <view class="btn_red_border"
+        v-if="goodsDetails.order_status === '30' || goodsDetails.order_status === '40' || goodsDetails.order_status === '20'"
+        @tap="handleJumpReturnGoods">售后</view>
     </view>
   </view>
 </template>
@@ -101,14 +108,44 @@ const handleJumpGoodsDetails = () => {
   })
 }
 
+const handleChecklogistics = () => {
+  const log_info = {
+    logistics_no: goodsDetails.value.logistics_no,
+    picture_list: goodsDetails.value.picture_list,
+    address_detail: `${goodsDetails?.value?.province}${goodsDetails?.value?.city}${goodsDetails?.value?.streetName}${goodsDetails?.value?.address_detail}`
+  }
+  Taro.navigateTo({
+    url: '/pages/logistics/index?log_info=' + JSON.stringify(log_info)
+  })
+}
+
+const handleJumpReturnGoods = () => {
+  Taro.navigateTo({
+    url: `/pages/returnGoods/index?id=${goodsDetails.value.id}`
+  })
+}
 
 const handleCancleOrder = () => {
-  e.stopPropagation()
   Taro.showModal({
     title: '确认取消订单吗?',
     success(res) {
       if (res.confirm) {
         post('/api/order/cancleOrder', {
+          id: goodsDetails.value.id
+        }).then(res => {
+          fetchDetails(goodsDetails.value.id)
+        })
+      }
+    }
+  })
+}
+
+const handleApplyRefund = () => {
+  Taro.showModal({
+    title: '确认退款吗?',
+    success(res) {
+      if (res.confirm) {
+        post('/api/order/refund', {
           id: goodsDetails.value.id
         }).then(res => {
           fetchDetails(goodsDetails.value.id)
@@ -299,6 +336,10 @@ const handleOpenService = async () => {
       .sku {
         color: #A8A8A8;
         font-size: 24px;
+      }
+
+      .sku_string {
+        margin-left: 20px;
       }
 
       .price {

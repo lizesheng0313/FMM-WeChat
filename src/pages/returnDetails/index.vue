@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-09 21:29:59
+ * @LastEditTime: 2023-04-10 19:43:29
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/returnDetails/index.vue
@@ -18,6 +18,9 @@
             <view>退货地址：</view>
             {{ goodsDetails?.return_address }}
             <view class="phone">{{ goodsDetails?.return_address_phone }}</view>
+            <view
+              @tap="() => { handleCopyTextToClipboard(goodsDetails?.return_address + goodsDetails?.return_address_phone) }">
+              复制</view>
           </view>
         </view>
       </view>
@@ -70,6 +73,12 @@
     <view class="footer" v-if="goodsDetails?.status !== '5'">
       <view class="btn_grey">上传凭证</view>
     </view>
+    <view class="footer">
+      <view class="btn_grey" @tap="handleChecklogistics">查看物流</view>
+    </view>
+    <view class="footer">
+      <view class="btn_red_border">再次购买</view>
+    </view>
   </view>
 </template>
 
@@ -91,8 +100,8 @@ useLoad((e) => {
     goodsDetails.value = res.data
   })
 })
-const handleCopyTextToClipboard = () => {
-  Taro.setClipboardData({ data: goodsDetails.value?.order_id })
+const handleCopyTextToClipboard = (value) => {
+  Taro.setClipboardData({ data: value })
     .then(() => {
       Taro.showToast({
         title: '复制成功',
@@ -104,6 +113,17 @@ const handleCopyTextToClipboard = () => {
 const handleJumpGoodsDetails = () => {
   Taro.navigateTo({
     url: '/pages/goodsDetails/index?id=' + goodsDetails.value.goods_id
+  })
+}
+
+const handleChecklogistics = () => {
+  const log_info = {
+    logistics_no: goodsDetails.value.logistics_no,
+    picture_list: goodsDetails.value.picture_list,
+    address_detail: `${goodsDetails?.value?.province}${goodsDetails?.value?.city}${goodsDetails?.value?.streetName}${goodsDetails?.value?.address_detail}`
+  }
+  Taro.navigateTo({
+    url: '/pages/logistics/index?log_info=' + JSON.stringify(log_info)
   })
 }
 const handleOpenService = async () => {

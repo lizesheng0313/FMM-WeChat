@@ -5,7 +5,6 @@
       <view>
         <view class="name">{{ goodsDetails?.name }}</view>
         <view class="sku">{{ goodsDetails?.sku_string }}</view>
-        <!-- <view class="price"><text class="symbol">￥</text>{{ goodsDetails?.total_price?.toFixed(2) }}</view> -->
       </view>
     </view>
     <view class="form-group">
@@ -27,10 +26,6 @@
         </view>
       </view>
     </view>
-    <!-- <view class="flexBetWeenCenter">
-      <view class="form-label">退货物流号：</view>
-      <input class="form-control" placeholder="请输入退货物流号" @input="handleLogisticsNoInput" />
-    </view> -->
     <view class="footer_submit_btn" @tap="handleSubmit">提交</view>
   </view>
 </template>
@@ -41,7 +36,7 @@ import { ref } from 'vue';
 import { get, post } from '../../utils/request'
 import childIcon from '../../components/Icon.vue'
 import { getCurrentDate } from '../../utils/utils'
-
+import constConfig from '../../config/confg'
 const goodsDetails = ref('')
 useLoad((e) => {
   fetchDetails(e.id)
@@ -77,13 +72,40 @@ function handleReasonSelected(event) {
 
 async function handleUploadImage() {
   try {
-    const res = await Taro.chooseImage({
+    Taro.chooseImage({
       count: 1,
       sizeType: ['compressed'],
       sourceType: ['album', 'camera'],
+      success: function (res) {
+        Taro.showLoading({
+          title: '上传中'
+        });
+        Taro.uploadFile({
+          url: `${constConfig.host}/api/uploadImage`,
+          filePath: res.tempFilePaths[0],
+          name: 'file',
+          header: {
+            'authorization': wx.getStorageSync('authorization') || ''
+          },
+          success(res) {
+            Taro.hideLoading();
+            const response = JSON.parse(res.data)
+            returnGoods.value.picture_list.push(`${constConfig.staticHost}${response.data.fileName}`)
+          },
+          fail() {
+            wx.showToast({
+              title: '上传失败',
+              icon: 'none',
+            });
+          }
+        })
+      }
     });
-    imagePath.value = res.tempFilePaths[0];
   } catch (err) {
+    wx.showToast({
+      title: err,
+      icon: 'none',
+    });
     console.log(err)
   }
 }
@@ -105,8 +127,9 @@ async function handleSubmit() {
     picture_list: returnGoods.value.picture_list.join(',')
   }
   post('/api/order/returnGoods', params).then(res => {
-    console.log('res')
-    Taro.navigateBack()
+    Taro.redirectTo({
+      url: '/pages/returnDetails/index?id=' + res.data
+    })
   })
 }
 
