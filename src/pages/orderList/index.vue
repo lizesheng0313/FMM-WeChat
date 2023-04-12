@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-11 15:19:00
+ * @LastEditTime: 2023-04-12 17:37:54
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/orderList/index.vue
@@ -29,7 +29,7 @@
           <view class="status">{{ item.order_status === '10' && item.pay_status === '0' ? '待付款' :
             ORDERSTATUS[item.order_status] }}</view>
         </view>
-        <view class="flexBetWeenCenter">
+        <view class="flexSpaceStart">
           <view class="flex">
             <image :src=item.goods_picture class="goods_picture" />
             <view class="name">{{ item.goods_name }}</view>
@@ -135,7 +135,8 @@ const handleChecklogistics = (e, item) => {
   e.stopPropagation()
   const log_info = {
     logistics_no: item.logistics_no,
-    picture_list: item.picture_list,
+    goods_picture: item.goods_picture,
+    logistics_company: item.logistics_company,
     address_detail: `${item?.province}${item?.city}${item?.streetName}${item?.address_detail}`
   }
   Taro.navigateTo({

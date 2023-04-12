@@ -17,8 +17,9 @@
       <view>
         <input class="memo" placeholder="请描述申请售后服务的具体原因" @input="handleMemoIput" />
       </view>
-      <view>
-        <image v-if="imagePath" :src="imagePath" mode="aspectFill" class="image-preview" />
+      <view class="flex">
+        <image @tap="() => { handlePreviewImage(item) }" v-for="(item, index) in returnGoods?.picture_list" :src="item"
+          mode="aspectFill" class="image-preview" />
         <view class="btn-upload" @tap="handleUploadImage">
           <childIcon value="icon-zhaoxiangji" size="25"></childIcon>
           <view>添加图片</view>
@@ -58,8 +59,6 @@ const returnGoods = ref({
   reason: '',
   picture_list: []
 })
-const imagePath = ref('');
-const logisticsNo = ref('');
 
 const handleMemoIput = (event) => {
   returnGoods.value.memo = event.detail.value;
@@ -68,6 +67,14 @@ const handleMemoIput = (event) => {
 function handleReasonSelected(event) {
   const selectedIndex = event.detail.value;
   returnGoods.value.reason = reasonList[selectedIndex];
+}
+
+const handlePreviewImage = (item) => {
+  Taro.previewImage({
+    urls: returnGoods.value?.picture_list,
+    current: item,
+    // 其他选项...
+  })
 }
 
 async function handleUploadImage() {
@@ -108,10 +115,6 @@ async function handleUploadImage() {
     });
     console.log(err)
   }
-}
-
-function handleLogisticsNoInput(event) {
-  logisticsNo.value = event.target.value;
 }
 
 async function handleSubmit() {
@@ -212,6 +215,7 @@ async function handleSubmit() {
     justify-content: center;
     align-items: center;
     width: 150px;
+    height: 150px;
     border: 1px solid #eee;
     border-radius: 4px;
     padding: 6px 12px;
@@ -224,8 +228,8 @@ async function handleSubmit() {
   }
 
   .image-preview {
-    width: 80px;
-    height: 80px;
+    width: 150px;
+    height: 150px;
     margin-right: 10px;
   }
 

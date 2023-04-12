@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:43:40
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-08 15:30:57
+ * @LastEditTime: 2023-04-12 16:27:46
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/goodsDetails/index.vue
@@ -52,10 +52,11 @@
         <child-icon value="icon-shouye1" size="18" class="icon" />
         <view class="footer_title">首页</view>
       </view>
-      <view class="service footer-icon">
+      <button class="service footer-icon" open-type="contact" :show-message-card="true"
+        :send-message-title="goodsDetils?.name" :send-message-img="goodsDetils?.goods_picture">
         <child-icon value="icon-kefu" size="18" class="icon service_icon" />
         <view class="footer_title">客服</view>
-      </view>
+      </button>
       <view class="button_buy" @tap="handleShowPopup">立即购买</view>
     </view>
     <view class="mask" v-show="isShowPopup"></view>
@@ -162,7 +163,7 @@ Taro.updateShareMenu({
   path: '/pages/goodsDetails/index' + goodsDetils?.id
 })
 
-const handleShowPopupPlease= ()=>{
+const handleShowPopupPlease = () => {
   isShowPopup.value = true
 }
 
@@ -453,6 +454,9 @@ function handlePlus() {
       position: relative;
       margin-left: 20px;
       margin-right: 20px;
+      background: #fff;
+      outline: none;
+      border: none;
     }
 
     .service_icon {

@@ -19,9 +19,11 @@
           </view>
           <view class="status">{{ RETURNSTATUS[item?.status] }}</view>
         </view>
-        <view class="flex">
-          <image :src=item.goods_picture class="goods_picture" />
-          <view class="name">{{ item.goods_name }}</view>
+        <view class="flexSpaceStart">
+          <view class="flex">
+            <image :src=item.goods_picture class="goods_picture" />
+            <view class="name">{{ item.goods_name }}</view>
+          </view>
           <view class="goods_info">
             <view class="total_price"><text style="font-size:12px">￥</text>{{ item.total_price.toFixed(2) }}</view>
             <view class="total_number">共{{ item.quantity }}件</view>

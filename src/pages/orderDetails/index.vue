@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-11 15:23:25
+ * @LastEditTime: 2023-04-12 18:24:57
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/orderDetails/index.vue
@@ -26,7 +26,7 @@
         <view>
           <view class="name">{{ goodsDetails?.name }}</view>
           <view class="sku">数量：{{ goodsDetails?.quantity }}<text class="sku_string">{{
-            goodsDetails?.sku_string.split(',').join(';') }}</text>
+            goodsDetails?.sku_string?.split(',')?.join(';') }}</text>
           </view>
           <view class="price"><text class="symbol">￥</text>{{ goodsDetails?.total_price?.toFixed(2) }}</view>
         </view>
@@ -53,10 +53,11 @@
               0)).toFixed(2) }}</text>
         </view>
         <view v-if="goodsDetails?.pay_status === 1">实付款：{{ goodsDetails?.act_pay.toFixed(2) }}</view>
-        <view class="flexCenterAll service" @tap="handleOpenService">
+        <button class="flexCenterAll service" open-type="contact" :show-message-card="true"
+          :send-message-title="goodsDetails?.name" :send-message-img="goodsDetails?.goods_picture">
           <child-icon size="20" value="icon-kefu1"></child-icon>
           <view class="text">联系客服</view>
-        </view>
+        </button>
       </view>
     </view>
     <view class="footer">
@@ -108,10 +109,44 @@ const handleJumpGoodsDetails = () => {
   })
 }
 
+// 回购
+const handleRepurchase = () => {
+  Taro.showLoading({ title: '回购中' })
+  get('/api/goods/getDetails', {
+    id: goodsDetails.value.goods_id
+  }).then(res => {
+    const items = res.data.specification.split('|');
+    const result = [];
+    for (let i = 0; i < items.length; i += 2) {
+      const name = items[i];
+      const tagStr = items[i + 1];
+      const tags = tagStr ? tagStr.split('!') : [];
+      result.push({
+        name,
+        tag: tags,
+      });
+    }
+    const info = {
+      goodsId: goodsDetails.value.goods_id,
+      goodsInfo: {
+        ...res.data?.sku[0]
+      },
+      specification: result,
+      name: goodsDetails.value.name,
+      totalNumber: 1
+    }
+    Taro.setStorageSync('goodsInfo', JSON.stringify(info))
+    Taro.navigateTo({
+      url: '/pages/order/index'
+    })
+  })
+}
+
 const handleChecklogistics = () => {
   const log_info = {
     logistics_no: goodsDetails.value.logistics_no,
-    picture_list: goodsDetails.value.picture_list,
+    goods_picture: goodsDetails.value.goods_picture,
+    logistics_company: goodsDetails.value.logistics_company,
     address_detail: `${goodsDetails?.value?.province}${goodsDetails?.value?.city}${goodsDetails?.value?.streetName}${goodsDetails?.value?.address_detail}`
   }
   Taro.navigateTo({
@@ -194,24 +229,7 @@ const handleCopyTextToClipboard = () => {
       })
     })
 }
-const handleOpenService = async () => {
-  const token = await get('/api/program/getToken')
-  wx.sendCustomMessage({
-    access_token: token,
-    touser: Taro.getStorageSync("user_id"),
-    msgtype: 'link',
-    link: {
-      thumb_url: goodsDetails?.value?.goods_picture,
-      title: goodsDetails?.value?.name,
-    },
-    success: res => {
-      console.log('打开客服会话界面成功', res)
-    },
-    fail: err => {
-      console.error('打开客服会话界面失败', err)
-    }
-  })
-}
+
 </script>
 <style lang="scss">
 .order-details {
@@ -226,14 +244,21 @@ const handleOpenService = async () => {
     padding: 0 30px;
 
     .service {
+      border: none;
       border-top: 1px solid #e6e6e6;
       font-weight: bold;
-      height: 100px;
-      position: relative;
-      top: 20px;
+      height: 55px;
+      background: #fff;
+      width: 150px;
+      box-sizing: content-box;
+      padding: 0 10px !important;
+      padding: 0;
+      outline: none;
 
       .text {
         margin-left: 10px;
+        font-size: 24px;
+        font-weight: 400;
       }
     }
 

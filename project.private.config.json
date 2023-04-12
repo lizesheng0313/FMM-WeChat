@@ -93,6 +93,20 @@
           "query": "id=3",
           "launchMode": "default",
           "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/logistics/index",
+          "query": "log_info=%7B%22logistics_no%22%3A%22YT7158751078163%22%2C%22picture_list%22%3A%5B%22https%3A%2F%2Fstatic.zjkdongao.com%2FshowImage%2FBpRBrB9szCsEe42f98e8921442ab3792a5b84980fcfc.jpeg%22%2C%22https%3A%2F%2Fstatic.zjkdongao.com%2FshowImage%2FN3JEdrgsackEded5d2c71ce201e0aeda9edd2e5fc6e8.jpeg%22%5D%2C%22logistics_company%22%3A%22YTO%22%2C%22address_detail%22%3A%22%E5%8C%97%E4%BA%AC%E5%B8%82%E5%8C%97%E4%BA%AC%E5%B8%82%E4%B8%B0%E5%8F%B0%E5%8C%BA%E7%83%9F%E5%8E%82%E5%AE%BF%E8%88%8D37-2-503%22%7D",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/logistics/index",
+          "query": "log_info=%7B%22logistics_no%22%3A%22YT7158751078163%22%2C%22picture_list%22%3A%5B%22https%3A%2F%2Fstatic.zjkdongao.com%2FshowImage%2FBpRBrB9szCsEe42f98e8921442ab3792a5b84980fcfc.jpeg%22%2C%22https%3A%2F%2Fstatic.zjkdongao.com%2FshowImage%2FN3JEdrgsackEded5d2c71ce201e0aeda9edd2e5fc6e8.jpeg%22%5D%2C%22logistics_company%22%3A%22YTO%22%2C%22address_detail%22%3A%22%E5%8C%97%E4%BA%AC%E5%B8%82%E5%8C%97%E4%BA%AC%E5%B8%82%E4%B8%B0%E5%8F%B0%E5%8C%BA%E7%83%9F%E5%8E%82%E5%AE%BF%E8%88%8D37-2-503%22%7D",
+          "launchMode": "default",
+          "scene": null
         }
       ]
     }
@@ -100,5 +114,6 @@
   "setting": {
     "compileHotReLoad": false,
     "urlCheck": false
-  }
+  },
+  "libVersion": "2.30.0"
 }
