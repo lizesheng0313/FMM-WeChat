@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-08 15:32:05
+ * @LastEditTime: 2023-04-13 13:35:39
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/order/index.vue
@@ -140,9 +140,20 @@ const handleSubmitOrder = () => {
     address_id: contactInfo.value.id,
     total_price: currentPrice.value,
     remark: searchValue.value,
-    sku_string: skuString
+    sku_string: skuString,
+    act_price: goodsDetails.value.freight.toFixed(2) + currentPrice.value.toFixed(2) // 实际支付金额 
   }).then(res => {
-    console.log(res)
+    // TODO
+    Taro.requestPayment({
+      timeStamp: res.timeStamp.toString(),
+      nonceStr: res.nonce_str,
+      package: res.package,
+      signType: "MD5",
+      paySign: res.sign,
+      success: function () {
+
+      }
+    });
   })
 }
 

@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:43:40
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-12 16:27:46
+ * @LastEditTime: 2023-04-13 10:23:06
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/goodsDetails/index.vue
@@ -60,11 +60,11 @@
       <view class="button_buy" @tap="handleShowPopup">立即购买</view>
     </view>
     <view class="mask" v-show="isShowPopup"></view>
-    <view class="popup" v-show="isShowPopup" @clickoverlay="handleOverly">
+    <view class="popup" v-show="isShowPopup">
       <view>
         <view @tap="() => {
           isShowPopup = false
-        }"> <child-icon class="close" value="icon-guanbi1" size="18"></child-icon></view>
+        }"> <child-icon class="close" value="icon-guanbi1" size="20"></child-icon></view>
         <view class="flex">
           <image class="sku_image" :src="currentSelect?.goods_picture"></image>
           <view class="sku_info">
@@ -104,7 +104,6 @@ import Taro from '@tarojs/taro'
 import { ref, reactive } from 'vue'
 import { get, post } from '../../utils/request'
 import childIcon from '../../components/Icon.vue'
-import popup from '../../components/Popup.vue'
 import navTitle from '../../components/navTitle.vue'
 
 const router = useRouter()
@@ -185,10 +184,6 @@ const handleSelectSpec = (item, it, rowIndex, colIndex) => {
   currentSelect.value = goodsDetils.value.sku.filter(item => item.skuId === skuId)[0]
 }
 
-const handleOverly = (event) => {
-  isShowPopup.value = true
-  event.stopPropagation()
-}
 
 function handleMinus() {
   if (state.totalNumber > 1) {
@@ -331,7 +326,7 @@ function handlePlus() {
 
     .close {
       position: absolute;
-      right: 20px;
+      right: 30px;
       top: 20px;
     }
 

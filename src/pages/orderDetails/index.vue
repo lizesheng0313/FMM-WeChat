@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-12 18:24:57
+ * @LastEditTime: 2023-04-13 11:09:13
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/orderDetails/index.vue
@@ -244,15 +244,13 @@ const handleCopyTextToClipboard = () => {
     padding: 0 30px;
 
     .service {
-      border: none;
-      border-top: 1px solid #e6e6e6;
+      border: 2px solid #e6e6e6;
       font-weight: bold;
       height: 55px;
       background: #fff;
       width: 150px;
       box-sizing: content-box;
-      padding: 0 10px !important;
-      padding: 0;
+      padding: 0 10px;
       outline: none;
 
       .text {

@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-12 18:24:06
+ * @LastEditTime: 2023-04-13 17:34:18
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/returnDetails/index.vue
@@ -14,7 +14,8 @@
         color="#fff"></navTitle>
     </view>
     <view class="content">
-      <view class="status">{{ goodsDetails.status === '2' ? '请将商品邮寄到以下地址' : RETURNSTATUS[goodsDetails.status] }}
+      <view class="status">{{ goodsDetails.status === '2' ? '请将商品邮寄到以下地址' :
+        RETURNSTATUS[goodsDetails.status], '请点击退货物流输入退货单号' }}
         <view v-if="goodsDetails.status === '2'" class="return_address">
           <view class="flexBetWeenCenter">
             <view class="flexCenter">
@@ -37,6 +38,12 @@
         </view>
       </view>
       <view class="order_info">
+        <view class="time" v-if="goodsDetails.status === '4'"><text class="title">退货快递：</text>{{
+          logisticsCompanies[goodsDetails?.rlogistics_company] }}</view>
+        <view class="time" v-if="goodsDetails.status === '4'"><text class="title">退货物流：</text>{{
+          goodsDetails?.rlogistics_no }}</view>
+        <view class="time" v-if="goodsDetails.status === '3'"><text class="title">拒绝原因：</text>{{
+          goodsDetails.refuse_reason }}</view>
         <view class="time"><text class="title">退货原因：</text>{{ goodsDetails.reason }}</view>
         <view class="time" v-if="goodsDetails?.memo"><text class="title">退货描述：</text>{{ goodsDetails.memo }}</view>
         <view class="time" v-if="goodsDetails?.picture_list?.length > 0"><text class="title">退货凭证：</text>
@@ -78,25 +85,47 @@
       </view>
     </view>
     <view class="footer">
-      <view class="btn_grey" @tap="handleReturnGoods" v-if="goodsDetails?.status == '2'">填写退货物流</view>
+      <view class="btn_grey" @tap="handleReturnGoods" v-if="goodsDetails?.status == '2'">退货物流</view>
       <view class="btn_grey" @tap="handleChecklogistics">查看物流</view>
       <view class="btn_red_border" @tap="handleRepurchase">再次购买</view>
+    </view>
+    <view class="mask" v-show="showPopup"></view>
+    <view class="popup" v-if="showPopup">
+      <view @tap="() => {
+        showPopup = false
+      }"> <child-icon class="close" value="icon-guanbi1" size="20"></child-icon></view>
+      <view class="return_logistics">
+        <radio-group @change="handleChangelogist" class="flexCenter radio_group">
+          <view v-for="item in logisticsCompanies" class="item_radio">
+            <radio :value="item.value" class="radio" color="#E8443A"></radio>
+            <view>{{ item.label }}</view>
+          </view>
+        </radio-group>
+        <input class="input" placeholder="请输入退货物流单号" @input="handlelogNo">
+        <view class="footer_submit" @tap="handleSubmitReturnLogistic">提交</view>
+      </view>
     </view>
   </view>
 </template>
 
 <script setup>
+
 import Taro from '@tarojs/taro'
 import { useLoad } from '@tarojs/taro'
-import { get } from '../../utils/request'
+import { get, post } from '../../utils/request'
 import { ref, reactive } from 'vue'
 import childIcon from '../../components/Icon.vue'
 import navTitle from '../../components/navTitle.vue'
 import { RETURNSTATUS } from '../returnList/constant'
 import { getCurrentDate } from '../../utils/utils'
-
+import { logisticsCompanies } from '../logistics/constant'
+import { withCtx } from 'vue'
 const goodsDetails = ref('')
-
+const logistAddress = ref({
+  rlogistics_company: '',
+  rlogistics_no: ''
+})
+const showPopup = ref(false)
 useLoad((e) => {
   get('/api/order/getReturnDetails', {
     id: e.id
@@ -104,6 +133,25 @@ useLoad((e) => {
     goodsDetails.value = res.data
   })
 })
+
+const handleChangelogist = (e) => {
+  logistAddress.value.rlogistics_company = e.mpEvent.detail.value
+}
+
+const handlelogNo = (e) => {
+  logistAddress.value.rlogistics_no = e.target.value
+}
+
+const handleSubmitReturnLogistic = () => {
+  if (!logistAddress.value.rlogistics_no || !logistAddress.value.rlogistics_company) return Taro.showToast({ title: '请输入物流信息' })
+  Taro.showLoading({
+    title: '提交中'
+  })
+  post('/api/order/postReturnLogistic', logistAddress).then(res => {
+    showPopup.value = false
+  })
+}
+
 const handleCopyTextToClipboard = (value) => {
   Taro.setClipboardData({ data: value })
     .then(() => {
@@ -121,7 +169,7 @@ const handleJumpGoodsDetails = () => {
 }
 
 const handleReturnGoods = () => {
-
+  showPopup.value = true
 }
 
 const handlePreviewImage = (item) => {
@@ -178,9 +226,72 @@ const handleChecklogistics = () => {
 
 </script>
 <style lang="scss">
+@keyframes myfirst {
+  from {
+    bottom: -100px;
+  }
+
+  to {
+    bottom: 0px;
+  }
+}
+
 .return-details {
   background: #F0F1F3;
   padding-bottom: 150px;
+
+
+
+  .popup {
+    position: fixed;
+    right: 0;
+    left: 0;
+    min-height: 400px;
+    background: #fff;
+    border-radius: 30px 30px 0 0;
+    z-index: 2;
+    padding: 30px 20px 20px 20px;
+    animation: myfirst 0.3s ease-in forwards;
+
+    .radio_group {
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+
+    .item_radio {
+      margin-right: 10px;
+      margin-left: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .input {
+      margin-top: 20px;
+      margin-bottom: 40px;
+    }
+
+    .footer_submit {
+      margin: 30px 20px 0 20px;
+      height: 90px;
+      background: #E8443A;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 100px;
+    }
+
+    .close {
+      position: absolute;
+      right: 30px;
+      top: 20px;
+    }
+
+    .radio {
+      transform: scale(0.8);
+    }
+  }
 
   .copy_address {
     display: flex;
@@ -200,25 +311,23 @@ const handleChecklogistics = () => {
   }
 
   .content {
-    margin-top: -140px;
+    margin-top: -170px;
     padding: 0 20px;
   }
 
   .service {
-    border: none;
-    border-top: 1px solid #e6e6e6;
+    border: 1px solid #e6e6e6;
     font-weight: bold;
     height: 55px;
     background: #fff;
     width: 150px;
     box-sizing: content-box;
-    padding: 0 10px !important;
-    padding: 0;
+    padding: 0 10px;
     outline: none;
 
     .text {
-      margin-left: 10px;
-      font-size: 24px;
+      margin-left: 5px;
+      font-size: 22px;
       font-weight: 400;
     }
   }
@@ -287,7 +396,7 @@ const handleChecklogistics = () => {
     display: flex;
     background: #fff;
     padding: 20px;
-    margin-top: 20px;
+    margin-top: 40px;
 
     image {
       width: 150px;

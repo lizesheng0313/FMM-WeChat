@@ -44,7 +44,7 @@ onMounted(() => {
 
 async function getClassification(typeId) {
   try {
-    const { data } = await get('/api/home/getClassification', { typeId });
+    const { data } = await get('/api/goods/getClassiFication', { typeId });
     leftList.value = data.list;
     currentIndex.value = 0;
     rightList.value = data.list[0].subList;

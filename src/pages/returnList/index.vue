@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-09 09:49:20
+ * @LastEditTime: 2023-04-13 10:56:43
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/returnList/index.vue
@@ -120,7 +120,6 @@ useReachBottom(() => {
       margin-right: 5px !important;
     }
   }
-
 
   .order_details {
     .order_warp {

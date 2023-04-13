@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-07 12:29:47
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-09 11:14:44
+ * @LastEditTime: 2023-04-13 17:43:30
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/myIndex/index.vue
@@ -39,6 +39,14 @@
         <view class="title">其它功能</view>
       </view>
     </view>
+    <view class="order_list flexCenter">
+      <view v-for="item in otherList" class="order-box flexDSpaceCenterEnd relative">
+        <child-icon :color="item?.color" @tap="handleJumpInfo(item)" :value="item?.icon" size="25"></child-icon>
+        <view>
+          <view>{{ item?.title }}</view>
+        </view>
+      </view>
+    </view>
   </view>
 </template>
 
@@ -70,6 +78,19 @@ const handleJumpOrderList = (item) => {
   })
 }
 
+const handleJumpInfo = (item) => {
+  Taro.navigateTo({
+    url: item.path
+  })
+}
+const otherList = ref([
+  {
+    title: '地址管理',
+    icon: 'icon-31dingwei',
+    path: '/pages/address/index',
+    color: "#000"
+  }
+])
 const orderList = ref([
   {
     title: '待付款',
@@ -137,13 +158,13 @@ const orderList = ref([
   }
 
   .order_list {
-    margin-top: 40px;
+    margin-top: 30px;
     padding: 0 20px;
   }
 
   .order-box {
     color: #333;
-    flex-basis: 25%;
+    flex-basis: 20%;
   }
 
   .header_img {

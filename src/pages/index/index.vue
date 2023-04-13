@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-07 12:01:55
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-03-31 14:04:51
+ * @LastEditTime: 2023-04-13 13:41:59
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/index/index.vue
@@ -17,7 +17,7 @@
           <text class="tip">私密发货</text>
         </view>
         <view class="search" @tap="handleJumpSearch">
-          <child-icon value="icon-sousuo" size="16" />
+          <child-icon value="icon-sousuo" size="18" />
           <view class="search-icon">搜索商品</view>
         </view>
         <view class="swiper">
@@ -283,7 +283,7 @@ function toggleSelect(index, value) {
       display: flex;
       background: #fff;
       border-radius: 100px;
-      height: 50px;
+      height: 90px;
       align-items: center;
       color: #8a8a8a;
       font-size: 26px;
