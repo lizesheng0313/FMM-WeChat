@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-27 18:17:12
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-03-27 19:59:30
+ * @LastEditTime: 2023-04-14 09:58:28
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/components/Popup.vue
@@ -13,7 +13,7 @@
   </page-container>
 </template>
 <script setup>
-import { defineProps, PropType, defineEmits, Slots } from 'vue';
+import { defineProps } from 'vue';
 const props = defineProps({
   show: {
     type: Boolean,

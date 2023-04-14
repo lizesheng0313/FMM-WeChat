@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-03-25 20:36:08
+ * @LastEditTime: 2023-04-14 10:07:40
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/goodsSearch/index.vue
@@ -15,27 +15,15 @@
         placeholder-class="placeholder-class" @confirm="handleSearch" confirm-type="search" />
       <view @tap="handleSearch">搜索</view>
     </view>
-    <view class="search-list">
-      <view @tap="handleJumpGoodsDetails(item.id)" v-for="(item, index) in searchList" class="flex-container search-item">
-        <image :src="item.pictureUrl"></image>
-        <view>
-          <view class="name text-ellipsis">{{ item.name }}</view>
-          <view class="price"><text class="symbol">¥</text>{{ item.price.toFixed(2) }}</view>
-          <view class="volume"><text class='tips'>已售</text>{{ item.volume }}</view>
-        </view>
-      </view>
-      <view v-if="searchList?.length === 0" class="nothing">
-        <child-icon value="icon-wushuju" size="60" />
-        <view class="nothing-text">暂无数据</view>
-      </view>
-    </view>
+    <searchListView :searchList="searchList"></searchListView>
   </view>
 </template>
 
 <script setup>
-import Taro, { useReachBottom } from '@tarojs/taro'
+import Taro, { useReachBottom, useLoad } from '@tarojs/taro'
 import { get } from '../../utils/request'
 import { ref, reactive } from 'vue'
+import searchListView from '../../components/searchList.vue'
 import childIcon from '../../components/Icon.vue'
 const searchValue = ref('')
 const page = reactive({
@@ -46,13 +34,13 @@ const total = ref(0)
 const handleChange = (e) => {
   searchValue.value = e.target.value;
 }
-// 商品详情
-const handleJumpGoodsDetails = (id) => {
-  Taro.navigateTo({
-    url: '/pages/goodsDetails/index?id=' + id
-  })
-}
 
+useLoad(() => {
+  if (e.keyword) {
+    searchValue.value = e.keyword
+    handleSearch()
+  }
+})
 const searchList = ref([])
 const handleSearch = () => {
   Taro.showLoading({

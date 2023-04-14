@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-13 17:34:18
+ * @LastEditTime: 2023-04-14 14:00:23
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/returnDetails/index.vue
@@ -39,7 +39,7 @@
       </view>
       <view class="order_info">
         <view class="time" v-if="goodsDetails.status === '4'"><text class="title">退货快递：</text>{{
-          logisticsCompanies[goodsDetails?.rlogistics_company] }}</view>
+          goodsDetails?.rlogistics_companyStr }}</view>
         <view class="time" v-if="goodsDetails.status === '4'"><text class="title">退货物流：</text>{{
           goodsDetails?.rlogistics_no }}</view>
         <view class="time" v-if="goodsDetails.status === '3'"><text class="title">拒绝原因：</text>{{
@@ -95,13 +95,19 @@
         showPopup = false
       }"> <child-icon class="close" value="icon-guanbi1" size="20"></child-icon></view>
       <view class="return_logistics">
-        <radio-group @change="handleChangelogist" class="flexCenter radio_group">
-          <view v-for="item in logisticsCompanies" class="item_radio">
-            <radio :value="item.value" class="radio" color="#E8443A"></radio>
-            <view>{{ item.label }}</view>
-          </view>
-        </radio-group>
-        <input class="input" placeholder="请输入退货物流单号" @input="handlelogNo">
+        <view class="flexCenter">
+          <view class="label">物流服务：</view>
+          <radio-group @change="handleChangelogist" class="flexCenter radio_group">
+            <view v-for="item in logisticsCompanies" class="item_radio">
+              <radio :value="item.value" class="radio" color="#E8443A"></radio>
+              <view>{{ item.label }}</view>
+            </view>
+          </radio-group>
+        </view>
+        <view class="flexCenter">
+          <view class="label">物流单号：</view>
+          <input class="input" placeholder="请输入退货物流单号" @input="handlelogNo">
+        </view>
         <view class="footer_submit" @tap="handleSubmitReturnLogistic">提交</view>
       </view>
     </view>
@@ -122,17 +128,27 @@ import { logisticsCompanies } from '../logistics/constant'
 import { withCtx } from 'vue'
 const goodsDetails = ref('')
 const logistAddress = ref({
+  id: '',
   rlogistics_company: '',
   rlogistics_no: ''
 })
 const showPopup = ref(false)
+
 useLoad((e) => {
+  logistAddress.value.id = e.id
+  fetchDetails()
+})
+
+const fetchDetails = () => {
   get('/api/order/getReturnDetails', {
-    id: e.id
+    id: logistAddress.value.id
   }).then(res => {
     goodsDetails.value = res.data
+    if (res.data.rlogistics_company) {
+      goodsDetails.value.rlogistics_companyStr = logisticsCompanies.filter(item => item.value === res.data.rlogistics_company)[0]?.label
+    }
   })
-})
+}
 
 const handleChangelogist = (e) => {
   logistAddress.value.rlogistics_company = e.mpEvent.detail.value
@@ -147,7 +163,10 @@ const handleSubmitReturnLogistic = () => {
   Taro.showLoading({
     title: '提交中'
   })
-  post('/api/order/postReturnLogistic', logistAddress).then(res => {
+  post('/api/order/postReturnLogistic', {
+    ...logistAddress.value
+  }).then(res => {
+    fetchDetails()
     showPopup.value = false
   })
 }
@@ -250,30 +269,37 @@ const handleChecklogistics = () => {
     background: #fff;
     border-radius: 30px 30px 0 0;
     z-index: 2;
-    padding: 30px 20px 20px 20px;
+    padding: 40px 20px 40px 20px;
     animation: myfirst 0.3s ease-in forwards;
+
+    .label {
+      flex-shrink: 0;
+    }
 
     .radio_group {
       flex-wrap: wrap;
+      margin-left: 20px;
       margin-bottom: 40px;
     }
 
     .item_radio {
       margin-right: 10px;
       margin-left: 10px;
+      margin-bottom: 20px;
+      align-items: center;
       display: flex;
       flex-direction: column;
       justify-content: center;
+      flex-basis: 25%;
     }
 
     .input {
-      margin-top: 20px;
-      margin-bottom: 40px;
+      margin-left: 20px;
     }
 
     .footer_submit {
       margin: 30px 20px 0 20px;
-      height: 90px;
+      height: 80px;
       background: #E8443A;
       color: #fff;
       display: flex;
@@ -316,13 +342,14 @@ const handleChecklogistics = () => {
   }
 
   .service {
-    border: 1px solid #e6e6e6;
+    border: 2px solid #e6e6e6;
     font-weight: bold;
     height: 55px;
     background: #fff;
     width: 150px;
     box-sizing: content-box;
     padding: 0 10px;
+    border-right: 4px solid #e6e6e6;
     outline: none;
 
     .text {

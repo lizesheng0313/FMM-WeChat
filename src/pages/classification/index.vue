@@ -2,7 +2,7 @@
   <view class="category">
     <view class="category-search">
       <input class="search-input" placeholder="请输入搜索关键词" @input="handleSearchInput" />
-      <button class="search-btn" @tap="handleSearch">搜索</button>
+      <view class="search-btn" @tap="handleSearch">搜索</view>
     </view>
 
     <view class="category-wrapper">
@@ -67,7 +67,9 @@ function handleSearchInput(event) {
 }
 
 function handleSearch() {
-  // TODO: 处理搜索事件，例如跳转到搜索结果页
+  Taro.navigateTo({
+    url: '/pages/goodsSearch/index?keyword=' + searchValue.value
+  })
 }
 
 </script>

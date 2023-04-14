@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-12 17:37:54
+ * @LastEditTime: 2023-04-14 10:03:53
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/orderList/index.vue
@@ -282,6 +282,7 @@ const handleSubmitReceipt = (e, item) => {
   })
 }
 useReachBottom(() => {
+  console.log(orderStatusList.value?.length, total.value)
   if (orderStatusList.value?.length < total.value) {
     page.pageIndex += 1
     Taro.showLoading({
