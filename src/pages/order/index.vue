@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-13 13:35:39
+ * @LastEditTime: 2023-04-14 22:27:22
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/order/index.vue
@@ -55,13 +55,13 @@
       </view>
       <view class="remark pay flexBetWeenCenter">
         <view>金额总计</view>
-        <view>￥{{ currentPrice.toFixed() }}</view>
+        <view>￥{{ currentPrice }}</view>
       </view>
     </view>
     <view class="footer flexBetWeenCenter">
       <view class="flexCenter">
         <view>合计:</view>
-        <view class="total_price"><text class="total_symbol">￥</text>{{ currentPrice.toFixed(2) }}</view>
+        <view class="total_price"><text class="total_symbol">￥</text>{{ currentPrice }}</view>
       </view>
       <view class="submit_order" @tap="handleSubmitOrder">提交订单</view>
     </view>
@@ -95,7 +95,8 @@ useDidShow(() => {
   }
 })
 
-const currentPrice = ref(goodsDetails.value.goodsInfo.skuPrice * state.totalNumber)
+
+const currentPrice = ref(Number((goodsDetails.value.goodsInfo.skuPrice * state.totalNumber).toFixed(2)))
 const skuList = goodsDetails.value?.goodsInfo?.skuId?.split(',')
 
 function handleMinus() {
@@ -130,7 +131,6 @@ const handleSubmitOrder = () => {
   else {
     skuString = goodsDetails.value?.skuId
   }
-
   post('/api/order/createOrder', {
     freight: goodsDetails.value.freight,
     goods_name: goodsDetails.value.name,
@@ -141,7 +141,7 @@ const handleSubmitOrder = () => {
     total_price: currentPrice.value,
     remark: searchValue.value,
     sku_string: skuString,
-    act_price: goodsDetails.value.freight.toFixed(2) + currentPrice.value.toFixed(2) // 实际支付金额 
+    act_price: (Number(goodsDetails.value.freight) + Number(currentPrice.value)).toFixed(2) // 实际支付金额 
   }).then(res => {
     // TODO
     Taro.requestPayment({
@@ -158,7 +158,7 @@ const handleSubmitOrder = () => {
 }
 
 watch(state, (newValue, oldValue) => {
-  currentPrice.value = goodsDetails.value.goodsInfo.skuPrice * state.totalNumber
+  currentPrice.value = Number((goodsDetails.value.goodsInfo.skuPrice * state.totalNumber).toFixed(2));
 }
 );
 

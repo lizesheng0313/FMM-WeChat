@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-07 12:01:55
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-13 13:41:59
+ * @LastEditTime: 2023-04-14 20:25:40
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/index/index.vue
@@ -30,7 +30,7 @@
       </view>
     </view>
     <view class="classifcation p20" v-show="iconList?.length > 0">
-      <view v-for="item in iconList" :key="item.id" class="class-item" @tap="handleJumpGoodsDetails(item.id)">
+      <view v-for="item in iconList" :key="item.id" class="class-item" @tap="handleSubItemClick(item)">
         <view class="icon">
           <child-icon color="#E8443A" :value="item.icon" :size="item.size" class="icon" />
         </view>
@@ -123,6 +123,12 @@ get('/api/home/getHomeGoods', { recommend: 1 }).then(res => {
 get('/api/home/getHomeGoods', { latest: 1 }).then(res => {
   latestList.value = res.data.list
 })
+
+function handleSubItemClick(item) {
+  Taro.navigateTo({
+    url: '/pages/goodsList/index?classification=' + item.value
+  })
+}
 
 // 商品分类
 const handleJumpClass = () => {
@@ -283,7 +289,7 @@ function toggleSelect(index, value) {
       display: flex;
       background: #fff;
       border-radius: 100px;
-      height: 90px;
+      height: 60px;
       align-items: center;
       color: #8a8a8a;
       font-size: 26px;

@@ -2,19 +2,21 @@
  * @Author: lizesheng
  * @Date: 2023-03-09 11:23:00
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-03-25 19:56:16
+ * @LastEditTime: 2023-04-15 18:24:39
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/components/Product.vue
 -->
 <template>
   <view class="product_list">
-    <view v-for="(item, index) in productList" class="product-item" @tap="handleJumpGoodsDetails(item.id)">
-      <image :src="item.pictureUrl"></image>
-      <view class="name text-ellipsis">{{ item.name }}</view>
+    <view v-for="(item, index) in productList" :style="{ 'border': borderShow ? '1px solid #eee' : '' }"
+      class="product-item" @tap="handleJumpGoodsDetails(item.id)">
+      <image :src="item?.pictureUrl"></image>
+      <view class="name text-ellipsis">{{ item?.name }}</view>
       <view class="flex-container">
-        <view class="price"><text class="symbol">¥</text>{{ item.price.toFixed(2) }}</view>
-        <view class="volume"><text class='tips'>已售</text>{{ item.volume }}</view>
+        <view class="price"><text class="symbol">¥</text>{{ item?.price?.toFixed(2) || item?.skuPrice?.toFixed(2) }}
+        </view>
+        <view class="volume"><text class='tips'>已售</text>{{ item?.volume }}</view>
       </view>
     </view>
   </view>
@@ -27,6 +29,10 @@ const props = defineProps({
   productList: {
     type: Array,
     default: '',
+  },
+  borderShow: {
+    type: Boolean,
+    default: false
   }
 });
 const handleJumpGoodsDetails = (id) => {
@@ -39,6 +45,7 @@ const handleJumpGoodsDetails = (id) => {
 .product_list {
   display: flex;
   padding: 0 20px;
+  flex-wrap: wrap;
   justify-content: space-between;
 
   .product-item {
@@ -48,6 +55,7 @@ const handleJumpGoodsDetails = (id) => {
     flex-basis: 49%;
     box-shadow: 0 0 5px rgba(255, 255, 255, 1);
     border-radius: 10px;
+    margin-bottom: 15px;
   }
 
   .symbol,

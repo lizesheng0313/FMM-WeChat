@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:43:40
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-13 10:23:06
+ * @LastEditTime: 2023-04-14 21:53:51
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/goodsDetails/index.vue
@@ -132,6 +132,7 @@ get('/api/goods/getDetails', {
   res.data.specification = result
   goodsDetils.value = res.data
   currentSelect.value = goodsDetils.value?.sku[0]
+  console.log(goodsDetils.value?.sku[0], '---goodsDetils.value?.sku[0]')
 })
 
 const handleJumpOrder = () => {
@@ -177,10 +178,15 @@ const handleShowPopup = () => {
 const handleSelectSpec = (item, it, rowIndex, colIndex) => {
   activeArray.value[rowIndex] = colIndex
   let skuId = ''
-  activeArray.value.forEach((item, index) => {
-    skuId += goodsDetils.value.specification[index].tag[item] + ",";
-  })
-  skuId = skuId.slice(0, -1);
+  if (goodsDetils.value.specification.length === 1) {
+    skuId = goodsDetils.value.specification[rowIndex]?.tag[colIndex]
+  }
+  else {
+    activeArray.value.forEach((item, index) => {
+      skuId += goodsDetils.value.specification[index]?.tag[item] + ",";
+    })
+    skuId = skuId.slice(0, -1);
+  }
   currentSelect.value = goodsDetils.value.sku.filter(item => item.skuId === skuId)[0]
 }
 

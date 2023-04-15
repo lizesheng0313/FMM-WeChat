@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-07 12:29:47
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-13 17:43:30
+ * @LastEditTime: 2023-04-15 17:41:23
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/myIndex/index.vue
@@ -26,8 +26,9 @@
       </view>
     </view>
     <view class="order_list flexCenter">
-      <view v-for="item in orderList" :key="item?.order" class="order-box flexDSpaceCenterEnd relative">
-        <child-icon :color="item?.color" @tap="handleJumpOrderList(item)" :value="item?.icon" size="30"></child-icon>
+      <view v-for="item in orderList" @tap="handleJumpOrderList(item)" :key="item?.order"
+        class="order-box flexDSpaceCenterEnd relative">
+        <child-icon :color="item?.color" :value="item?.icon" size="30"></child-icon>
         <view>
           <view>{{ item?.title }}</view>
           <view v-if="item?.value" class="total flexCenterAll">{{ item?.value }}</view>

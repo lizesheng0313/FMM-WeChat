@@ -1,25 +1,29 @@
 <template>
   <view class="category">
-    <view class="category-search">
-      <input class="search-input" placeholder="请输入搜索关键词" @input="handleSearchInput" />
-      <view class="search-btn" @tap="handleSearch">搜索</view>
+    <view class="search">
+      <child-icon value="icon-sousuo" size="20" class="icon" />
+      <input bindconfirm="onSearch" :value="handleSearch" @input="handleSearchInput" class="search-icon"
+        placeholder="请输入相关关键词" placeholder-class="placeholder-class" @confirm="handleSearch" confirm-type="search" />
     </view>
-
     <view class="category-wrapper">
-      <view class="category-list">
+      <view class="category-left">
         <view v-for="(item, index) in leftList" :key="index"
-          :class="['category-item', { active: currentIndex === index }]" @tap="handleItemClick(index)">
-          {{ item.name }}
+          :class="['category-item', { active: currentIndex === index }]" @tap="handleItemClick(item, index)">
+          {{ item.label }}
         </view>
       </view>
 
       <scroll-view class="sub-category" scroll-y>
-        <view v-for="(item, index) in rightList" :key="index" class="sub-category-item" :id="item.id">
-          <view class="item-header">{{ item.name }}</view>
-          <view class="item-list">
-            <view v-for="(subItem, subIndex) in item.subList" :key="subIndex" class="item"
-              @tap="handleSubItemClick(subItem)">
-              {{ subItem.name }}
+        <view v-for="(item, index) in rightList" :key="index" class="sub_first" :id="'a' + leftList[index].value">
+          <view class="category_title">
+            <view class="line"></view>
+            <view class="title">{{ leftList[index].label }}</view>
+            <view class="line"></view>
+          </view>
+          <view class="sub_box">
+            <view v-for="(it, i) in item" @tap="handleSubItemClick(it)" class="sub-category-item">
+              <image class="sub-category-image" :src="it?.picture"></image>
+              <view class="item-header">{{ it.label }}</view>
             </view>
           </view>
         </view>
@@ -29,37 +33,65 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import Taro from '@tarojs/taro';
+import Taro, { useLoad, usePageScroll } from '@tarojs/taro'
+import { ref } from 'vue';
 import { get, post } from '../../utils/request'
+import childIcon from '../../components/Icon.vue'
+
 
 const leftList = ref([]);
 const rightList = ref([]);
 const currentIndex = ref(0);
 const searchValue = ref('');
-
-onMounted(() => {
-  getClassification(1);
-});
+const targetRects = ref()
+useLoad(() => {
+  getClassification(1)
+})
 
 async function getClassification(typeId) {
   try {
     const { data } = await get('/api/goods/getClassiFication', { typeId });
-    leftList.value = data.list;
+    leftList.value = data.leftList;
+    rightList.value = data.rightList;
     currentIndex.value = 0;
-    rightList.value = data.list[0].subList;
+    setTimeout(() => {
+      Taro.createSelectorQuery()
+        .selectAll('.sub_first')
+        .boundingClientRect((rects) => {
+          targetRects.value = rects
+        })
+        .exec()
+    }, 10)
   } catch (err) {
+
     console.log(err);
   }
 }
 
-function handleItemClick(index) {
+usePageScroll((event) => {
+  if (targetRects.value) {
+    for (let i = targetRects.value.length - 1; i >= 0; i--) {
+      const rect = targetRects.value[i]
+      if (event.scrollTop + 50 >= rect.top) {
+        currentIndex.value = i
+        break;
+      }
+    }
+  }
+})
+
+function handleItemClick(item, index) {
   currentIndex.value = index;
-  rightList.value = leftList.value[index].subList;
+  Taro.pageScrollTo({
+    selector: '#a' + item.value,
+    duration: 300
+  })
 }
 
 function handleSubItemClick(item) {
-  // TODO: 处理子分类点击事件，例如跳转到对应的商品列表页
+  Taro.navigateTo({
+    url: '/pages/goodsList/index?classification=' + item.value
+  })
 }
 
 function handleSearchInput(event) {
@@ -68,15 +100,45 @@ function handleSearchInput(event) {
 
 function handleSearch() {
   Taro.navigateTo({
-    url: '/pages/goodsSearch/index?keyword=' + searchValue.value
+    url: '/pages/goodsList/index?keyword=' + searchValue.value
   })
 }
 
 </script>
 
-<style scoped>
+<style lang="scss">
 .category {
   height: 100%;
+
+  .search {
+    position: fixed;
+    top: 0;
+    display: flex;
+    align-items: center;
+    right: 0;
+    padding: 0 30px;
+    margin-bottom: 20px;
+    left: 0;
+    z-index: 2;
+
+    input {
+      flex-grow: 1;
+      background: #F5F5F5;
+      border-radius: 100px;
+      height: 60px;
+      padding-left: 70px;
+    }
+
+    .placeholder-class {
+      padding-left: 70px;
+      font-size: 28px;
+    }
+
+    .icon {
+      position: absolute;
+      left: 50px;
+    }
+  }
 }
 
 .category-search {
@@ -84,6 +146,23 @@ function handleSearch() {
   align-items: center;
   padding: 20px;
   background-color: #f5f5f5;
+}
+
+.category_title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .title {
+    margin: 0 20px;
+    font-weight: bold;
+  }
+
+  .line {
+    width: 90px;
+    background: #eee;
+    height: 2px;
+  }
 }
 
 .search-input {
@@ -112,139 +191,72 @@ function handleSearch() {
   height: calc(100% - 70px);
 }
 
-.category-list {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-}
+
 
 .category-left {
-  width: 30%;
-  height: calc(100vh - 120rpx);
+  top: 80px;
+  width: 200px;
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
   background-color: #f6f6f6;
   overflow-y: auto;
+  min-height: calc(100vh - 80px);
   position: fixed;
-  left: 0;
-  top: 120rpx;
-}
 
-.category-right {
-  width: 70%;
-  height: calc(100vh - 120rpx);
-  background-color: #fff;
-  overflow-y: auto;
-  padding: 20rpx;
-  margin-left: 30%;
-}
+  .category-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 70px;
+    color: #333;
+    cursor: pointer;
+    border-left: 2px solid #f6f6f6;
+    border-bottom: 1px solid #e6e6e6;
+  }
 
-.category-item {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100rpx;
-  font-size: 28rpx;
-  color: #333;
-  cursor: pointer;
-  border-bottom: 1px solid #e6e6e6;
-}
-
-.category-item.active {
-  color: #f00;
-  font-weight: bold;
-  background-color: #fff;
-  border-left: 2px solid #f00;
-  border-bottom: none;
-}
-
-.sub-category-list {
-  display: flex;
-  flex-wrap: wrap;
-  margin-top: 20rpx;
-}
-
-.sub-category-item {
-  width: calc(33.33% - 20rpx);
-  margin-right: 20rpx;
-  margin-bottom: 20rpx;
-  box-sizing: border-box;
-  text-align: center;
-}
-
-.sub-category-image {
-  width: 100%;
-  height: 200rpx;
-  margin-bottom: 10rpx;
+  .category-item.active {
+    color: #E8443A;
+    font-weight: bold;
+    background-color: #fff;
+    border-left: 2px solid #E8443A;
+    border-bottom: 1px solid #fff;
+  }
 }
 
 
-.sub-category-name {
-  font-size: 28rpx;
-  color: #333;
-}
 
-.sub-category-list {
-  display: flex;
-  flex-wrap: wrap;
-  padding: 10rpx;
-  background-color: #f5f5f5;
-}
 
-.sub-category-item {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: calc((100% - 30rpx) / 3);
-  height: 100rpx;
-  margin-right: 10rpx;
-  margin-bottom: 10rpx;
-  background-color: #fff;
-  border-radius: 8rpx;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
-  color: #666;
-  font-size: 28rpx;
-  text-align: center;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-}
+.sub-category {
+  margin-top: 100px;
+  margin-left: 200px;
 
-.sub-category-item.active {
-  color: #f00;
-}
+  .sub_first {
+    padding-top: 100px;
+  }
 
-.sub-category-item:last-child {
-  margin-right: 0;
-}
+  .sub_box {
+    display: flex;
+    flex-wrap: wrap;
+  }
 
-.search-bar {
-  display: flex;
-  align-items: center;
-  padding: 20rpx;
-  background-color: #fff;
-}
+  .sub-category-item {
+    margin-top: 30px;
+    width: calc(33.33% - 10px);
+    margin-right: 10px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    text-align: center;
+  }
 
-.search-input {
-  flex: 1;
-  height: 60rpx;
-  line-height: 60rpx;
-  padding: 0 20rpx;
-  border: none;
-  background-color: #f5f5f5;
-  border-radius: 30rpx;
-  color: #666;
-  font-size: 28rpx;
-  outline: none;
-}
+  .sub-category-image {
+    width: 120px;
+    height: 120px;
+  }
 
-.search-button {
-  width: 120rpx;
-  height: 60rpx;
-  margin-left: 20rpx;
-  border: none;
-  background-color: #f00;
-  border-radius: 30rpx;
-  color: #fff;
-  font-size: 28rpx;
+  .sub-category-name {
+    font-size: 28rpx;
+    color: #333;
+  }
 }
 </style>

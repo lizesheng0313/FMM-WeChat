@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-14 10:07:40
+ * @LastEditTime: 2023-04-15 09:44:16
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/goodsSearch/index.vue
@@ -16,6 +16,16 @@
       <view @tap="handleSearch">搜索</view>
     </view>
     <searchListView :searchList="searchList"></searchListView>
+    <view class="recommend" v-show="searchList.length === 0">
+      <view class="box">
+        <view class="flexCenter line_box">
+          <view class="line"></view>
+          <view class="title">热门推荐</view>
+          <view class="line"></view>
+        </view>
+      </view>
+      <productList :productList="recommendList" :borderShow="true"></productList>
+    </view>
   </view>
 </template>
 
@@ -25,21 +35,26 @@ import { get } from '../../utils/request'
 import { ref, reactive } from 'vue'
 import searchListView from '../../components/searchList.vue'
 import childIcon from '../../components/Icon.vue'
+import productList from '../../components/Product.vue'
 const searchValue = ref('')
 const page = reactive({
   pageIndex: 1,
   pageSize: 10
 })
+const isLoad = ref('false')
 const total = ref(0)
 const handleChange = (e) => {
   searchValue.value = e.target.value;
 }
-
-useLoad(() => {
+const recommendList = ref([])
+useLoad((e) => {
   if (e.keyword) {
     searchValue.value = e.keyword
     handleSearch()
   }
+  get('/api/home/getHomeGoods', { recommend: 1 }).then(res => {
+    recommendList.value = res.data.list
+  })
 })
 const searchList = ref([])
 const handleSearch = () => {
@@ -52,6 +67,7 @@ const handleSearch = () => {
     pageIndex: page.pageIndex,
     pageSize: page.pageSize
   }).then(res => {
+    isLoad.value = true
     page.pageIndex = 1
     Taro.hideLoading()
     searchList.value = res.data.list
@@ -110,52 +126,27 @@ useReachBottom(() => {
     }
   }
 
-  .search-list {
-    position: relative;
-    min-height: 90vh;
-    padding: 0 20px;
+  .recommend {
+    margin-top: 550px;
 
-    .search-item {
-      margin-top: 20px;
-      border-bottom: 1px solid #eee;
-      padding-bottom: 20px;
+    .box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .name {
-      height: 80px;
+    .line_box {
+      margin-bottom: 50px;
     }
 
-    .volume {
-      margin-top: 15px;
-      font-size: 24px;
-      color: #777;
+    .line {
+      width: 100px;
+      height: 3px;
+      background: #000;
     }
 
-    .price {
-      color: #E8443A;
-      font-size: 32px;
-    }
-
-    image {
-      width: 180px;
-      border-radius: 10px;
-      height: 180px;
-      margin-right: 20px;
-    }
-
-    .nothing {
-      position: absolute;
-      top: 40%;
-      left: 50%;
-      transform: translate(-50%, -40%);
-    }
-
-    .nothing-text {
-      font-size: 24px;
-      color: #777;
-      margin-top: 10px;
-      position: relative;
-      left: 25px;
+    .title {
+      margin: 0 40px;
     }
   }
 }

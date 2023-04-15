@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-14 10:03:53
+ * @LastEditTime: 2023-04-14 20:24:13
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/orderList/index.vue
@@ -310,7 +310,7 @@ useReachBottom(() => {
     position: sticky;
     top: 0px;
     background-color: #F0F1F3;
-    z-index: 1;
+    z-index: 3;
   }
 
   .order_select_scroll {

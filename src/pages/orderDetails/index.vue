@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-13 11:09:13
+ * @LastEditTime: 2023-04-14 22:31:25
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/orderDetails/index.vue
@@ -11,7 +11,8 @@
   <view class="order-details">
     <view class="header">
       <navTitle rightColor="#fff" title="订单详情" color="#fff"></navTitle>
-      <view class="status">{{ ORDERSTATUS[goodsDetails.order_status] }}</view>
+      <view class="status">{{ goodsDetails.order_status === '10' && goodsDetails.pay_status === '0' ? '待付款' :
+        ORDERSTATUS[goodsDetails.order_status] }}</view>
       <view class="address_info_box">
         <view class="name flexCenter">
           <child-icon value="icon-31dingwei"></child-icon>
