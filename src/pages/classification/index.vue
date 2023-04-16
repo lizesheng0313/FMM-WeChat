@@ -235,6 +235,10 @@ function handleSearch() {
     padding-top: 100px;
   }
 
+  .sub_first:first-child {
+    padding-top: 10px;
+  }
+
   .sub_box {
     display: flex;
     flex-wrap: wrap;

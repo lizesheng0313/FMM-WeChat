@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:43:40
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-14 21:53:51
+ * @LastEditTime: 2023-04-16 19:33:34
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/goodsDetails/index.vue
@@ -48,14 +48,10 @@
       <rich-text style="font-size:0" :nodes="goodsDetils?.introduction"></rich-text>
     </view>
     <view class="footer">
-      <view class="footer-icon" @tap="handleJumpHome">
-        <child-icon value="icon-shouye1" size="18" class="icon" />
-        <view class="footer_title">首页</view>
-      </view>
+      <child-icon @tap="handleJumpHome" value="icon-shouye1" size="19" class="icon" />
       <button class="service footer-icon" open-type="contact" :show-message-card="true"
         :send-message-title="goodsDetils?.name" :send-message-img="goodsDetils?.goods_picture">
         <child-icon value="icon-kefu" size="18" class="icon service_icon" />
-        <view class="footer_title">客服</view>
       </button>
       <view class="button_buy" @tap="handleShowPopup">立即购买</view>
     </view>
@@ -217,7 +213,7 @@ function handlePlus() {
 </script>
 <style lang="scss">
 .goods_details {
-  padding-bottom: 200px;
+  padding-bottom: 140px;
 
   .popup {
     position: fixed;
@@ -451,18 +447,23 @@ function handlePlus() {
       justify-content: space-between;
     }
 
+    button::after {
+      border: none;
+    }
+
     .service {
       position: relative;
+      display: flex;
       margin-left: 20px;
       margin-right: 20px;
       background: #fff;
       outline: none;
       border: none;
+      top: -2px;
     }
 
     .service_icon {
       position: relative;
-      top: 2px;
     }
   }
 
