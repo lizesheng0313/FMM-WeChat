@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-07 12:01:55
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-14 20:25:40
+ * @LastEditTime: 2023-04-22 11:01:17
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/index/index.vue
@@ -84,11 +84,11 @@
 </template>
 
 <script setup>
+import Taro, { useReachBottom } from '@tarojs/taro'
 import { get, post } from '../../utils/request'
-import Taro from '@tarojs/taro'
 import childIcon from '../../components/Icon.vue'
 import productVue from '../../components/Product.vue'
-import { ref, watch } from 'vue'
+import { ref, watch, reactive } from 'vue'
 
 const sysinfo = Taro.getSystemInfoSync()
 const statusHeight = ref(sysinfo.statusBarHeight)
@@ -102,6 +102,12 @@ const randomList = ref([])
 const currentSelect = ref(0)
 const classificationList = ref([])
 const currentWatch = ref('')
+const page = reactive({
+  pageIndex: 1,
+  pageSize: 10,
+  classification: '',
+})
+const total = ref(0)
 get('/api/home/getBanner').then(res => {
   swiperList.value = res.data.list
 })
@@ -159,8 +165,11 @@ const handleJumpGoods = () => {
 }
 
 watch(currentWatch, (newValue, oldValue) => {
-  get('/api/home/getClassGoods', { classification: newValue }).then(res => {
+  page.classification = newValue
+  page.pageIndex = 1
+  get('/api/home/getClassGoods', { ...page }).then(res => {
     classificationList.value = res.data.list
+    total.value = res.data.total
   })
 }
 );
@@ -182,7 +191,20 @@ function toggleSelect(index, value) {
   currentWatch.value = value
 }
 
-
+useReachBottom(() => {
+  if (classificationList.value?.length < total.value) {
+    page.pageIndex += 1
+    Taro.showLoading({
+      title: '加载中...',
+      mask: true
+    })
+    get('/api/home/getClassGoods', page).then(res => {
+      Taro.hideLoading()
+      classificationList.value = classificationList.value.concat(res.data.list)
+      total.value = res.data.total
+    })
+  }
+})
 
 
 </script>

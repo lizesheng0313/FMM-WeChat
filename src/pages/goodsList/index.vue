@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-15 18:49:36
+ * @LastEditTime: 2023-04-22 10:58:57
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/goodsList/index.vue
@@ -56,6 +56,7 @@ useLoad((e) => {
 const handleSearchGoods = () => {
   get('/api/home/getClassGoods', page).then(res => {
     searchList.value = res.data.list
+    total.value = res.data.total
   })
 }
 
@@ -71,19 +72,20 @@ const handleSearch = () => {
     Taro.hideLoading()
     searchList.value = res.data.list
     total.value = res.data.total
+
   })
 }
 
 // 下拉加载事件
 useReachBottom(() => {
   if (searchList.value?.length < total.value) {
+    page.pageIndex += 1
     Taro.showLoading({
       title: '加载中...',
       mask: true
     })
-    const url = page.value.classification ? '/api/home/getClassGoods' : '/api/searchGoods'
+    const url = page.classification ? '/api/home/getClassGoods' : '/api/searchGoods'
     get(url, page).then(res => {
-      page.pageIndex += 1
       Taro.hideLoading()
       searchList.value = searchList.value.concat(res.data.list)
       total.value = res.data.total
