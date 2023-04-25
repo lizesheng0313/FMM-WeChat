@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:43:40
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-16 19:33:34
+ * @LastEditTime: 2023-04-25 19:56:32
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/goodsDetails/index.vue
@@ -18,7 +18,7 @@
     </view>
     <view class="info">
       <view class="price"><text class="symbol">￥</text>{{ goodsDetils?.sku[0]?.skuPrice?.toFixed(2) }}<text class="q"
-          v-if="goodsDetils?.sku?.length > 0">起</text></view>
+          v-if="goodsDetils?.sku?.length > 1">起</text></view>
       <view class="name">{{ goodsDetils?.name }}</view>
       <view class="stock">
         <view>原价:￥{{ goodsDetils?.sku[0]?.skuOriginPrice }}</view>
@@ -59,8 +59,8 @@
     <view class="popup" v-show="isShowPopup">
       <view>
         <view @tap="() => {
-          isShowPopup = false
-        }"> <child-icon class="close" value="icon-guanbi1" size="20"></child-icon></view>
+            isShowPopup = false
+          }"> <child-icon class="close" value="icon-guanbi1" size="20"></child-icon></view>
         <view class="flex">
           <image class="sku_image" :src="currentSelect?.goods_picture"></image>
           <view class="sku_info">
@@ -92,6 +92,20 @@
         <view class="btn_buy" @tap="handleJumpOrder">确定购买</view>
       </view>
     </view>
+    <view class="login" v-show="isLogin">
+      <view class="mask" v-show="isLogin"></view>
+      <view class="login-page">
+        <view class="login-btn">登陆提示</view>
+        <view class="tips">您当前未登陆，请您确认授权登录后查看。</view>
+        <child-icon class="close" @tap="handleCloseLogin" value="icon-guanbi1" size="20"></child-icon>
+        <view class="open-vip" @tap="handleLogin">确定</view>
+        <view class="agreement-text">
+          点击登录即表示您已同意
+          <text class="agreement-link" @tap="handleAgreement">《用户协议》</text>
+          <text class="agreement-link" @tap="handlePrivacy">《隐私政策》</text>
+        </view>
+      </view>
+    </view>
   </view>
 </template>
 <script setup>
@@ -101,12 +115,13 @@ import { ref, reactive } from 'vue'
 import { get, post } from '../../utils/request'
 import childIcon from '../../components/Icon.vue'
 import navTitle from '../../components/navTitle.vue'
-
+let goodsInfo = {}
 const router = useRouter()
 const goodsDetils = ref()
 const isShowPopup = ref(false)
 const currentSelect = ref({})
 const activeArray = ref([0, 0])
+const isLogin = ref(false)
 const state = reactive({
   totalNumber: 1
 })
@@ -127,11 +142,18 @@ get('/api/goods/getDetails', {
   }
   res.data.specification = result
   goodsDetils.value = res.data
+  goodsInfo = res.data
   currentSelect.value = goodsDetils.value?.sku[0]
-  console.log(goodsDetils.value?.sku[0], '---goodsDetils.value?.sku[0]')
 })
-
+const handleCloseLogin = () => {
+  isLogin.value = false
+}
 const handleJumpOrder = () => {
+  if (Taro.getStorageSync('is_sure') !== '1') {
+    isShowPopup.value = false
+    isLogin.value = true
+    return
+  }
   const info = {
     goodsId: goodsDetils.value.id,
     goodsInfo: {
@@ -149,15 +171,36 @@ const handleJumpOrder = () => {
   isShowPopup.value = false
 }
 
-Taro.showShareMenu({
-  withShareTicket: true
-})
-// 设置分享信息
-Taro.updateShareMenu({
-  title: goodsDetils?.name,
-  imageUrl: goodsDetils?.sku && goodsDetils?.sku[0]?.goods_picture,
-  path: '/pages/goodsDetails/index' + goodsDetils?.id
-})
+const handleLogin = () => {
+  Taro.showLoading({
+    title: '登录中'
+  })
+  post('/api/program/user/update', { is_sure: '1' }).then(res => {
+    Taro.setStorageSync('is_sure', '1')
+    isLogin.value = false
+    handleJumpOrder()
+  })
+}
+
+const handleAgreement = () => {
+  Taro.navigateTo({
+    url: '/pages/protocol/index'
+  })
+}
+
+const handlePrivacy = () => {
+  Taro.navigateTo({
+    url: '/pages/policy/index'
+  })
+}
+
+const onShareAppMessage = () => {
+  return {
+    title: goodsInfo.name,
+    imageUrl: goodsInfo.sku && goodsInfo.sku[0]?.goods_picture,
+    path: '/pages/goodsDetails/index' + goodsInfo.id
+  }
+}
 
 const handleShowPopupPlease = () => {
   isShowPopup.value = true
@@ -214,6 +257,74 @@ function handlePlus() {
 <style lang="scss">
 .goods_details {
   padding-bottom: 140px;
+
+  .login {
+    top: 0;
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    width: 100vw;
+    height: 100vh;
+
+    .close {
+      position: absolute;
+      right: 20px;
+      top: 24px;
+    }
+
+    .login-page {
+      width: 620px;
+      height: 404px;
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: #fff;
+      left: 50%;
+      background: #ffffff;
+      border-radius: 10px;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 4;
+
+      .login-btn {
+        font-size: 32px;
+        margin-top: 24px;
+        font-weight: bold;
+      }
+
+      .tips {
+        margin-top: 24px;
+        margin-bottom: 72px;
+        color: #777;
+      }
+
+      .open-vip {
+        width: 480px;
+        box-shadow: 0 8px 14px 0 rgba(67, 128, 255, 0.40);
+        height: 90px;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 28px 20px 28px;
+        font-size: 32px;
+        border-radius: 20px;
+        background: #E8443A;
+      }
+
+      .agreement-text {
+        font-size: 24px;
+        color: #777;
+      }
+
+      .agreement-link {
+        color: #a7bbe2;
+      }
+    }
+  }
 
   .popup {
     position: fixed;
@@ -321,7 +432,7 @@ function handlePlus() {
     }
 
     .active {
-      background: #F06292;
+      background: #E8443A;
       color: #fff;
       border: 1px solid #E8443A;
     }
@@ -336,8 +447,6 @@ function handlePlus() {
       color: #b5b4b4;
       font-size: 24px;
     }
-
-
 
     .sku_image {
       width: 160px;

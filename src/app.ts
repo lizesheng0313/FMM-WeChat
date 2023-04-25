@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-07 12:01:55
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-08 22:20:35
+ * @LastEditTime: 2023-04-25 17:19:53
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/app.ts
@@ -31,6 +31,7 @@ const App = createApp({
           )
             .then((res) => {
               Taro.setStorageSync("user_id", res.data.user_id);
+              Taro.setStorageSync("is_sure", res.data?.is_sure);
               Taro.setStorageSync(
                 "authorization",
                 res.header.authorization || res.header.Authorization

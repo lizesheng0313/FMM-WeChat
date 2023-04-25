@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-14 22:27:22
+ * @LastEditTime: 2023-04-25 16:24:45
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/order/index.vue
@@ -18,7 +18,8 @@
               <view>{{ contactInfo?.name }}</view>
               <view class="phone">{{ contactInfo?.phone }}</view>
             </view>
-            <view class="address">{{ contactInfo?.address }}</view>
+            <view class="address">{{ contactInfo?.province }}{{ contactInfo?.city }}{{ contactInfo?.streetName }}{{
+              contactInfo?.address }}</view>
           </view>
           <child-icon class="right_arrow grey" value="icon-youjiantou" size="12"></child-icon>
         </view>
@@ -131,6 +132,8 @@ const handleSubmitOrder = () => {
   else {
     skuString = goodsDetails.value?.skuId
   }
+  const act_price = (Number(goodsDetails.value.freight) + Number(currentPrice.value))
+  console.log(act_price, '---act_price')
   post('/api/order/createOrder', {
     freight: goodsDetails.value.freight,
     goods_name: goodsDetails.value.name,
@@ -141,17 +144,31 @@ const handleSubmitOrder = () => {
     total_price: currentPrice.value,
     remark: searchValue.value,
     sku_string: skuString,
-    act_price: (Number(goodsDetails.value.freight) + Number(currentPrice.value)).toFixed(2) // 实际支付金额 
-  }).then(res => {
-    // TODO
+    act_price // 实际支付金额 
+  }).then(payInfo => {
+    console.log(payInfo, '---payInfo')
+    if (payInfo?.data?.message) {
+      Taro.showToast({
+        title: payInfo?.data?.message,
+        icon: 'none'
+      })
+      return
+    }
     Taro.requestPayment({
-      timeStamp: res.timeStamp.toString(),
-      nonceStr: res.nonce_str,
-      package: res.package,
-      signType: "MD5",
-      paySign: res.sign,
+      timeStamp: payInfo.data.timeStamp,
+      nonceStr: payInfo.data.nonceStr,
+      package: payInfo.data.package,
+      signType: payInfo.data.signType,
+      paySign: payInfo.data.paySign,
       success: function () {
-
+        Taro.redirectTo({
+          url: "/pages/orderDetails/index?id=" + payInfo.data.order_id
+        })
+      },
+      fail: function () {
+        Taro.redirectTo({
+          url: "/pages/orderDetails/index?id=" + payInfo.data.order_id
+        })
       }
     });
   })

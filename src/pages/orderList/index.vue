@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-14 20:24:13
+ * @LastEditTime: 2023-04-25 16:24:19
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/orderList/index.vue
@@ -42,7 +42,7 @@
         <view class="btn_group">
           <view v-if="item.pay_status === '0' && item.order_status === '10'" class="flexCenter">
             <view class="btn_grey" @tap="(e) => { handleCancleOrder(e, item.id) }">取消订单</view>
-            <view class="btn_red">立即支付</view>
+            <view class="btn_red" @tap="(e) => { handlePay(e, item) }">立即支付</view>
           </view>
           <view class="btn_red" v-if="item.order_status === '20'" @tap="(e) => { handleSubmitReceipt(e, item) }">确认收货
           </view>
@@ -146,7 +146,29 @@ const handleChecklogistics = (e, item) => {
     url: '/pages/logistics/index?logistics_no=' + item.logistics_no
   })
 }
-
+const handlePay = (e, item) => {
+  e.stopPropagation()
+  post('/api/order/payment', {
+    order_id: item.id,
+    name: item.goods_name,
+    act_price: item.act_price
+  }).then(payInfo => {
+    Taro.requestPayment({
+      timeStamp: payInfo.data.timeStamp,
+      nonceStr: payInfo.data.nonceStr,
+      package: payInfo.data.package,
+      signType: payInfo.data.signType,
+      paySign: payInfo.data.paySign,
+      success: function () {
+        handleSelectOrder({
+          pageIndex: 1,
+          pay_status: page.pay_status,
+          order_status: page.order_status
+        }, current.value)
+      },
+    });
+  })
+}
 //取消
 const handleCancleOrder = (e, id) => {
   e.stopPropagation()

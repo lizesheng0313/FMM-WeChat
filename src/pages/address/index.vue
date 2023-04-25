@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-13 10:21:48
+ * @LastEditTime: 2023-04-23 22:49:27
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/address/index.vue
@@ -89,8 +89,9 @@ const handleConfirmAddress = (item) => {
 const handleChooseAddress = () => {
   wx.chooseAddress({
     success(res) {
+      console.log('----log', res)
       post('/api/address/add', {
-        province: res.province,
+        province: res.provinceName,
         city: res.cityName + res.countyName,
         streetName: res.streetName,
         address: res.detailInfoNew,
@@ -100,7 +101,7 @@ const handleChooseAddress = () => {
         handleConfirmAddress({
           id: result.data.id,
           name: res.userName,
-          address: res.province + rres.cityName + res.countyName + res.streetName + res.detailInfoNew,
+          address: res.provinceName + res.cityName + res.countyName + res.streetName + res.detailInfoNew,
           phone: res.telNumber,
         })
       })

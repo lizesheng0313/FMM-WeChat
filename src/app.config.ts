@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-07 12:01:55
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-10 19:20:46
+ * @LastEditTime: 2023-04-25 16:29:46
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/app.config.ts
@@ -24,12 +24,16 @@ export default {
     "pages/returnGoods/index",
     "pages/returnDetails/index",
     "pages/logistics/index",
+    "pages/protocol/index",
+    "pages/policy/index",
   ],
+  requiredPrivateInfos: ["chooseAddress"],
   window: {
     backgroundTextStyle: "light",
     navigationBarBackgroundColor: "#fff",
     navigationBarTextStyle: "black",
     onReachBottomDistance: 50,
+    enableShareAppMessage: true,
   },
   tabBar: {
     color: "#8a8a8a",

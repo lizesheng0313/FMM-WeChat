@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-14 22:31:25
+ * @LastEditTime: 2023-04-25 16:25:24
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/orderDetails/index.vue
@@ -64,7 +64,7 @@
     <view class="footer">
       <view v-if="goodsDetails?.pay_status === '0' && goodsDetails?.order_status === '10'" class="flexCenter">
         <view class="btn_grey" @tap="handleCancleOrder">取消订单</view>
-        <view class="btn_red">立即支付</view>
+        <view class="btn_red" @tap="handlePay">立即支付</view>
       </view>
       <view class="btn_grey" v-if="goodsDetails?.order_status === '10' && goodsDetails?.pay_status === '1'"
         @tap="handleApplyRefund">申请退款</view>
@@ -84,7 +84,7 @@
 
 <script setup>
 import Taro, { useLoad } from '@tarojs/taro'
-import { get } from '../../utils/request'
+import { get, post } from '../../utils/request'
 import { ref, reactive } from 'vue'
 import childIcon from '../../components/Icon.vue'
 import navTitle from '../../components/navTitle.vue'
@@ -107,6 +107,25 @@ const fetchDetails = (id) => {
 const handleJumpGoodsDetails = () => {
   Taro.navigateTo({
     url: '/pages/goodsDetails/index?id=' + goodsDetails.value.goods_id
+  })
+}
+
+const handlePay = () => {
+  post('/api/order/payment', {
+    order_id: goodsDetails.value.id,
+    name: goodsDetails.value.name,
+    act_price: goodsDetails.value.act_price
+  }).then(payInfo => {
+    Taro.requestPayment({
+      timeStamp: payInfo.data.timeStamp,
+      nonceStr: payInfo.data.nonceStr,
+      package: payInfo.data.package,
+      signType: payInfo.data.signType,
+      paySign: payInfo.data.paySign,
+      success: function () {
+        fetchDetails(goodsDetails.value.id)
+      },
+    });
   })
 }
 
