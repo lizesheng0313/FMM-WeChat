@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-14 14:00:23
+ * @LastEditTime: 2023-04-26 16:42:41
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/returnDetails/index.vue
@@ -92,8 +92,8 @@
     <view class="mask" v-show="showPopup"></view>
     <view class="popup" v-if="showPopup">
       <view @tap="() => {
-        showPopup = false
-      }"> <child-icon class="close" value="icon-guanbi1" size="20"></child-icon></view>
+          showPopup = false
+        }"> <child-icon class="close" value="icon-guanbi1" size="20"></child-icon></view>
       <view class="return_logistics">
         <view class="flexCenter">
           <view class="label">物流服务：</view>
@@ -241,6 +241,13 @@ const handleChecklogistics = () => {
   Taro.navigateTo({
     url: '/pages/logistics/index?log_info=' + JSON.stringify(log_info)
   })
+}
+const onShareAppMessage = () => {
+  return {
+    title: '肥猫猫情趣商城',
+    imageUrl: '',
+    path: '/pages/index/index'
+  }
 }
 
 </script>

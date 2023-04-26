@@ -118,7 +118,16 @@
     </div>
   </view>
 </template>
+<script setup>
+const onShareAppMessage = () => {
+  return {
+    title: '肥猫猫情趣商城',
+    imageUrl: '',
+    path: '/pages/index/index'
+  }
+}
 
+</script>
 <style scoped>
 div {
   text-indent: 2em;

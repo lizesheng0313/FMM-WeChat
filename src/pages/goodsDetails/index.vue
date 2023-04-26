@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:43:40
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-25 20:16:56
+ * @LastEditTime: 2023-04-26 17:12:52
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/goodsDetails/index.vue
@@ -17,8 +17,13 @@
       </swiper>
     </view>
     <view class="info">
-      <view class="price"><text class="symbol">￥</text>{{ goodsDetils?.sku[0]?.skuPrice?.toFixed(2) }}<text class="q"
-          v-if="goodsDetils?.sku?.length > 1">起</text></view>
+      <view class="flexBetWeenCenter flex_button">
+        <view class="price"><text class="symbol">￥</text>{{ goodsDetils?.sku[0]?.skuPrice?.toFixed(2) }}<text class="q"
+            v-if="goodsDetils?.sku?.length > 1">起</text></view>
+        <button open-type="share" class="share_button">
+          <child-icon value="icon-fenxiang1" size="21" color="#777" />
+        </button>
+      </view>
       <view class="name">{{ goodsDetils?.name }}</view>
       <view class="stock">
         <view>原价:￥{{ goodsDetils?.sku[0]?.skuOriginPrice }}</view>
@@ -51,7 +56,7 @@
       <child-icon @tap="handleJumpHome" value="icon-shouye1" size="19" class="icon" />
       <button class="service footer-icon" open-type="contact" :show-message-card="true"
         :send-message-title="goodsDetils?.name" :send-message-img="goodsDetils?.goods_picture">
-        <child-icon value="icon-kefu" size="18" class="icon service_icon" />
+        <child-icon value="icon-kefu" size="18" />
       </button>
       <view class="button_buy" @tap="handleShowPopup">立即购买</view>
     </view>
@@ -149,7 +154,6 @@ const handleCloseLogin = () => {
   isLogin.value = false
 }
 const handleJumpOrder = () => {
-  console.log(Taro.getStorageSync('is_sure'), '----Taro.getStorageSync')
   if (Taro.getStorageSync('is_sure') !== '1') {
     isShowPopup.value = false
     isLogin.value = true
@@ -258,6 +262,23 @@ function handlePlus() {
 <style lang="scss">
 .goods_details {
   padding-bottom: 140px;
+
+  .share_button {
+    position: absolute;
+    right: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+    background: transparent;
+    margin: 0;
+    border: none;
+    outline: none;
+  }
+
+  button::after {
+    border: none;
+  }
 
   .login {
     top: 0;

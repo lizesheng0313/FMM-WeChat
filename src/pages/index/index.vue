@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-07 12:01:55
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-25 20:15:56
+ * @LastEditTime: 2023-04-26 16:17:17
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/index/index.vue
@@ -205,6 +205,14 @@ useReachBottom(() => {
     })
   }
 })
+
+const onShareAppMessage = () => {
+  return {
+    title: '肥猫猫情趣商城',
+    imageUrl: '',
+    path: '/pages/index/index'
+  }
+}
 
 
 </script>

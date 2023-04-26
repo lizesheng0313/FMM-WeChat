@@ -1,3 +1,12 @@
+<!--
+ * @Author: lizesheng
+ * @Date: 2023-04-25 16:28:16
+ * @LastEditors: lizesheng
+ * @LastEditTime: 2023-04-26 16:22:11
+ * @important: 重要提醒
+ * @Description: 备注内容
+ * @FilePath: /shop/src/pages/protocol/index.vue
+-->
 
 <template>
   <view>
@@ -78,6 +87,16 @@
     </div>
   </view>
 </template>
+<script setup>
+const onShareAppMessage = () => {
+  return {
+    title: '肥猫猫情趣商城',
+    imageUrl: '',
+    path: '/pages/index/index'
+  }
+}
+
+</script>
 <style scoped>
 div {
   text-indent: 2em;

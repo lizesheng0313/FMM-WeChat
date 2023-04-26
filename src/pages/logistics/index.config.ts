@@ -10,4 +10,5 @@
 export default {
   navigationBarTitleText: "查看物流",
   backgroundColor: "#fff",
+  enableShareAppMessage: true,
 };

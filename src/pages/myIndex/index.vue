@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-07 12:29:47
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-15 17:41:23
+ * @LastEditTime: 2023-04-26 16:18:40
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/myIndex/index.vue
@@ -133,7 +133,13 @@ const orderList = ref([
     color: "#000"
   },
 ])
-
+const onShareAppMessage = () => {
+  return {
+    title: '肥猫猫情趣商城',
+    imageUrl: '',
+    path: '/pages/index/index'
+  }
+}
 </script>
 <style lang="scss">
 .my-index {

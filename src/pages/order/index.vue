@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-25 20:00:02
+ * @LastEditTime: 2023-04-26 16:21:22
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/order/index.vue
@@ -133,7 +133,6 @@ const handleSubmitOrder = () => {
     skuString = goodsDetails.value?.skuId
   }
   const act_price = (Number(goodsDetails.value.freight) + Number(currentPrice.value))
-  console.log(act_price, '---act_price')
   post('/api/order/createOrder', {
     freight: goodsDetails.value.freight,
     goods_name: goodsDetails.value.name,
@@ -146,7 +145,6 @@ const handleSubmitOrder = () => {
     sku_string: skuString,
     act_price // 实际支付金额 
   }).then(payInfo => {
-    console.log(payInfo, '---payInfo')
     if (payInfo?.data?.message) {
       Taro.showToast({
         title: payInfo?.data?.message,
@@ -183,6 +181,15 @@ const searchValue = ref('')
 const handleChange = (e) => {
   searchValue.value = e.target.value;
 }
+
+const onShareAppMessage = () => {
+  return {
+    title: '肥猫猫情趣商城',
+    imageUrl: '',
+    path: '/pages/index/index'
+  }
+}
+
 
 </script>
 <style lang="scss">

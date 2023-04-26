@@ -12,4 +12,5 @@ export default {
   navigationBarTextStyle: "black",
   backgroundColor: "#fff",
   onReachBottomDistance: 100,
+  enableShareAppMessage: true,
 };

@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-13 10:12:41
+ * @LastEditTime: 2023-04-26 16:20:34
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/addressManage/index.vue
@@ -89,6 +89,15 @@ const handleSave = () => {
     post('/api/address/add', { ...addressInfo.value, is_default: addressInfo.value.is_default === true ? '1' : '0' }).then(() => Taro.navigateBack())
   }
 }
+
+const onShareAppMessage = () => {
+  return {
+    title: '肥猫猫情趣商城',
+    imageUrl: '',
+    path: '/pages/index/index'
+  }
+}
+
 
 </script>
 <style lang="scss">

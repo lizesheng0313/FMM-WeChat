@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-25 16:24:19
+ * @LastEditTime: 2023-04-26 16:37:50
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/orderList/index.vue
@@ -121,6 +121,7 @@ useLoad((e) => {
 })
 // 订单详情
 const handleJumpOrderDetails = (id) => {
+  console.log(id, '----id')
   Taro.navigateTo({
     url: '/pages/orderDetails/index?id=' + id
   })
@@ -246,10 +247,11 @@ const handleRepurchase = (e, item) => {
         tag: tags,
       });
     }
+    const sku = res.data.sku.filter(it => it.skuId === item.sku_id)[0]
     const info = {
       goodsId: item.goods_id,
       goodsInfo: {
-        ...res.data?.sku[0]
+        ...sku
       },
       specification: result,
       name: item.goods_name,
@@ -320,6 +322,14 @@ useReachBottom(() => {
     })
   }
 })
+
+const onShareAppMessage = () => {
+  return {
+    title: '肥猫猫情趣商城',
+    imageUrl: '',
+    path: '/pages/index/index'
+  }
+}
 
 </script>
 <style lang="scss">

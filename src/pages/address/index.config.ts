@@ -11,4 +11,5 @@ export default {
   navigationBarTitleText: "收货地址",
   navigationBarTextStyle: "black",
   backgroundColor: "#fff",
+  enableShareAppMessage: true,
 };

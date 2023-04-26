@@ -114,6 +114,13 @@
           "query": "",
           "launchMode": "default",
           "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/orderDetails/index",
+          "query": "id=FMM230426155758576316",
+          "launchMode": "default",
+          "scene": null
         }
       ]
     }
