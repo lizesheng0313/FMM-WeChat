@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-07 12:01:55
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-25 20:44:30
+ * @LastEditTime: 2023-04-26 17:26:26
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/app.ts
@@ -13,7 +13,7 @@ import { createPinia } from "pinia";
 import "./app.scss";
 import config from "./config/confg";
 import "./assets/icon/iconfont.css";
-import { get } from "./utils/request";
+import { get, post } from "./utils/request";
 
 const App = createApp({
   created() {
@@ -39,12 +39,19 @@ const App = createApp({
               reolove(true);
             })
             .catch((err) => {
+              post("/api/events", {
+                event_name: "loginError",
+                event_data: `user/login登录接口${JSON.stringify(err)}`,
+              });
               console.log(err);
               reject(err);
             });
         },
         fail(err) {
-          console.log("login_err", err);
+          post("/api/events", {
+            event_name: "lgoin",
+            event_data: `wx.login登录报错${JSON.stringify(err)}`,
+          });
         },
       });
     });

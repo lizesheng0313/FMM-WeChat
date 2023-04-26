@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-26 16:21:22
+ * @LastEditTime: 2023-04-26 17:27:38
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/order/index.vue
@@ -116,60 +116,67 @@ const handleJumpAddress = () => {
   })
 }
 const handleSubmitOrder = () => {
-  if (!contactInfo?.value?.id) return Taro.showToast({ title: '请填写收货地址', icon: 'none' })
-  Taro.showLoading({
-    title: "下单中"
-  })
-  let skuString
+  try {
+    if (!contactInfo?.value?.id) return Taro.showToast({ title: '请填写收货地址', icon: 'none' })
+    Taro.showLoading({
+      title: "下单中"
+    })
+    let skuString
 
-  if (goodsDetails.value?.specification?.length > 0) {
-    skuString = goodsDetails.value.specification.reduce((result, item, index) => {
-      const skuValue = skuList[index] || '';
-      const separator = index === 0 ? '' : ',';
-      return `${result}${separator}${item.name}:${skuValue}`;
-    }, '');
-  }
-  else {
-    skuString = goodsDetails.value?.skuId
-  }
-  const act_price = (Number(goodsDetails.value.freight) + Number(currentPrice.value))
-  post('/api/order/createOrder', {
-    freight: goodsDetails.value.freight,
-    goods_name: goodsDetails.value.name,
-    goodsId: goodsDetails.value.goodsId,
-    skuId: goodsDetails.value.goodsInfo.skuId,
-    quantity: state.totalNumber,
-    address_id: contactInfo.value.id,
-    total_price: currentPrice.value,
-    remark: searchValue.value,
-    sku_string: skuString,
-    act_price // 实际支付金额 
-  }).then(payInfo => {
-    if (payInfo?.data?.message) {
-      Taro.showToast({
-        title: payInfo?.data?.message,
-        icon: 'none'
-      })
-      return
+    if (goodsDetails.value?.specification?.length > 0) {
+      skuString = goodsDetails.value.specification.reduce((result, item, index) => {
+        const skuValue = skuList[index] || '';
+        const separator = index === 0 ? '' : ',';
+        return `${result}${separator}${item.name}:${skuValue}`;
+      }, '');
     }
-    Taro.requestPayment({
-      timeStamp: payInfo.data.timeStamp,
-      nonceStr: payInfo.data.nonceStr,
-      package: payInfo.data.package,
-      signType: payInfo.data.signType,
-      paySign: payInfo.data.paySign,
-      success: function () {
-        Taro.redirectTo({
-          url: "/pages/orderDetails/index?id=" + payInfo.data.order_id
+    else {
+      skuString = goodsDetails.value?.skuId
+    }
+    const act_price = (Number(goodsDetails.value.freight) + Number(currentPrice.value))
+    post('/api/order/createOrder', {
+      freight: goodsDetails.value.freight,
+      goods_name: goodsDetails.value.name,
+      goodsId: goodsDetails.value.goodsId,
+      skuId: goodsDetails.value.goodsInfo.skuId,
+      quantity: state.totalNumber,
+      address_id: contactInfo.value.id,
+      total_price: currentPrice.value,
+      remark: searchValue.value,
+      sku_string: skuString,
+      act_price // 实际支付金额 
+    }).then(payInfo => {
+      if (payInfo?.data?.message) {
+        Taro.showToast({
+          title: payInfo?.data?.message,
+          icon: 'none'
         })
-      },
-      fail: function () {
-        Taro.redirectTo({
-          url: "/pages/orderDetails/index?id=" + payInfo.data.order_id
-        })
+        return
       }
+      Taro.requestPayment({
+        timeStamp: payInfo.data.timeStamp,
+        nonceStr: payInfo.data.nonceStr,
+        package: payInfo.data.package,
+        signType: payInfo.data.signType,
+        paySign: payInfo.data.paySign,
+        success: function () {
+          Taro.redirectTo({
+            url: "/pages/orderDetails/index?id=" + payInfo.data.order_id
+          })
+        },
+        fail: function () {
+          Taro.redirectTo({
+            url: "/pages/orderDetails/index?id=" + payInfo.data.order_id
+          })
+        }
+      });
+    })
+  } catch (err) {
+    post("/api/events", {
+      event_name: "createOrder",
+      event_data: `下单报错${JSON.stringify(err)}`,
     });
-  })
+  }
 }
 
 watch(state, (newValue, oldValue) => {
