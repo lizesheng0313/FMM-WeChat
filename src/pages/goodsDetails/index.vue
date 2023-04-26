@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:43:40
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-25 19:56:32
+ * @LastEditTime: 2023-04-25 20:16:56
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/goodsDetails/index.vue
@@ -149,6 +149,7 @@ const handleCloseLogin = () => {
   isLogin.value = false
 }
 const handleJumpOrder = () => {
+  console.log(Taro.getStorageSync('is_sure'), '----Taro.getStorageSync')
   if (Taro.getStorageSync('is_sure') !== '1') {
     isShowPopup.value = false
     isLogin.value = true

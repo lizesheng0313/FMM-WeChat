@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-07 12:01:55
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-25 17:19:53
+ * @LastEditTime: 2023-04-25 20:44:30
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/app.ts
@@ -30,8 +30,8 @@ const App = createApp({
             true
           )
             .then((res) => {
-              Taro.setStorageSync("user_id", res.data.user_id);
-              Taro.setStorageSync("is_sure", res.data?.is_sure);
+              Taro.setStorageSync("user_id", res.data?.data?.user_id);
+              Taro.setStorageSync("is_sure", res.data?.data?.is_sure);
               Taro.setStorageSync(
                 "authorization",
                 res.header.authorization || res.header.Authorization
@@ -42,6 +42,9 @@ const App = createApp({
               console.log(err);
               reject(err);
             });
+        },
+        fail(err) {
+          console.log("login_err", err);
         },
       });
     });

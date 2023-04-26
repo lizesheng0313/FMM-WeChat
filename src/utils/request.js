@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-11 11:22:38
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-08 14:59:55
+ * @LastEditTime: 2023-04-25 20:18:24
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/utils/request.js
@@ -27,7 +27,7 @@ const post = (url, data = {}) => {
         }
         else {
           wx.showToast({
-            title: res?.data?.message || res?.data?.msg || '未知错误',
+            title: res?.data?.message || res?.data?.msg || '无网络，请重试',
             icon: 'none'
           })
           reject(res)
@@ -35,7 +35,7 @@ const post = (url, data = {}) => {
       },
       fail(err) {
         wx.showToast({
-          title: err?.data?.message || '未知错误',
+          title: err?.data?.message || '无网络，请重试',
           icon: 'none'
         })
       }
@@ -63,7 +63,7 @@ const get = (url, data = {}, returnAll = false) => {
         }
         else {
           wx.showToast({
-            title: res?.data?.message || res?.data?.msg || '未知错误',
+            title: res?.data?.message || res?.data?.msg || '无网络，请重试',
             icon: 'none'
           })
           reject(res)
@@ -72,7 +72,7 @@ const get = (url, data = {}, returnAll = false) => {
       fail(err) {
         wx.hideLoading()
         wx.showToast({
-          title: err?.data?.message || '未知错误',
+          title: err?.data?.message || '无网络，请重试',
           icon: 'none'
         })
       }

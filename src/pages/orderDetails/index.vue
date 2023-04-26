@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-25 16:25:24
+ * @LastEditTime: 2023-04-25 21:03:13
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/orderDetails/index.vue
@@ -12,7 +12,10 @@
     <view class="header">
       <navTitle rightColor="#fff" title="订单详情" color="#fff"></navTitle>
       <view class="status">{{ goodsDetails.order_status === '10' && goodsDetails.pay_status === '0' ? '待付款' :
-        ORDERSTATUS[goodsDetails.order_status] }}</view>
+        ORDERSTATUS[goodsDetails.order_status] }}
+        <view class="countdown" v-if="goodsDetails?.order_status === '10' && goodsDetails?.pay_status === '0'">剩余时间：{{
+          countdown }}</view>
+      </view>
       <view class="address_info_box">
         <view class="name flexCenter">
           <child-icon value="icon-31dingwei"></child-icon>
@@ -83,7 +86,7 @@
 </template>
 
 <script setup>
-import Taro, { useLoad } from '@tarojs/taro'
+import Taro, { useDidShow, useDidHide, useUnload } from '@tarojs/taro'
 import { get, post } from '../../utils/request'
 import { ref, reactive } from 'vue'
 import childIcon from '../../components/Icon.vue'
@@ -92,15 +95,37 @@ import { ORDERSTATUS } from '../orderList/constant'
 import { getCurrentDate } from '../../utils/utils'
 
 const goodsDetails = ref('')
-useLoad((e) => {
+const countdown = ref('')
+let timer = null
+
+useDidShow((e) => {
+  timer = null
   fetchDetails(e.id)
 })
+
+useDidHide(() => {
+  timer = null
+})
+
+useUnload(() => {
+  timer = null
+})
+
+const getRemainingTime = (create_time) => {
+  const remaining_time = 60 * 60 - Math.floor((Date.now() - create_time) / 1000)
+  const minutes = Math.floor(remaining_time / 60).toString().padStart(2, '0')
+  const seconds = (remaining_time % 60).toString().padStart(2, '0')
+  return { minutes, seconds }
+}
 
 const fetchDetails = (id) => {
   get('/api/order/getOrderDetails', {
     id
   }).then(res => {
     goodsDetails.value = res.data
+    timer = setInterval(() => {
+      countdown.value = getRemainingTime(res.data.create_time)
+    }, 1000)
   })
 }
 
@@ -135,6 +160,7 @@ const handleRepurchase = () => {
   get('/api/goods/getDetails', {
     id: goodsDetails.value.goods_id
   }).then(res => {
+    // TODO
     const items = res.data.specification.split('|');
     const result = [];
     for (let i = 0; i < items.length; i += 2) {
@@ -257,6 +283,10 @@ const handleCopyTextToClipboard = () => {
   min-height: 100vh;
   width: 100vw;
   overflow-x: hidden;
+
+  .countdown {
+    color: #fff;
+  }
 
   .header {
     height: 300px;
