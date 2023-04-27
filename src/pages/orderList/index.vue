@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-26 16:37:50
+ * @LastEditTime: 2023-04-27 17:21:50
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/orderList/index.vue
@@ -55,7 +55,7 @@
           <view v-if="item.order_status === '60'" class="btn_red_border" @tap="(e) => { handleRepurchase(e, item) }">再次购买
           </view>
           <view v-if="item.order_status === '10' && item.pay_status === '1'" class="flexCenter"
-            @tap="() => { handleApplyRefund(e, item) }">
+            @tap="(e) => { handleApplyRefund(e, item) }">
             <view class="btn_grey">申请退款</view>
           </view>
           <view class="btn_red_border"
@@ -271,7 +271,7 @@ const handleApplyRefund = (e, item) => {
     title: '确认退款吗?',
     success(res) {
       if (res.confirm) {
-        post('/api/order/refund', {
+        post('/api/order/applyRefund', {
           id: item.id
         }).then(res => {
           handleSelectOrder({

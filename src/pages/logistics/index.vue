@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-07 12:29:47
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-26 16:21:09
+ * @LastEditTime: 2023-04-27 17:31:37
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/logistics/index.vue
@@ -36,7 +36,7 @@
 </template>
 
 <script setup>
-import Taro, { useRouter, useLoad, useDidShow } from '@tarojs/taro'
+import Taro, { useRouter, useLoad } from '@tarojs/taro'
 import { get } from '../../utils/request'
 import { ref, reactive } from 'vue'
 import childIcon from '../../components/Icon.vue'

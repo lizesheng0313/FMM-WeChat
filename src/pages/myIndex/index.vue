@@ -53,7 +53,7 @@
 
 <script setup>
 import Taro, { useRouter } from '@tarojs/taro'
-import { useDidShow, useLoad } from '@tarojs/taro'
+import { useDidShow } from '@tarojs/taro'
 import { get } from '../../utils/request'
 import { ref, reactive } from 'vue'
 import childIcon from '../../components/Icon.vue'

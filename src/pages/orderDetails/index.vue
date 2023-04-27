@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-26 16:33:06
+ * @LastEditTime: 2023-04-27 17:32:08
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/orderDetails/index.vue
@@ -97,13 +97,16 @@ import { getCurrentDate } from '../../utils/utils'
 const goodsDetails = ref('')
 const countdown = ref('')
 let timer = null
+const orderId = ref('')
+const onLoad = ref(false)
 
 useLoad((e) => {
-  fetchDetails(e.id)
+  orderId = e.id
 })
 
 useDidShow((e) => {
   clearInterval(timer)
+  fetchDetails(orderId.value)
 })
 
 useDidHide(() => {
@@ -226,10 +229,10 @@ const handleCancleOrder = () => {
 
 const handleApplyRefund = () => {
   Taro.showModal({
-    title: '确认退款吗?',
+    title: '确认申请退款吗?',
     success(res) {
       if (res.confirm) {
-        post('/api/order/refund', {
+        post('/api/order/applyRefund', {
           id: goodsDetails.value.id
         }).then(res => {
           fetchDetails(goodsDetails.value.id)
