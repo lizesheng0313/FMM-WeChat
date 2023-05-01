@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-27 17:21:50
+ * @LastEditTime: 2023-04-28 22:17:39
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/orderList/index.vue
@@ -47,7 +47,7 @@
           <view class="btn_red" v-if="item.order_status === '20'" @tap="(e) => { handleSubmitReceipt(e, item) }">确认收货
           </view>
           <view v-if="item.order_status !== '10' && item.order_status !== '60'"
-            @tap="(e, item) => { handleChecklogistics(e, item) }">
+            @tap="(e) => { handleChecklogistics(e, item) }">
             <view class="btn_grey">查看物流</view>
           </view>
           <view v-if="item.order_status === '40' || item.order_status === '60'" class="btn_grey"
@@ -121,7 +121,6 @@ useLoad((e) => {
 })
 // 订单详情
 const handleJumpOrderDetails = (id) => {
-  console.log(id, '----id')
   Taro.navigateTo({
     url: '/pages/orderDetails/index?id=' + id
   })
@@ -253,6 +252,7 @@ const handleRepurchase = (e, item) => {
       goodsInfo: {
         ...sku
       },
+      freight: res.data.freight,
       specification: result,
       name: item.goods_name,
       totalNumber: 1
@@ -305,6 +305,7 @@ const handleSubmitReceipt = (e, item) => {
     }
   })
 }
+
 useReachBottom(() => {
   console.log(orderStatusList.value?.length, total.value)
   if (orderStatusList.value?.length < total.value) {

@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-07 12:29:47
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-26 16:18:40
+ * @LastEditTime: 2023-04-28 15:11:58
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/myIndex/index.vue
@@ -68,7 +68,7 @@ useDidShow(() => {
 })
 
 const handleJumpOrderList = (item) => {
-  if (item.title === '退换货') {
+  if (item.title === '退货/退款') {
     Taro.navigateTo({
       url: '/pages/returnList/index'
     })
@@ -127,7 +127,7 @@ const orderList = ref([
     order_status: '40'
   },
   {
-    title: '退换货',
+    title: '退货/退款',
     icon: 'icon-tuichu',
     value: 0,
     color: "#000"

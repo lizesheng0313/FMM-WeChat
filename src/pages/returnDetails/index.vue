@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-26 16:42:41
+ * @LastEditTime: 2023-04-29 09:22:44
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/returnDetails/index.vue
@@ -10,11 +10,15 @@
 <template>
   <view class="return-details">
     <view class="header">
-      <navTitle rightColor="#fff" :title="goodsDetails.status === '2' ? RETURNSTATUS[goodsDetails.status] : '退货详情'"
+      <navTitle rightColor="#fff" :title="goodsDetails.status === '2' ? RETURNSTATUS[goodsDetails.status] : '退货/退款详情'"
         color="#fff"></navTitle>
     </view>
     <view class="content">
-      <view class="status">{{ goodsDetails.status === '2' ? '请将商品邮寄到以下地址' :
+      <view v-if="goodsDetails.order_status === '80' || goodsDetails.order_status === '90'" class="status">{{
+        RETURNSTATUS[goodsDetails.status] }}
+      </view>
+      <view v-if="goodsDetails.order_status !== '80' && goodsDetails.order_status !== '90'" class="status">{{
+        goodsDetails.status === '2' ? '请将商品邮寄到以下地址' :
         RETURNSTATUS[goodsDetails.status], '请点击退货物流输入退货单号' }}
         <view v-if="goodsDetails.status === '2'" class="return_address">
           <view class="flexBetWeenCenter">
@@ -37,7 +41,7 @@
           <view class="price"><text class="symbol">￥</text>{{ goodsDetails?.total_price?.toFixed(2) }}</view>
         </view>
       </view>
-      <view class="order_info">
+      <view class="order_info" v-if="goodsDetails.order_status !== '80' && goodsDetails.order_status !== '90'">
         <view class="time" v-if="goodsDetails.status === '4'"><text class="title">退货快递：</text>{{
           goodsDetails?.rlogistics_companyStr }}</view>
         <view class="time" v-if="goodsDetails.status === '4'"><text class="title">退货物流：</text>{{
@@ -46,7 +50,8 @@
           goodsDetails.refuse_reason }}</view>
         <view class="time"><text class="title">退货原因：</text>{{ goodsDetails.reason }}</view>
         <view class="time" v-if="goodsDetails?.memo"><text class="title">退货描述：</text>{{ goodsDetails.memo }}</view>
-        <view class="time" v-if="goodsDetails?.picture_list?.length > 0"><text class="title">退货凭证：</text>
+        <view class="time" v-if="goodsDetails?.picture_list && goodsDetails?.picture_list[0]"><text
+            class="title">退货凭证：</text>
           <view class="flexCenter">
             <view v-for="item in goodsDetails.picture_list" @tap="() => { handlePreviewImage(item) }">
               <image :src="item" class="certificate"></image>
@@ -71,12 +76,10 @@
       <view class="order_price">
         <view class="flexBetWeenCenter">运费：<text>{{ goodsDetails?.freight || '免运费' }}</text>
         </view>
-        <view class="flexBetWeenCenter total">金额总计：<text class="total_price"><text class="symbol">￥</text>{{
-          (goodsDetails?.total_price +
-            (goodsDetails?.freight ||
-              0)).toFixed(2) }}</text>
+        <view class="flexBetWeenCenter total">金额总计：<text class="total_price"><text class="symbol">￥</text>
+            {{ ((Number(goodsDetails?.total_price) + (Number(goodsDetails?.freight) || 0))).toFixed(2) }}</text>
         </view>
-        <view v-if="goodsDetails?.pay_status === 1">实付款：{{ goodsDetails?.act_pay.toFixed(2) }}</view>
+        <view v-if="goodsDetails?.pay_status === '1'">实付款：{{ goodsDetails?.act_pay.toFixed(2) }}</view>
         <button class="flexCenterAll service" open-type="contact" :show-message-card="true"
           :send-message-title="goodsDetails?.name" :send-message-img="goodsDetails?.goods_picture">
           <child-icon size="20" value="icon-kefu1"></child-icon>
@@ -85,8 +88,9 @@
       </view>
     </view>
     <view class="footer">
-      <view class="btn_grey" @tap="handleReturnGoods" v-if="goodsDetails?.status == '2'">退货物流</view>
-      <view class="btn_grey" @tap="handleChecklogistics">查看物流</view>
+      <view class="btn_grey" @tap="handleReturnGoods" v-if="goodsDetails?.status == '2'">填写退货</view>
+      <view class="btn_grey" @tap="handleChecklogistics"
+        v-if="goodsDetails.order_status !== '80' && goodsDetails.order_status !== '90'">查看物流</view>
       <view class="btn_red_border" @tap="handleRepurchase">再次购买</view>
     </view>
     <view class="mask" v-show="showPopup"></view>
@@ -215,13 +219,15 @@ const handleRepurchase = () => {
         tag: tags,
       });
     }
+    const sku = res.data.sku.filter(item => item.skuId === goodsDetails.value.sku_id)[0]
     const info = {
       goodsId: goodsDetails.value.goods_id,
       goodsInfo: {
-        ...res.data?.sku[0]
+        ...sku
       },
+      freight: res.data.freight,
       specification: result,
-      name: goodsDetails.value.name,
+      name: goodsDetails.value.goods_name,
       totalNumber: 1
     }
     Taro.setStorageSync('goodsInfo', JSON.stringify(info))
@@ -265,8 +271,8 @@ const onShareAppMessage = () => {
 .return-details {
   background: #F0F1F3;
   padding-bottom: 150px;
-
-
+  box-sizing: border-box;
+  min-height: 100vh;
 
   .popup {
     position: fixed;
@@ -356,7 +362,6 @@ const onShareAppMessage = () => {
     width: 150px;
     box-sizing: content-box;
     padding: 0 10px;
-    border-right: 4px solid #e6e6e6;
     outline: none;
 
     .text {
@@ -364,6 +369,12 @@ const onShareAppMessage = () => {
       font-size: 22px;
       font-weight: 400;
     }
+
+  }
+
+  button::after {
+    border: none;
+    outline: none;
   }
 
   .order_price {

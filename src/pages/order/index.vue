@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-26 17:27:38
+ * @LastEditTime: 2023-04-28 22:15:53
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/order/index.vue
@@ -77,6 +77,7 @@ import { ref, reactive, watch } from 'vue'
 import childIcon from '../../components/Icon.vue'
 import navTitle from '../../components/navTitle.vue'
 const goodsDetails = ref(JSON.parse(Taro.getStorageSync('goodsInfo')))
+console.log(goodsDetails.value, '----goodsDetails')
 const contactInfo = ref()
 const state = reactive({
   totalNumber: goodsDetails.value?.totalNumber || 1

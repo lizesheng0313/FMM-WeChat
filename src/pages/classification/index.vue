@@ -217,7 +217,7 @@ const onShareAppMessage = () => {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 70px;
+    height: 90px;
     color: #333;
     cursor: pointer;
     border-left: 2px solid #f6f6f6;

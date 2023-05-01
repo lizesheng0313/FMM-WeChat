@@ -2,14 +2,14 @@
  * @Author: lizesheng
  * @Date: 2023-03-30 18:16:15
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-01 19:58:13
+ * @LastEditTime: 2023-04-28 18:21:37
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/components/navTitle.vue
 -->
 <template>
   <view class="title-container" :style="{ height: `${navHeight}px`, paddingTop: `${statusHeight}px`, color: color }">
-    <child-icon @tap="handleBack" class="right_arrow" value="icon-youjiantou" :color="rightColor" size="20"></child-icon>
+    <child-icon @tap="handleBack" class="right_arrow" value="icon-youjiantou" :color="rightColor" size="19"></child-icon>
     <view v-if="title" class="title">{{ title }}</view>
   </view>
 </template>
@@ -58,6 +58,7 @@ const handleBack = () => {
   .right_arrow {
     position: relative;
     z-index: 2;
+    left: 20px;
     transform: rotate(180deg);
   }
 }

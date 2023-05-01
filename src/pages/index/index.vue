@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-07 12:01:55
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-26 16:17:17
+ * @LastEditTime: 2023-05-01 19:29:21
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/index/index.vue
@@ -13,7 +13,7 @@
       <view class="header-top"></view>
       <view class="header">
         <view class="title" :style="{ height: `${navHeight}px`, paddingTop: `${statusHeight}px` }">
-          <text class="top">爱秘商城</text>
+          <text class="top">肥猫猫商城</text>
           <text class="tip">私密发货</text>
         </view>
         <view class="search" @tap="handleJumpSearch">
@@ -22,25 +22,19 @@
         </view>
         <view class="swiper">
           <swiper class='test-h' indicator-active-color='#fff' :circular="true" :indicator-dots="true" :autoplay="true">
-            <swiper-item v-for="item in swiperList" :key="item.id">
+            <swiper-item v-for="item in swiperList" :key="item.id" @tap="handleJump(item)">
               <image :src="item.url" mode="widthFix"></image>
             </swiper-item>
           </swiper>
         </view>
       </view>
     </view>
-    <view class="classifcation p20" v-show="iconList?.length > 0">
-      <view v-for="item in iconList" :key="item.id" class="class-item" @tap="handleSubItemClick(item)">
-        <view class="icon">
-          <child-icon color="#E8443A" :value="item.icon" :size="item.size" class="icon" />
+    <view class="classifcation p20">
+      <view v-for="item in iconList" class="class-item" @tap="handleSubItemClick(item)">
+        <view class="icon" :style="{ background: item.back }">
+          <image :src="item.icon" class="icon_image"></image>
         </view>
         <view>{{ item.label }}</view>
-      </view>
-      <view class="class-item" @tap="handleJumpClass">
-        <view class="icon">
-          <child-icon color="#5c0682" value="icon-quanbu" size="26" />
-        </view>
-        <view>全部</view>
       </view>
     </view>
     <view class="line"></view>
@@ -95,7 +89,68 @@ const statusHeight = ref(sysinfo.statusBarHeight)
 const isiOS = sysinfo.system.indexOf('iOS') > -1
 const navHeight = ref(!isiOS ? 46 : 44)
 const swiperList = ref('')
-const iconList = ref('')
+const iconList = ref([
+  {
+    icon: 'https://static.zjkdongao.com/image/ctpkqL2FofjReed6ae8fc1800c1a4070d6ce4b45a2a6.png',
+    label: '男性用品',
+    back: 'linear-gradient(to bottom, #AFD8FD, #7CBCF9)',
+    value: '5'
+  },
+  {
+    icon: 'https://static.zjkdongao.com/image/nPvhXBT5DITm88135f7839b10461b812298b127e15a3.png',
+    label: '女性用品',
+    back: 'linear-gradient(to bottom, #FBA4A5, #FA6B72)',
+    value: '4'
+  },
+  {
+    icon: 'https://static.zjkdongao.com/image/Ufg0wL2cN8Dn79abf59c23a4d87bb290717f0746a93a.png',
+    label: '飞机杯',
+    back: 'linear-gradient(to bottom, #BAF8D5, #8CE4BB)',
+    value: '8'
+  },
+  {
+    icon: 'https://static.zjkdongao.com/image/rmIlNdNvPMms8a1b2ec6f4b731ba444573de137fcedc.png',
+    label: '跳蛋',
+    back: 'linear-gradient(to bottom, #AFD8FD, #7CBCF9)',
+    value: '7'
+  },
+  {
+    icon: 'https://static.zjkdongao.com/image/rnMyeAPRVEwZ54c2105634e939dfc52c17233b396249.png',
+    label: '防真阳具',
+    back: 'linear-gradient(to bottom, #FDAFC3, #FDB8CC)',
+    value: '13'
+  },
+  {
+    icon: 'https://static.zjkdongao.com/image/2e12835sbqiS2d36d0ff694e0800032f7f0346558132.png',
+    label: '阴臀倒模',
+    back: 'linear-gradient(to bottom, #FAD399, #FAA443)',
+    value: '9'
+  },
+  {
+    icon: 'https://static.zjkdongao.com/image/3h3P22Pby0IQ505bf1d682b2c5a3144cef9b3434b8fe.png',
+    label: '后庭玩具',
+    back: 'linear-gradient(to bottom, #AFD8FD, #7CBCF9)',
+    value: '15'
+  },
+  {
+    icon: 'https://static.zjkdongao.com/image/pR4zGoJWGNT961cbbeafe779e9333be0427c7e5de449.png',
+    label: '锁精环',
+    back: 'linear-gradient(to bottom, #FBA4A5, #FA6B72)',
+    value: '34'
+  },
+  {
+    icon: 'https://static.zjkdongao.com/image/9Ykrpfsp6obb5f34c3a40eb6206445f92e7e149e33c0.png',
+    label: '胸部刺激',
+    back: 'linear-gradient(to bottom, #AFD8FD, #7CBCF9)',
+    value: '22'
+  },
+  {
+    icon: 'https://static.zjkdongao.com/image/cPdDxw22dkV69389cc60702d443f85b31a52cfa1ad26.png',
+    label: 'SM另类',
+    back: 'linear-gradient(to bottom, #FAD399, #FAA443)',
+    value: '10'
+  }
+])
 const recommendList = ref([]) //推荐
 const latestList = ref([]) // 最新
 const randomList = ref([])
@@ -107,15 +162,14 @@ const page = reactive({
   pageSize: 10,
   classification: '',
 })
+const handleJump = (item) => {
+  Taro.navigateTo({
+    url: item.path
+  })
+}
 const total = ref(0)
 get('/api/home/getBanner').then(res => {
   swiperList.value = res.data.list
-})
-get('/api/home/getClassifcation', {
-  typeId: 1,
-  is_show_home: 1,
-}).then(res => {
-  iconList.value = res.data.list
 })
 get('/api/home/getClassifcation', {
   typeId: 1,
@@ -179,7 +233,7 @@ function getRandomItems(arr, count) {
   while (result.length < count) {
     const randomIndex = Math.floor(Math.random() * arr.length);
     const randomItem = arr[randomIndex];
-    if (!result.includes(randomItem)) {
+    if (!result.includes(randomItem) && randomItem.label !== '清洗器') {
       result.push(randomItem);
     }
   }
@@ -345,13 +399,23 @@ const onShareAppMessage = () => {
 
   .classifcation {
     display: flex;
+    padding-top: 30px;
     justify-content: space-around;
     flex-wrap: wrap;
 
     .icon {
-      height: 80px;
+      height: 90px;
       display: flex;
+      width: 90px;
+      justify-content: center;
+      border-radius: 15px;
       align-items: center;
+
+      .icon_image {
+        width: 80px;
+        border-radius: 15px;
+        height: 80px;
+      }
     }
 
     .class-item {

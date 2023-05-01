@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-26 16:22:42
+ * @LastEditTime: 2023-04-28 16:22:03
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/returnList/index.vue
@@ -48,8 +48,6 @@ const searchValue = ref('')
 const page = reactive({
   pageIndex: 1,
   pageSize: 10,
-  pay_status: '1',
-  order_status: '50'
 })
 const orderStatusList = ref([])
 const total = ref(0)

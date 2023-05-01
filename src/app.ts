@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-07 12:01:55
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-26 17:26:26
+ * @LastEditTime: 2023-05-01 19:20:46
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/app.ts
@@ -16,7 +16,9 @@ import "./assets/icon/iconfont.css";
 import { get, post } from "./utils/request";
 
 const App = createApp({
-  created() {
+  created() {},
+  onShow(e) {
+    // 分享埋点等
     return new Promise(async (reolove, reject) => {
       await Taro.login({
         async success(res) {
@@ -26,6 +28,7 @@ const App = createApp({
               source: "aimi_shop",
               code: res.code,
               appid: config.appId,
+              ch: e?.query?.ch,
             },
             true
           )
@@ -55,10 +58,6 @@ const App = createApp({
         },
       });
     });
-  },
-  onShow(e) {
-    console.log(e, "appshow");
-    // 分享埋点等
   },
 });
 App.use(createPinia());

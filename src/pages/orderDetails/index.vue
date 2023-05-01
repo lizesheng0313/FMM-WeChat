@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-27 17:32:08
+ * @LastEditTime: 2023-04-29 09:20:23
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/orderDetails/index.vue
@@ -44,7 +44,7 @@
           <view class="copy" @tap="handleCopyTextToClipboard">复制</view>
         </view>
         <view class="time"><text class="title">下单时间：</text>{{ getCurrentDate(goodsDetails?.create_time) }}</view>
-        <view class="time" v-if="goodsDetails?.pay_status === 1"><text class="title">支付时间：</text>{{
+        <view class="time" v-if="goodsDetails?.pay_status === '1'"><text class="title">支付时间：</text>{{
           getCurrentDate(goodsDetails?.payment_time) }}
         </view>
       </view>
@@ -52,11 +52,9 @@
         <view class="flexBetWeenCenter">运费：<text>{{ goodsDetails?.freight || '免运费' }}</text>
         </view>
         <view class="flexBetWeenCenter total">金额总计：<text class="total_price"><text class="symbol">￥</text>{{
-          (goodsDetails?.total_price +
-            (goodsDetails?.freight ||
-              0)).toFixed(2) }}</text>
+          ((Number(goodsDetails?.total_price) + (Number(goodsDetails?.freight) || 0))).toFixed(2) }}</text>
         </view>
-        <view v-if="goodsDetails?.pay_status === 1">实付款：{{ goodsDetails?.act_pay.toFixed(2) }}</view>
+        <view v-if="goodsDetails?.pay_status === '1'">实付款：{{ goodsDetails?.act_price?.toFixed(2) }}</view>
         <button class="flexCenterAll service" open-type="contact" :show-message-card="true"
           :send-message-title="goodsDetails?.name" :send-message-img="goodsDetails?.goods_picture">
           <child-icon size="20" value="icon-kefu1"></child-icon>
@@ -72,7 +70,6 @@
       <view class="btn_grey" v-if="goodsDetails?.order_status === '10' && goodsDetails?.pay_status === '1'"
         @tap="handleApplyRefund">申请退款</view>
       <view class="btn_red" v-if="goodsDetails?.order_status === '20'" @tap="handleSubmitReceipt">确认收货</view>
-      <view class="btn_grey" v-if="goodsDetails?.order_status === '30' || goodsDetails?.order_status === '40'">申请退货</view>
       <view class="btn_grey" v-if="goodsDetails.order_status !== '10' && goodsDetails?.order_status !== '60'"
         @tap="handleChecklogistics">查看物流</view>
       <view class="btn_grey" v-if="goodsDetails.order_status === '40' || goodsDetails.order_status === '60'"
@@ -101,7 +98,7 @@ const orderId = ref('')
 const onLoad = ref(false)
 
 useLoad((e) => {
-  orderId = e.id
+  orderId.value = e.id
 })
 
 useDidShow((e) => {
@@ -116,6 +113,7 @@ useDidHide(() => {
 useUnload(() => {
   clearInterval(timer)
 })
+
 
 const getRemainingTime = (create_time) => {
   const remaining_time = 60 * 60 - Math.floor((Date.now() - create_time) / 1000)
@@ -183,6 +181,7 @@ const handleRepurchase = () => {
       goodsInfo: {
         ...sku
       },
+      freight: res.data.freight,
       specification: result,
       name: goodsDetails.value.name,
       totalNumber: 1
@@ -235,7 +234,9 @@ const handleApplyRefund = () => {
         post('/api/order/applyRefund', {
           id: goodsDetails.value.id
         }).then(res => {
-          fetchDetails(goodsDetails.value.id)
+          Taro.redirectTo({
+            url: 'pages/returnDetails/index?id=' + goodsDetails.value.id
+          })
         })
       }
     }
@@ -323,6 +324,11 @@ const onShareAppMessage = () => {
         font-size: 24px;
         font-weight: 400;
       }
+    }
+
+    button::after {
+      border: none;
+      outline: none;
     }
 
     .order_price {
