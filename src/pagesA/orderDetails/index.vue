@@ -2,10 +2,10 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-29 09:20:23
+ * @LastEditTime: 2023-05-06 14:17:39
  * @important: 重要提醒
  * @Description: 备注内容
- * @FilePath: /shop/src/pages/orderDetails/index.vue
+ * @FilePath: /shop/src/pagesA/orderDetails/index.vue
 -->
 <template>
   <view class="order-details">
@@ -52,7 +52,7 @@
         <view class="flexBetWeenCenter">运费：<text>{{ goodsDetails?.freight || '免运费' }}</text>
         </view>
         <view class="flexBetWeenCenter total">金额总计：<text class="total_price"><text class="symbol">￥</text>{{
-          ((Number(goodsDetails?.total_price) + (Number(goodsDetails?.freight) || 0))).toFixed(2) }}</text>
+          ((Number(goodsDetails?.total_price) + (Number(goodsDetails?.freight) || 0)))?.toFixed(2) }}</text>
         </view>
         <view v-if="goodsDetails?.pay_status === '1'">实付款：{{ goodsDetails?.act_price?.toFixed(2) }}</view>
         <button class="flexCenterAll service" open-type="contact" :show-message-card="true"
@@ -83,6 +83,7 @@
 </template>
 
 <script setup>
+var plugin = requirePlugin("logisticsPlugin")
 import Taro, { useDidShow, useDidHide, useUnload, useLoad } from '@tarojs/taro'
 import { get, post } from '../../utils/request'
 import { ref, reactive } from 'vue'
@@ -90,7 +91,6 @@ import childIcon from '../../components/Icon.vue'
 import navTitle from '../../components/navTitle.vue'
 import { ORDERSTATUS } from '../orderList/constant'
 import { getCurrentDate } from '../../utils/utils'
-
 const goodsDetails = ref('')
 const countdown = ref('')
 let timer = null
@@ -194,15 +194,9 @@ const handleRepurchase = () => {
 }
 
 const handleChecklogistics = () => {
-  const log_info = {
-    logistics_no: goodsDetails.value.logistics_no,
-    goods_picture: goodsDetails.value.goods_picture,
-    logistics_company: goodsDetails.value.logistics_company,
-    address_detail: `${goodsDetails?.value?.province}${goodsDetails?.value?.city}${goodsDetails?.value?.streetName}${goodsDetails?.value?.address_detail}`
-  }
-  Taro.navigateTo({
-    url: '/pages/logistics/index?log_info=' + JSON.stringify(log_info)
-  })
+  plugin.openWaybillTracking({
+    waybillToken: goodsDetails.value?.waybill_token
+  });
 }
 
 const handleJumpReturnGoods = () => {
@@ -235,7 +229,7 @@ const handleApplyRefund = () => {
           id: goodsDetails.value.id
         }).then(res => {
           Taro.redirectTo({
-            url: 'pages/returnDetails/index?id=' + goodsDetails.value.id
+            url: 'pagesA/returnDetails/index?id=' + goodsDetails.value.id
           })
         })
       }

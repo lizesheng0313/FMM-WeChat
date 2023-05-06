@@ -131,7 +131,7 @@ async function handleSubmit() {
   }
   post('/api/order/returnGoods', params).then(res => {
     Taro.redirectTo({
-      url: '/pages/returnDetails/index?id=' + res.data
+      url: '/pagesA/returnDetails/index?id=' + res.data
     })
   })
 }

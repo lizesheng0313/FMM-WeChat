@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-07 12:01:55
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-28 14:51:37
+ * @LastEditTime: 2023-05-06 14:18:23
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/app.config.ts
@@ -18,14 +18,27 @@ export default {
     "pages/order/index",
     "pages/address/index",
     "pages/addressManage/index",
-    "pages/orderList/index",
-    "pages/orderDetails/index",
-    "pages/returnList/index",
     "pages/returnGoods/index",
-    "pages/returnDetails/index",
     "pages/logistics/index",
     "pages/protocol/index",
     "pages/policy/index",
+  ],
+  subPackages: [
+    {
+      root: "pagesA",
+      pages: [
+        "returnDetails/index",
+        "returnList/index",
+        "orderList/index",
+        "orderDetails/index",
+      ],
+      plugins: {
+        logisticsPlugin: {
+          version: "2.2.28",
+          provider: "wx9ad912bf20548d92",
+        },
+      },
+    },
   ],
   requiredPrivateInfos: ["chooseAddress"],
   window: {

@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-07 12:29:47
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-27 17:31:37
+ * @LastEditTime: 2023-05-06 10:58:37
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/logistics/index.vue
@@ -37,7 +37,7 @@
 
 <script setup>
 import Taro, { useRouter, useLoad } from '@tarojs/taro'
-import { get } from '../../utils/request'
+import { post } from '../../utils/request'
 import { ref, reactive } from 'vue'
 import childIcon from '../../components/Icon.vue'
 import TimeLine from '../../components/TimeLine.vue'
@@ -45,11 +45,12 @@ import { logisticsCompanies } from './constant'
 const goodsInfo = ref('')
 const logisticsInfo = ref('')
 useLoad((e) => {
-  goodsInfo.value = JSON.parse(e.log_info)
-  get('/api/order/getLogistics', {
-    logistics_no: goodsInfo.value.logistics_no,
-    logistics_company: goodsInfo.value.logistics_company
+  console.log(e, '----e')
+  const waybill_token = e.waybill_token
+  post('/api/order/getLogistics', {
+    waybill_token
   }).then(res => {
+    console.log(res)
     logisticsInfo.value = res.data
   })
 })

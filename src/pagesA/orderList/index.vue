@@ -2,10 +2,10 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-28 22:17:39
+ * @LastEditTime: 2023-05-06 14:18:45
  * @important: 重要提醒
  * @Description: 备注内容
- * @FilePath: /shop/src/pages/orderList/index.vue
+ * @FilePath: /shop/src/pagesA/orderList/index.vue
 -->
 <template>
   <view class="order_list">
@@ -72,6 +72,8 @@
 </template>
 
 <script setup>
+var plugin = requirePlugin("logisticsPlugin")
+import config from "../../config/confg";
 import Taro, { useDidShow, useLoad, useReachBottom } from '@tarojs/taro'
 import { get, post } from '../../utils/request'
 import { ref, reactive } from 'vue'
@@ -122,7 +124,7 @@ useLoad((e) => {
 // 订单详情
 const handleJumpOrderDetails = (id) => {
   Taro.navigateTo({
-    url: '/pages/orderDetails/index?id=' + id
+    url: '/pagesA/orderDetails/index?id=' + id
   })
 }
 const handleJumpReturnGoods = (e, item) => {
@@ -133,18 +135,9 @@ const handleJumpReturnGoods = (e, item) => {
 }
 const handleChecklogistics = (e, item) => {
   e.stopPropagation()
-  const log_info = {
-    logistics_no: item.logistics_no,
-    goods_picture: item.goods_picture,
-    logistics_company: item.logistics_company,
-    address_detail: `${item?.province}${item?.city}${item?.streetName}${item?.address_detail}`
-  }
-  Taro.navigateTo({
-    url: '/pages/logistics/index?log_info=' + JSON.stringify(log_info)
-  })
-  Taro.navigateTo({
-    url: '/pages/logistics/index?logistics_no=' + item.logistics_no
-  })
+  plugin.openWaybillTracking({
+    waybillToken: item.waybill_token
+  });
 }
 const handlePay = (e, item) => {
   e.stopPropagation()
@@ -307,7 +300,6 @@ const handleSubmitReceipt = (e, item) => {
 }
 
 useReachBottom(() => {
-  console.log(orderStatusList.value?.length, total.value)
   if (orderStatusList.value?.length < total.value) {
     page.pageIndex += 1
     Taro.showLoading({

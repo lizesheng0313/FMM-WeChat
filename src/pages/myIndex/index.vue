@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-07 12:29:47
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-28 15:11:58
+ * @LastEditTime: 2023-05-06 14:19:07
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/myIndex/index.vue
@@ -70,12 +70,12 @@ useDidShow(() => {
 const handleJumpOrderList = (item) => {
   if (item.title === '退货/退款') {
     Taro.navigateTo({
-      url: '/pages/returnList/index'
+      url: '/pagesA/returnList/index'
     })
     return
   }
   Taro.navigateTo({
-    url: `/pages/orderList/index?order=${item.order}&order_status=${item.order_status || ''}&pay_status=${item.pay_status || ''}`
+    url: `/pagesA/orderList/index?order=${item.order}&order_status=${item.order_status || ''}&pay_status=${item.pay_status || ''}`
   })
 }
 

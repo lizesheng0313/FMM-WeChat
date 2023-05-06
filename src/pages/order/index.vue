@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-28 22:15:53
+ * @LastEditTime: 2023-05-06 14:18:39
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/order/index.vue
@@ -162,12 +162,12 @@ const handleSubmitOrder = () => {
         paySign: payInfo.data.paySign,
         success: function () {
           Taro.redirectTo({
-            url: "/pages/orderDetails/index?id=" + payInfo.data.order_id
+            url: "/pagesA/orderDetails/index?id=" + payInfo.data.order_id
           })
         },
         fail: function () {
           Taro.redirectTo({
-            url: "/pages/orderDetails/index?id=" + payInfo.data.order_id
+            url: "/pagesA/orderDetails/index?id=" + payInfo.data.order_id
           })
         }
       });

@@ -2,7 +2,7 @@
  * @Author: lizesheng
  * @Date: 2023-03-25 14:51:26
  * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-28 16:22:03
+ * @LastEditTime: 2023-05-06 14:17:36
  * @important: 重要提醒
  * @Description: 备注内容
  * @FilePath: /shop/src/pages/returnList/index.vue
@@ -61,7 +61,7 @@ useDidShow(() => {
 // 订单详情
 const handleJumpOrderDetails = (id) => {
   Taro.navigateTo({
-    url: '/pages/returnDetails/index?id=' + id
+    url: '/pagesA/returnDetails/index?id=' + id
   })
 }
 
