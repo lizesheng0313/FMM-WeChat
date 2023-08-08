@@ -1,12 +1,3 @@
-<!--
- * @Author: lizesheng
- * @Date: 2023-03-07 12:01:55
- * @LastEditors: lizesheng
- * @LastEditTime: 2023-05-01 19:29:21
- * @important: 重要提醒
- * @Description: 备注内容
- * @FilePath: /shop/src/pages/index/index.vue
--->
 <template>
   <view class="home">
     <view class="p20">
@@ -79,11 +70,12 @@
 
 <script setup>
 import Taro, { useReachBottom } from '@tarojs/taro'
-import { get, post } from '../../utils/request'
+import { get } from '../../utils/request'
 import childIcon from '../../components/Icon.vue'
 import productVue from '../../components/Product.vue'
-import { ref, watch, reactive } from 'vue'
+import { ref, watch, reactive,onMounted } from 'vue'
 
+const app = Taro.getAccountInfoSync()
 const sysinfo = Taro.getSystemInfoSync()
 const statusHeight = ref(sysinfo.statusBarHeight)
 const isiOS = sysinfo.system.indexOf('iOS') > -1
@@ -168,19 +160,20 @@ const handleJump = (item) => {
   })
 }
 const total = ref(0)
-get('/api/home/getBanner').then(res => {
+get('/api/home/getBanner',{eid:app?.miniProgram?.appId}).then(res => {
   swiperList.value = res.data.list
 })
 get('/api/home/getClassifcation', {
   typeId: 1,
+  eid:app?.miniProgram?.appId
 }).then(res => {
   randomList.value = getRandomItems(res.data.list, 7)
   currentWatch.value = randomList.value[0].value
 })
-get('/api/home/getHomeGoods', { recommend: 1 }).then(res => {
+get('/api/home/getHomeGoods', { recommend: 1, eid:app?.miniProgram?.appId }).then(res => {
   recommendList.value = res.data.list
 })
-get('/api/home/getHomeGoods', { latest: 1 }).then(res => {
+get('/api/home/getHomeGoods', { latest: 1, eid:app?.miniProgram?.appId }).then(res => {
   latestList.value = res.data.list
 })
 
@@ -221,7 +214,7 @@ const handleJumpGoods = () => {
 watch(currentWatch, (newValue, oldValue) => {
   page.classification = newValue
   page.pageIndex = 1
-  get('/api/home/getClassGoods', { ...page }).then(res => {
+  get('/api/home/getClassGoods', { ...page,eid:app?.miniProgram?.appId}).then(res => {
     classificationList.value = res.data.list
     total.value = res.data.total
   })
@@ -248,6 +241,7 @@ function toggleSelect(index, value) {
 useReachBottom(() => {
   if (classificationList.value?.length < total.value) {
     page.pageIndex += 1
+    page.eid = app?.miniProgram?.appId
     Taro.showLoading({
       title: '加载中...',
       mask: true

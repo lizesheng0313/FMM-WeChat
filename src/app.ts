@@ -18,7 +18,6 @@ const App = createApp({
   created() {},
   onShow(e) {
     const app = Taro.getAccountInfoSync()
-    console.log(app,'--app')
     // 分享埋点等
     return new Promise(async (reolove, reject) => {
       await Taro.login({
@@ -34,6 +33,7 @@ const App = createApp({
             true
           )
             .then((res) => {
+              console.log('返回')
               Taro.setStorageSync("user_id", res.data?.data?.user_id);
               Taro.setStorageSync("is_sure", res.data?.data?.is_sure);
               Taro.setStorageSync(
