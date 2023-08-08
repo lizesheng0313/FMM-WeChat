@@ -144,7 +144,6 @@ const handlePay = (e, item) => {
   post('/api/order/payment', {
     order_id: item.id,
     name: item.goods_name,
-    act_price: item.act_price
   }).then(payInfo => {
     Taro.requestPayment({
       timeStamp: payInfo.data.timeStamp,

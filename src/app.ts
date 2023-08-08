@@ -11,13 +11,14 @@ import Taro from "@tarojs/taro";
 import { createApp } from "vue";
 import { createPinia } from "pinia";
 import "./app.scss";
-import config from "./config/confg";
 import "./assets/icon/iconfont.css";
 import { get, post } from "./utils/request";
 
 const App = createApp({
   created() {},
   onShow(e) {
+    const app = Taro.getAccountInfoSync()
+    console.log(app,'--app')
     // 分享埋点等
     return new Promise(async (reolove, reject) => {
       await Taro.login({
@@ -27,7 +28,7 @@ const App = createApp({
             {
               source: "aimi_shop",
               code: res.code,
-              appid: config.appId,
+              appid: app?.miniProgram?.appId,
               ch: e?.query?.ch,
             },
             true

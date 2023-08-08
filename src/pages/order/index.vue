@@ -134,18 +134,14 @@ const handleSubmitOrder = () => {
     else {
       skuString = goodsDetails.value?.skuId
     }
-    const act_price = (Number(goodsDetails.value.freight) + Number(currentPrice.value))
     post('/api/order/createOrder', {
-      freight: goodsDetails.value.freight,
       goods_name: goodsDetails.value.name,
       goodsId: goodsDetails.value.goodsId,
       skuId: goodsDetails.value.goodsInfo.skuId,
       quantity: state.totalNumber,
       address_id: contactInfo.value.id,
-      total_price: currentPrice.value,
       remark: searchValue.value,
       sku_string: skuString,
-      act_price // 实际支付金额 
     }).then(payInfo => {
       if (payInfo?.data?.message) {
         Taro.showToast({
