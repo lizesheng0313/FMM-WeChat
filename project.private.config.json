@@ -121,6 +121,13 @@
           "query": "id=FMM230426155758576316",
           "launchMode": "default",
           "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/classification/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
         }
       ]
     }
@@ -130,6 +137,6 @@
     "urlCheck": false,
     "bigPackageSizeSupport": false
   },
-  "libVersion": "2.30.0",
+  "libVersion": "2.30.4",
   "projectname": "肥猫猫情趣商城"
 }

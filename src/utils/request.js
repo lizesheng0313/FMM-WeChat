@@ -1,86 +1,96 @@
-/*
- * @Author: lizesheng
- * @Date: 2023-03-11 11:22:38
- * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-25 20:18:24
- * @important: 重要提醒
- * @Description: 备注内容
- * @FilePath: /shop/src/utils/request.js
- */
-
-import constConfig from '../config/confg'
+import Taro from "@tarojs/taro";
+import constConfig from "../config/confg";
+let eid = "";
 const post = (url, data = {}) => {
   return new Promise(function (resolve, reject) {
+    // 从本地存储获取 JSON 字符串并解析为对象
+    const storedAppInfo = Taro.getStorageSync("appInfo");
+    const parsedAppInfo = JSON.parse(storedAppInfo);
+    if (parsedAppInfo && parsedAppInfo.miniProgram) {
+      eid = parsedAppInfo.miniProgram.appId;
+    } else {
+      console.log("No app information found.");
+    }
     wx.request({
       url: constConfig.host + url,
-      method: 'post',
-      data,
+      method: "post",
+      data: {
+        ...data,
+        eid,
+      },
       header: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        'authorization': wx.getStorageSync('authorization') || '',
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        authorization: wx.getStorageSync("authorization") || "",
       },
       success: function (res) {
-        wx.hideLoading()
+        wx.hideLoading();
         if (res.data.code === 0) {
-          resolve(res.data)
-        }
-        else {
+          resolve(res.data);
+        } else {
           wx.showToast({
-            title: res?.data?.message || res?.data?.msg || '无网络，请重试',
-            icon: 'none'
-          })
-          reject(res)
+            title: res?.data?.message || res?.data?.msg || "无网络，请重试",
+            icon: "none",
+          });
+          reject(res);
         }
       },
       fail(err) {
         wx.showToast({
-          title: err?.data?.message || '无网络，请重试',
-          icon: 'none'
-        })
-      }
-    })
-  })
-}
+          title: err?.data?.message || "无网络，请重试",
+          icon: "none",
+        });
+      },
+    });
+  });
+};
 
 const get = (url, data = {}, returnAll = false) => {
   return new Promise(function (resolve, reject) {
+    // 从本地存储获取 JSON 字符串并解析为对象
+    const storedAppInfo = Taro.getStorageSync("appInfo");
+    const parsedAppInfo = JSON.parse(storedAppInfo);
+    if (parsedAppInfo && parsedAppInfo.miniProgram) {
+      eid = parsedAppInfo.miniProgram.appId;
+    } else {
+      console.log("No app information found.");
+    }
     wx.request({
       url: constConfig.host + url,
-      data,
+      data: {
+        ...data,
+        eid,
+      },
       header: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        'authorization': wx.getStorageSync('authorization') || '',
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        authorization: wx.getStorageSync("authorization") || "",
       },
       success: function (res) {
-        wx.hideLoading()
+        wx.hideLoading();
         if (res.data.code === 0) {
           if (!returnAll) {
-            resolve(res.data)
+            resolve(res.data);
+          } else {
+            resolve(res);
           }
-          else { resolve(res) }
-        }
-        else {
+        } else {
           wx.showToast({
-            title: res?.data?.message || res?.data?.msg || '无网络，请重试',
-            icon: 'none'
-          })
-          reject(res)
+            title: res?.data?.message || res?.data?.msg || "无网络，请重试",
+            icon: "none",
+          });
+          reject(res);
         }
       },
       fail(err) {
-        wx.hideLoading()
+        wx.hideLoading();
         wx.showToast({
-          title: err?.data?.message || '无网络，请重试',
-          icon: 'none'
-        })
-      }
-    })
-  })
-}
+          title: err?.data?.message || "无网络，请重试",
+          icon: "none",
+        });
+      },
+    });
+  });
+};
 
-export {
-  get,
-  post
-}
+export { get, post };

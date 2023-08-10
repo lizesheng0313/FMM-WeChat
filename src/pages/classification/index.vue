@@ -44,13 +44,16 @@ const rightList = ref([]);
 const currentIndex = ref(0);
 const searchValue = ref('');
 const targetRects = ref()
+const app = Taro.getAccountInfoSync()
 useLoad(() => {
-  getClassification(1)
+  getClassification()
 })
 
-async function getClassification(typeId) {
+async function getClassification() {
   try {
-    const { data } = await get('/api/goods/getClassiFication', { typeId });
+    const { data } = await get('/api/goods/getClassiFication',{
+      eid:app?.miniProgram?.appId,
+    });
     leftList.value = data.leftList;
     rightList.value = data.rightList;
     currentIndex.value = 0;

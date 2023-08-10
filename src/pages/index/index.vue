@@ -21,8 +21,8 @@
       </view>
     </view>
     <view class="classifcation p20">
-      <view v-for="item in iconList" class="class-item" @tap="handleSubItemClick(item)">
-        <view class="icon" :style="{ background: item.back }">
+      <view v-for="(item,index) in iconList" class="class-item" @tap="handleSubItemClick(item)">
+        <view class="icon" :style="{ background: colorList[index]}">
           <image :src="item.icon" class="icon_image"></image>
         </view>
         <view>{{ item.label }}</view>
@@ -75,74 +75,25 @@ import childIcon from '../../components/Icon.vue'
 import productVue from '../../components/Product.vue'
 import { ref, watch, reactive,onMounted } from 'vue'
 
-const app = Taro.getAccountInfoSync()
 const sysinfo = Taro.getSystemInfoSync()
 const statusHeight = ref(sysinfo.statusBarHeight)
 const isiOS = sysinfo.system.indexOf('iOS') > -1
 const navHeight = ref(!isiOS ? 46 : 44)
 const swiperList = ref('')
-const iconList = ref([
-  {
-    icon: 'https://static.zjkdongao.com/image/ctpkqL2FofjReed6ae8fc1800c1a4070d6ce4b45a2a6.png',
-    label: '男性用品',
-    back: 'linear-gradient(to bottom, #AFD8FD, #7CBCF9)',
-    value: '5'
-  },
-  {
-    icon: 'https://static.zjkdongao.com/image/nPvhXBT5DITm88135f7839b10461b812298b127e15a3.png',
-    label: '女性用品',
-    back: 'linear-gradient(to bottom, #FBA4A5, #FA6B72)',
-    value: '4'
-  },
-  {
-    icon: 'https://static.zjkdongao.com/image/Ufg0wL2cN8Dn79abf59c23a4d87bb290717f0746a93a.png',
-    label: '飞机杯',
-    back: 'linear-gradient(to bottom, #BAF8D5, #8CE4BB)',
-    value: '8'
-  },
-  {
-    icon: 'https://static.zjkdongao.com/image/rmIlNdNvPMms8a1b2ec6f4b731ba444573de137fcedc.png',
-    label: '跳蛋',
-    back: 'linear-gradient(to bottom, #AFD8FD, #7CBCF9)',
-    value: '7'
-  },
-  {
-    icon: 'https://static.zjkdongao.com/image/rnMyeAPRVEwZ54c2105634e939dfc52c17233b396249.png',
-    label: '防真阳具',
-    back: 'linear-gradient(to bottom, #FDAFC3, #FDB8CC)',
-    value: '13'
-  },
-  {
-    icon: 'https://static.zjkdongao.com/image/2e12835sbqiS2d36d0ff694e0800032f7f0346558132.png',
-    label: '阴臀倒模',
-    back: 'linear-gradient(to bottom, #FAD399, #FAA443)',
-    value: '9'
-  },
-  {
-    icon: 'https://static.zjkdongao.com/image/3h3P22Pby0IQ505bf1d682b2c5a3144cef9b3434b8fe.png',
-    label: '后庭玩具',
-    back: 'linear-gradient(to bottom, #AFD8FD, #7CBCF9)',
-    value: '15'
-  },
-  {
-    icon: 'https://static.zjkdongao.com/image/pR4zGoJWGNT961cbbeafe779e9333be0427c7e5de449.png',
-    label: '锁精环',
-    back: 'linear-gradient(to bottom, #FBA4A5, #FA6B72)',
-    value: '34'
-  },
-  {
-    icon: 'https://static.zjkdongao.com/image/9Ykrpfsp6obb5f34c3a40eb6206445f92e7e149e33c0.png',
-    label: '胸部刺激',
-    back: 'linear-gradient(to bottom, #AFD8FD, #7CBCF9)',
-    value: '22'
-  },
-  {
-    icon: 'https://static.zjkdongao.com/image/cPdDxw22dkV69389cc60702d443f85b31a52cfa1ad26.png',
-    label: 'SM另类',
-    back: 'linear-gradient(to bottom, #FAD399, #FAA443)',
-    value: '10'
-  }
-])
+const colorList= [
+  'linear-gradient(to bottom, #AFD8FD, #7CBCF9)',
+  'linear-gradient(to bottom, #FBA4A5, #FA6B72)',
+  'linear-gradient(to bottom, #BAF8D5, #8CE4BB)',
+  'linear-gradient(to bottom, #AFD8FD, #7CBCF9)',
+  'linear-gradient(to bottom, #FDAFC3, #FDB8CC)',
+  'linear-gradient(to bottom, #FAD399, #FAA443)',
+  'linear-gradient(to bottom, #AFD8FD, #7CBCF9)',
+  'linear-gradient(to bottom, #FBA4A5, #FA6B72)',
+  'linear-gradient(to bottom, #FBA4A5, #FA6B72)',
+  'linear-gradient(to bottom, #AFD8FD, #7CBCF9)',
+  'linear-gradient(to bottom, #FAD399, #FAA443)'
+]
+const iconList = ref([])
 const recommendList = ref([]) //推荐
 const latestList = ref([]) // 最新
 const randomList = ref([])
@@ -160,26 +111,27 @@ const handleJump = (item) => {
   })
 }
 const total = ref(0)
-get('/api/home/getBanner',{eid:app?.miniProgram?.appId}).then(res => {
+get('/api/home/getClassifcation',{is_show_home:1}).then(res=>{
+  iconList.value = res?.data
+})
+get('/api/home/getBanner').then(res => {
   swiperList.value = res.data.list
 })
-get('/api/home/getClassifcation', {
-  typeId: 1,
-  eid:app?.miniProgram?.appId
-}).then(res => {
-  randomList.value = getRandomItems(res.data.list, 7)
-  currentWatch.value = randomList.value[0].value
+get('/api/home/getClassifcation').then(res => {
+  randomList.value = getRandomItems(res.data.list, res.data.list?.length)
+  currentWatch.value = randomList.value[0].id
 })
-get('/api/home/getHomeGoods', { recommend: 1, eid:app?.miniProgram?.appId }).then(res => {
+
+get('/api/home/getHomeGoods', { recommend: 1}).then(res => {
   recommendList.value = res.data.list
 })
-get('/api/home/getHomeGoods', { latest: 1, eid:app?.miniProgram?.appId }).then(res => {
+get('/api/home/getHomeGoods', { latest: 1}).then(res => {
   latestList.value = res.data.list
 })
 
 function handleSubItemClick(item) {
   Taro.navigateTo({
-    url: '/pages/goodsList/index?classification=' + item.value
+    url: '/pages/goodsList/index?classification=' + item.id
   })
 }
 
@@ -214,7 +166,7 @@ const handleJumpGoods = () => {
 watch(currentWatch, (newValue, oldValue) => {
   page.classification = newValue
   page.pageIndex = 1
-  get('/api/home/getClassGoods', { ...page,eid:app?.miniProgram?.appId}).then(res => {
+  get('/api/home/getClassGoods', { ...page}).then(res => {
     classificationList.value = res.data.list
     total.value = res.data.total
   })
@@ -226,7 +178,7 @@ function getRandomItems(arr, count) {
   while (result.length < count) {
     const randomIndex = Math.floor(Math.random() * arr.length);
     const randomItem = arr[randomIndex];
-    if (!result.includes(randomItem) && randomItem.label !== '清洗器') {
+    if (!result.includes(randomItem)) {
       result.push(randomItem);
     }
   }
@@ -241,7 +193,6 @@ function toggleSelect(index, value) {
 useReachBottom(() => {
   if (classificationList.value?.length < total.value) {
     page.pageIndex += 1
-    page.eid = app?.miniProgram?.appId
     Taro.showLoading({
       title: '加载中...',
       mask: true
