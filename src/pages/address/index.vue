@@ -1,12 +1,4 @@
-<!--
- * @Author: lizesheng
- * @Date: 2023-03-25 14:51:26
- * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-26 16:20:27
- * @important: 重要提醒
- * @Description: 备注内容
- * @FilePath: /shop/src/pages/address/index.vue
--->
+
 <template>
   <view class="address">
     <view class="flexBetWeenCenter get_sys" @tap="handleChooseAddress">
@@ -40,6 +32,7 @@
 </template>
 
 <script setup>
+import constConfig from '../../config/confg'
 import Taro from '@tarojs/taro'
 import { useDidShow } from '@tarojs/taro'
 import { get, post } from '../../utils/request'
@@ -114,7 +107,7 @@ const handleChooseAddress = () => {
 
 const onShareAppMessage = () => {
   return {
-    title: '肥猫猫情趣商城',
+    title: constConfig.title,
     imageUrl: '',
     path: '/pages/index/index'
   }

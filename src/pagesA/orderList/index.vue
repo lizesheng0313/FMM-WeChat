@@ -1,12 +1,4 @@
-<!--
- * @Author: lizesheng
- * @Date: 2023-03-25 14:51:26
- * @LastEditors: lizesheng
- * @LastEditTime: 2023-05-06 14:18:45
- * @important: 重要提醒
- * @Description: 备注内容
- * @FilePath: /shop/src/pagesA/orderList/index.vue
--->
+
 <template>
   <view class="order_list">
     <scroll-view scrollX class="order_select_box">
@@ -72,6 +64,7 @@
 </template>
 
 <script setup>
+import constConfig from '../../config/confg'
 var plugin = requirePlugin("logisticsPlugin")
 import config from "../../config/confg";
 import Taro, { useDidShow, useLoad, useReachBottom } from '@tarojs/taro'
@@ -317,7 +310,7 @@ useReachBottom(() => {
 
 const onShareAppMessage = () => {
   return {
-    title: '肥猫猫情趣商城',
+    title: constConfig.title,
     imageUrl: '',
     path: '/pages/index/index'
   }

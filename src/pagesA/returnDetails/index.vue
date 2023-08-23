@@ -122,6 +122,7 @@
 </template>
 
 <script setup>
+import constConfig from '../../config/confg'
 var plugin = requirePlugin("logisticsPlugin")
 import Taro from '@tarojs/taro'
 import { useLoad } from '@tarojs/taro'
@@ -247,7 +248,7 @@ const handleChecklogistics = () => {
 }
 const onShareAppMessage = () => {
   return {
-    title: '肥猫猫情趣商城',
+    title: constConfig.title,
     imageUrl: '',
     path: '/pages/index/index'
   }

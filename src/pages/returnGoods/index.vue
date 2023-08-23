@@ -138,7 +138,7 @@ async function handleSubmit() {
 
 const onShareAppMessage = () => {
   return {
-    title: '肥猫猫情趣商城',
+    title: constConfig.title,
     imageUrl: '',
     path: '/pages/index/index'
   }

@@ -1,12 +1,3 @@
-<!--
- * @Author: lizesheng
- * @Date: 2023-03-25 14:51:26
- * @LastEditors: lizesheng
- * @LastEditTime: 2023-05-06 14:18:39
- * @important: 重要提醒
- * @Description: 备注内容
- * @FilePath: /shop/src/pages/order/index.vue
--->
 <template>
   <view class="order">
     <view class="header">
@@ -70,6 +61,7 @@
 </template>
 
 <script setup>
+import constConfig from '../../config/confg'
 import Taro from '@tarojs/taro'
 import { useDidShow } from '@tarojs/taro'
 import { get, post } from '../../utils/request'
@@ -77,7 +69,6 @@ import { ref, reactive, watch } from 'vue'
 import childIcon from '../../components/Icon.vue'
 import navTitle from '../../components/navTitle.vue'
 const goodsDetails = ref(JSON.parse(Taro.getStorageSync('goodsInfo')))
-console.log(goodsDetails.value, '----goodsDetails')
 const contactInfo = ref()
 const state = reactive({
   totalNumber: goodsDetails.value?.totalNumber || 1
@@ -188,7 +179,7 @@ const handleChange = (e) => {
 
 const onShareAppMessage = () => {
   return {
-    title: '肥猫猫情趣商城',
+    title: constConfig.title,
     imageUrl: '',
     path: '/pages/index/index'
   }

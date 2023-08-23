@@ -23,6 +23,7 @@
 </template>
 
 <script setup>
+import constConfig from '../../config/confg'
 import Taro, { useReachBottom, useLoad } from '@tarojs/taro'
 import { get } from '../../utils/request'
 import { ref, reactive } from 'vue'
@@ -95,7 +96,7 @@ useReachBottom(() => {
 
 const onShareAppMessage = () => {
   return {
-    title: '肥猫猫情趣商城',
+    title: constConfig.title,
     imageUrl: '',
     path: '/pages/index/index'
   }

@@ -1,12 +1,4 @@
-<!--
- * @Author: lizesheng
- * @Date: 2023-03-25 14:51:26
- * @LastEditors: lizesheng
- * @LastEditTime: 2023-05-06 14:17:36
- * @important: 重要提醒
- * @Description: 备注内容
- * @FilePath: /shop/src/pages/returnList/index.vue
--->
+
 <template>
   <view class="order_list">
     <view class="order_details">
@@ -39,6 +31,7 @@
 </template>
 
 <script setup>
+import constConfig from '../../config/confg'
 import Taro, { useDidShow, useLoad, useReachBottom } from '@tarojs/taro'
 import { get, post } from '../../utils/request'
 import { ref, reactive } from 'vue'
@@ -97,7 +90,7 @@ useReachBottom(() => {
 
 const onShareAppMessage = () => {
   return {
-    title: '肥猫猫情趣商城',
+    title: constConfig.title,
     imageUrl: '',
     path: '/pages/index/index'
   }

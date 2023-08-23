@@ -1,12 +1,4 @@
-<!--
- * @Author: lizesheng
- * @Date: 2023-03-07 12:29:47
- * @LastEditors: lizesheng
- * @LastEditTime: 2023-05-06 14:19:07
- * @important: 重要提醒
- * @Description: 备注内容
- * @FilePath: /shop/src/pages/myIndex/index.vue
--->
+
 <template>
   <view class="my-index">
     <view class="header flexCenter">
@@ -52,6 +44,7 @@
 </template>
 
 <script setup>
+import constConfig from '../../config/confg'
 import Taro, { useRouter } from '@tarojs/taro'
 import { useDidShow } from '@tarojs/taro'
 import { get } from '../../utils/request'
@@ -135,7 +128,7 @@ const orderList = ref([
 ])
 const onShareAppMessage = () => {
   return {
-    title: '肥猫猫情趣商城',
+    title: constConfig.title,
     imageUrl: '',
     path: '/pages/index/index'
   }

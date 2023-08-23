@@ -1,12 +1,4 @@
-<!--
- * @Author: lizesheng
- * @Date: 2023-03-25 14:51:26
- * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-26 16:20:34
- * @important: 重要提醒
- * @Description: 备注内容
- * @FilePath: /shop/src/pages/addressManage/index.vue
--->
+
 <template>
   <view class="address-manage">
     <view class="flexCenter address_box">
@@ -43,6 +35,7 @@
 </template>
 
 <script setup>
+import constConfig from '../../config/confg'
 import Taro, { useRouter } from '@tarojs/taro'
 import { post } from '../../utils/request'
 import { ref, reactive } from 'vue'
@@ -92,7 +85,7 @@ const handleSave = () => {
 
 const onShareAppMessage = () => {
   return {
-    title: '肥猫猫情趣商城',
+    title: constConfig.title,
     imageUrl: '',
     path: '/pages/index/index'
   }

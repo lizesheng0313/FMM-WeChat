@@ -5,7 +5,7 @@
       <div style="{text-align: center;font-size:28px;font-weight:bold}">用户服务协议</div>
       <br />
       <div>
-        欢迎使用肥猫猫情趣商城（以下简称&ldquo;本商城&rdquo;）服务，本协议是您（以下简称&ldquo;用户&rdquo;）与本商城之间的法律协议。在使用本商城服务之前，请您仔细阅读本协议。如果您不同意本协议的任何内容，请您立即停止使用本商城服务。如果您使用本商城服务，则视为您已经完全同意本协议的所有内容。
+        欢迎使用{{constConfig.title}}（以下简称&ldquo;本商城&rdquo;）服务，本协议是您（以下简称&ldquo;用户&rdquo;）与本商城之间的法律协议。在使用本商城服务之前，请您仔细阅读本协议。如果您不同意本协议的任何内容，请您立即停止使用本商城服务。如果您使用本商城服务，则视为您已经完全同意本协议的所有内容。
       </div>
       <br />
       <div>一、服务条款</div>
@@ -119,9 +119,10 @@
   </view>
 </template>
 <script setup>
+import constConfig from '../../config/confg'
 const onShareAppMessage = () => {
   return {
-    title: '肥猫猫情趣商城',
+    title: constConfig.title,
     imageUrl: '',
     path: '/pages/index/index'
   }

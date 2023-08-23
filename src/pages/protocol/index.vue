@@ -1,17 +1,8 @@
-<!--
- * @Author: lizesheng
- * @Date: 2023-04-25 16:28:16
- * @LastEditors: lizesheng
- * @LastEditTime: 2023-04-26 16:22:11
- * @important: 重要提醒
- * @Description: 备注内容
- * @FilePath: /shop/src/pages/protocol/index.vue
--->
 
 <template>
   <view>
     <div>
-      <div style="{text-align: center;font-size:28px;font-weight:bold}">肥猫猫情趣商城用户隐私政策</div>
+      <div style="{text-align: center;font-size:28px;font-weight:bold}">{{constConfig.title}}用户隐私政策</div>
       <br />
       <div>我们非常重视用户的隐私，本政策将说明我们会收集哪些信息以及如何使用、保护和共享这些信息。请您在使用我们的产品或服务前，仔细阅读并了解本政策的内容。如您不同意本政策的任何内容，请您立即停止使用我们的服务。</div>
       <br />
@@ -88,9 +79,10 @@
   </view>
 </template>
 <script setup>
+import constConfig from '../../config/confg'
 const onShareAppMessage = () => {
   return {
-    title: '肥猫猫情趣商城',
+    title: constConfig.title,
     imageUrl: '',
     path: '/pages/index/index'
   }

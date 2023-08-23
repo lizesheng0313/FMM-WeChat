@@ -83,6 +83,7 @@
 </template>
 
 <script setup>
+import constConfig from '../../config/confg'
 var plugin = requirePlugin("logisticsPlugin")
 import Taro, { useDidShow, useDidHide, useUnload, useLoad } from '@tarojs/taro'
 import { get, post } from '../../utils/request'
@@ -278,7 +279,7 @@ const handleCopyTextToClipboard = () => {
 
 const onShareAppMessage = () => {
   return {
-    title: '肥猫猫情趣商城',
+    title: constConfig.title,
     imageUrl: '',
     path: '/pages/index/index'
   }

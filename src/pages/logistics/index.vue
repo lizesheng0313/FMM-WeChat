@@ -36,6 +36,7 @@
 </template>
 
 <script setup>
+import constConfig from '../../config/confg'
 import Taro, { useRouter, useLoad } from '@tarojs/taro'
 import { post } from '../../utils/request'
 import { ref, reactive } from 'vue'
@@ -45,7 +46,6 @@ import { logisticsCompanies } from './constant'
 const goodsInfo = ref('')
 const logisticsInfo = ref('')
 useLoad((e) => {
-  console.log(e, '----e')
   const waybill_token = e.waybill_token
   post('/api/order/getLogistics', {
     waybill_token
@@ -68,7 +68,7 @@ const handleCopyTextToClipboard = (data) => {
 
 const onShareAppMessage = () => {
   return {
-    title: '肥猫猫情趣商城',
+    title: constConfig.title,
     imageUrl: '',
     path: '/pages/index/index'
   }

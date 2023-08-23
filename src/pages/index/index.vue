@@ -4,7 +4,7 @@
       <view class="header-top"></view>
       <view class="header">
         <view class="title" :style="{ height: `${navHeight}px`, paddingTop: `${statusHeight}px` }">
-          <text class="top">肥猫猫商城</text>
+          <text class="top">{{constConfig.title}}</text>
           <text class="tip">私密发货</text>
         </view>
         <view class="search" @tap="handleJumpSearch">
@@ -56,8 +56,8 @@
     </view>
     <scroll-view :scroll-x="true">
       <view class="home_type">
-        <view v-for="(item, index) in randomList" :key="item.value" class="home_item"
-          :class="{ 'active': currentSelect === index }" @tap="toggleSelect(index, item.value)">
+        <view v-for="(item, index) in randomList" :key="item.id" class="home_item"
+          :class="{ 'active': currentSelect === index }" @tap="toggleSelect(index, item.id)">
           <view>{{ item.label }}</view>
         </view>
       </view>
@@ -69,6 +69,7 @@
 </template>
 
 <script setup>
+import constConfig from '../../config/confg'
 import Taro, { useReachBottom } from '@tarojs/taro'
 import { get } from '../../utils/request'
 import childIcon from '../../components/Icon.vue'
@@ -112,12 +113,12 @@ const handleJump = (item) => {
 }
 const total = ref(0)
 get('/api/home/getClassifcation',{is_show_home:1}).then(res=>{
-  iconList.value = res?.data
+  iconList.value = res?.data?.list
 })
 get('/api/home/getBanner').then(res => {
   swiperList.value = res.data.list
 })
-get('/api/home/getClassifcation').then(res => {
+get('/api/home/getClassRecommendIfcation').then(res => {
   randomList.value = getRandomItems(res.data.list, res.data.list?.length)
   currentWatch.value = randomList.value[0].id
 })
@@ -207,7 +208,7 @@ useReachBottom(() => {
 
 const onShareAppMessage = () => {
   return {
-    title: '肥猫猫情趣商城',
+    title: constConfig.title,
     imageUrl: '',
     path: '/pages/index/index'
   }

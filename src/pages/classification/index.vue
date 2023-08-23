@@ -14,7 +14,7 @@
       </view>
 
       <scroll-view class="sub-category" scroll-y>
-        <view v-for="(item, index) in rightList" :key="index" class="sub_first" :id="'a' + leftList[index].value">
+        <view v-for="(item, index) in rightList" :key="index" class="sub_first" :id="'a' + leftList[index].id">
           <view class="category_title">
             <view class="line"></view>
             <view class="title">{{ leftList[index].label }}</view>
@@ -22,7 +22,7 @@
           </view>
           <view class="sub_box">
             <view v-for="(it, i) in item" @tap="handleSubItemClick(it)" class="sub-category-item">
-              <image class="sub-category-image" :src="it?.picture"></image>
+              <image class="sub-category-image" :src="it?.icon"></image>
               <view class="item-header">{{ it.label }}</view>
             </view>
           </view>
@@ -37,6 +37,7 @@ import Taro, { useLoad, usePageScroll } from '@tarojs/taro'
 import { ref } from 'vue';
 import { get, post } from '../../utils/request'
 import childIcon from '../../components/Icon.vue'
+import constConfig from '../../config/confg'
 
 
 const leftList = ref([]);
@@ -93,7 +94,7 @@ function handleItemClick(item, index) {
 
 function handleSubItemClick(item) {
   Taro.navigateTo({
-    url: '/pages/goodsList/index?classification=' + item.value
+    url: '/pages/goodsList/index?classification=' + item.id
   })
 }
 
@@ -109,7 +110,7 @@ function handleSearch() {
 
 const onShareAppMessage = () => {
   return {
-    title: '肥猫猫情趣商城',
+    title: constConfig.title,
     imageUrl: '',
     path: '/pages/index/index'
   }
