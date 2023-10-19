@@ -87,14 +87,14 @@ const handleChooseAddress = () => {
         province: res.provinceName,
         city: res.cityName + res.countyName,
         streetName: res.streetName,
-        address: res.detailInfoNew,
+        address: res.detailInfoNew || '',
         name: res.userName,
         phone: res.telNumber,
       }).then(result => {
         handleConfirmAddress({
           id: result.data.id,
           name: res.userName,
-          address: res.provinceName + res.cityName + res.countyName + res.streetName + res.detailInfoNew,
+          address: res.provinceName + res.cityName + res.countyName + res.streetName + res.detailInfoNew || '',
           phone: res.telNumber,
         })
       })

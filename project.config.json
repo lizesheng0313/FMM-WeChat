@@ -1,8 +1,6 @@
 {
   "miniprogramRoot": "dist/",
-  "projectname": "shop",
   "description": "电商",
-  "appid": "wx67961123d36e6395",
   "setting": {
     "ignoreDevUnusedFiles": false,
     "ignoreUploadUnusedFiles": true,
@@ -25,8 +23,6 @@
     "compileHotReLoad": false,
     "lazyloadPlaceholderEnable": false,
     "useMultiFrameRuntime": true,
-    "useApiHook": true,
-    "useApiHostProcess": true,
     "babelSetting": {
       "ignore": [],
       "disablePlugins": [],
@@ -43,15 +39,15 @@
     "condition": false
   },
   "compileType": "miniprogram",
-  "libVersion": "2.30.2",
   "condition": {},
   "srcMiniprogramRoot": "dist/",
+  "editorSetting": {
+    "tabIndent": "insertSpaces",
+    "tabSize": 2
+  },
   "packOptions": {
     "ignore": [],
     "include": []
   },
-  "editorSetting": {
-    "tabIndent": "insertSpaces",
-    "tabSize": 2
-  }
+  "appid": "wxffc5fef7803aaee2"
 }

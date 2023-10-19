@@ -433,6 +433,8 @@ function handlePlus() {
 
     .tag_children {
       flex-wrap: wrap;
+      overflow-y: auto; /* 这里添加滚动条，内容超出时会出现垂直滚动条 */
+     max-height: 350px; /* 设置最大高度，当内容超过这个高度时会出现滚动条 */
     }
 
     .spec_box {

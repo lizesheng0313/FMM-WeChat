@@ -133,10 +133,10 @@
     }
   },
   "setting": {
-    "compileHotReLoad": false,
-    "urlCheck": false,
+    "compileHotReLoad": true,
+    "urlCheck": true,
     "bigPackageSizeSupport": false
   },
   "libVersion": "2.30.4",
-  "projectname": "肥猫猫情趣商城"
+  "projectname": "%E8%82%A5%E7%8C%AB%E7%8C%AB%E6%83%85%E8%B6%A3%E5%95%86%E5%9F%8E"
 }

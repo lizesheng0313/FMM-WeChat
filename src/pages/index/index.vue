@@ -5,7 +5,7 @@
       <view class="header">
         <view class="title" :style="{ height: `${navHeight}px`, paddingTop: `${statusHeight}px` }">
           <text class="top">{{constConfig.title}}</text>
-          <text class="tip">私密发货</text>
+          <text class="tip">全场包邮</text>
         </view>
         <view class="search" @tap="handleJumpSearch">
           <child-icon value="icon-sousuo" size="18" />

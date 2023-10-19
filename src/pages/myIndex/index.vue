@@ -4,7 +4,7 @@
     <view class="header flexCenter">
       <image src="https://static.zjkdongao.com/image/tmp_74a9501757289358b6455212f2553567.jpg" class="header_img"></image>
       <view class="user-info">
-        <view>快乐小白兔</view>
+        <view>快乐肥猫</view>
         <view class="vip flexCenterAll">普通用户</view>
       </view>
     </view>
