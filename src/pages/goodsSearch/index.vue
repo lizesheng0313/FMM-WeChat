@@ -1,10 +1,17 @@
-
 <template>
   <view class="goods-search">
     <view class="search">
       <child-icon value="icon-sousuo" size="20" class="icon" />
-      <input bindconfirm="onSearch" :value="handleSearch" @input="handleChange" class="search-icon" placeholder="请输入相关关键词"
-        placeholder-class="placeholder-class" @confirm="handleSearch" confirm-type="search" />
+      <input
+        bindconfirm="onSearch"
+        :value="searchValue"
+        @input="handleChange"
+        class="search-icon"
+        placeholder="请输入相关关键词"
+        placeholder-class="placeholder-class"
+        @confirm="handleSearch"
+        confirm-type="search"
+      />
       <view @tap="handleSearch">搜索</view>
     </view>
     <searchListView :searchList="searchList"></searchListView>
@@ -16,87 +23,88 @@
           <view class="line"></view>
         </view>
       </view>
-      <productList :productList="recommendList" :borderShow="true"></productList>
+      <productList
+        :productList="recommendList"
+        :borderShow="true"
+      ></productList>
     </view>
   </view>
 </template>
 
 <script setup>
-import constConfig from '../../config/confg'
-import Taro, { useReachBottom, useLoad } from '@tarojs/taro'
-import { get } from '../../utils/request'
-import { ref, reactive } from 'vue'
-import searchListView from '../../components/searchList.vue'
-import childIcon from '../../components/Icon.vue'
-import productList from '../../components/Product.vue'
-const searchValue = ref('')
+import constConfig from "../../config/confg";
+import Taro, { useReachBottom, useLoad } from "@tarojs/taro";
+import { get } from "../../utils/request";
+import { ref, reactive } from "vue";
+import searchListView from "../../components/searchList.vue";
+import childIcon from "../../components/Icon.vue";
+import productList from "../../components/Product.vue";
+const searchValue = ref("");
 const page = reactive({
   pageIndex: 1,
-  pageSize: 10
-})
-const isLoad = ref('false')
-const total = ref(0)
+  pageSize: 10,
+});
+const isLoad = ref("false");
+const total = ref(0);
 const handleChange = (e) => {
   searchValue.value = e.target.value;
-}
-const recommendList = ref([])
+};
+const recommendList = ref([]);
 useLoad((e) => {
   if (e.keyword) {
-    searchValue.value = e.keyword
-    handleSearch()
+    searchValue.value = e.keyword;
+    handleSearch();
   }
-  get('/api/home/getHomeGoods', { recommend: 1 }).then(res => {
-    recommendList.value = res.data.list
-  })
-})
-const searchList = ref([])
+  get("/api/home/getHomeGoods", { recommend: 1 }).then((res) => {
+    recommendList.value = res.data.list;
+  });
+});
+const searchList = ref([]);
 const handleSearch = () => {
   Taro.showLoading({
-    title: '搜索中...',
-    mask: true
-  })
-  get('/api/searchGoods', {
+    title: "搜索中...",
+    mask: true,
+  });
+  get("/api/searchGoods", {
     keyword: searchValue.value,
     pageIndex: page.pageIndex,
-    pageSize: page.pageSize
-  }).then(res => {
-    isLoad.value = true
-    page.pageIndex = 1
-    Taro.hideLoading()
-    searchList.value = res.data.list
-    total.value = res.data.total
-  })
-}
+    pageSize: page.pageSize,
+  }).then((res) => {
+    isLoad.value = true;
+    page.pageIndex = 1;
+    Taro.hideLoading();
+    searchList.value = res.data.list;
+    total.value = res.data.total;
+  });
+};
 
 // 下拉加载事件
 useReachBottom(() => {
   if (searchList.value?.length < total.value) {
     Taro.showLoading({
-      title: '搜索中...',
-      mask: true
-    })
-    get('/api/searchGoods', {
+      title: "搜索中...",
+      mask: true,
+    });
+    get("/api/searchGoods", {
       keyword: searchValue.value,
       pageIndex: page.pageIndex,
-      pageSize: page.pageSize
-    }).then(res => {
-      page.pageIndex += 1
-      Taro.hideLoading()
-      searchList.value = searchList.value.concat(res.data.list)
-      total.value = res.data.total
-    })
+      pageSize: page.pageSize,
+    }).then((res) => {
+      page.pageIndex += 1;
+      Taro.hideLoading();
+      searchList.value = searchList.value.concat(res.data.list);
+      total.value = res.data.total;
+    });
   }
-})
+});
 
 const onShareAppMessage = () => {
   return {
     title: constConfig.title,
-    imageUrl: '',
-    path: '/pages/index/index'
-  }
-}
-
-
+    imageUrl: "",
+    path: "/pages/index/index",
+  };
+};
 </script>
 <style lang="scss">
 .goods-search {
@@ -109,7 +117,7 @@ const onShareAppMessage = () => {
 
     input {
       flex-grow: 1;
-      background: #F5F5F5;
+      background: #f5f5f5;
       border-radius: 100px;
       margin-right: 30px;
       height: 60px;

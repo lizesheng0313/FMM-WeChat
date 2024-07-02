@@ -2,26 +2,47 @@
   <view class="category">
     <view class="search">
       <child-icon value="icon-sousuo" size="20" class="icon" />
-      <input bindconfirm="onSearch" :value="handleSearch" @input="handleSearchInput" class="search-icon"
-        placeholder="请输入相关关键词" placeholder-class="placeholder-class" @confirm="handleSearch" confirm-type="search" />
+      <input
+        bindconfirm="onSearch"
+        :value="searchValue"
+        @input="handleSearchInput"
+        class="search-icon"
+        placeholder="请输入相关关键词"
+        placeholder-class="placeholder-class"
+        @confirm="handleSearch"
+        confirm-type="search"
+      />
     </view>
     <view class="category-wrapper">
       <view class="category-left">
-        <view v-for="(item, index) in leftList" :key="index"
-          :class="['category-item', { active: currentIndex === index }]" @tap="handleItemClick(item, index)">
+        <view
+          v-for="(item, index) in leftList"
+          :key="index"
+          :class="['category-item', { active: currentIndex === index }]"
+          @tap="handleItemClick(item, index)"
+        >
           {{ item.label }}
         </view>
       </view>
 
       <scroll-view class="sub-category" scroll-y>
-        <view v-for="(item, index) in rightList" :key="index" class="sub_first" :id="'a' + leftList[index].id">
+        <view
+          v-for="(item, index) in rightList"
+          :key="index"
+          class="sub_first"
+          :id="'a' + leftList[index].id"
+        >
           <view class="category_title">
             <view class="line"></view>
             <view class="title">{{ leftList[index].label }}</view>
             <view class="line"></view>
           </view>
           <view class="sub_box">
-            <view v-for="(it, i) in item" @tap="handleSubItemClick(it)" class="sub-category-item">
+            <view
+              v-for="(it, i) in item"
+              @tap="handleSubItemClick(it)"
+              class="sub-category-item"
+            >
               <image class="sub-category-image" :src="it?.icon"></image>
               <view class="item-header">{{ it.label }}</view>
             </view>
@@ -33,41 +54,39 @@
 </template>
 
 <script setup>
-import Taro, { useLoad, usePageScroll } from '@tarojs/taro'
-import { ref } from 'vue';
-import { get, post } from '../../utils/request'
-import childIcon from '../../components/Icon.vue'
-import constConfig from '../../config/confg'
-
+import Taro, { useLoad, usePageScroll } from "@tarojs/taro";
+import { ref } from "vue";
+import { get, post } from "../../utils/request";
+import childIcon from "../../components/Icon.vue";
+import constConfig from "../../config/confg";
 
 const leftList = ref([]);
 const rightList = ref([]);
 const currentIndex = ref(0);
-const searchValue = ref('');
-const targetRects = ref()
-const app = Taro.getAccountInfoSync()
+const searchValue = ref("");
+const targetRects = ref();
+const app = Taro.getAccountInfoSync();
 useLoad(() => {
-  getClassification()
-})
+  getClassification();
+});
 
 async function getClassification() {
   try {
-    const { data } = await get('/api/goods/getClassiFication',{
-      eid:app?.miniProgram?.appId,
+    const { data } = await get("/api/goods/getClassiFication", {
+      eid: app?.miniProgram?.appId,
     });
     leftList.value = data.leftList;
     rightList.value = data.rightList;
     currentIndex.value = 0;
     setTimeout(() => {
       Taro.createSelectorQuery()
-        .selectAll('.sub_first')
+        .selectAll(".sub_first")
         .boundingClientRect((rects) => {
-          targetRects.value = rects
+          targetRects.value = rects;
         })
-        .exec()
-    }, 10)
+        .exec();
+    }, 10);
   } catch (err) {
-
     console.log(err);
   }
 }
@@ -75,48 +94,47 @@ async function getClassification() {
 usePageScroll((event) => {
   if (targetRects.value) {
     for (let i = targetRects.value.length - 1; i >= 0; i--) {
-      const rect = targetRects.value[i]
+      const rect = targetRects.value[i];
       if (event.scrollTop + 50 >= rect.top) {
-        currentIndex.value = i
+        currentIndex.value = i;
         break;
       }
     }
   }
-})
+});
 
 function handleItemClick(item, index) {
   currentIndex.value = index;
   Taro.pageScrollTo({
-    selector: '#a' + item.value,
-    duration: 300
-  })
+    selector: "#a" + item.value,
+    duration: 300,
+  });
 }
 
 function handleSubItemClick(item) {
   Taro.navigateTo({
-    url: '/pages/goodsList/index?classification=' + item.id
-  })
+    url: "/pages/goodsList/index?classification=" + item.id,
+  });
 }
 
 function handleSearchInput(event) {
+  console.log(event, "---event");
   searchValue.value = event.target.value;
 }
 
 function handleSearch() {
   Taro.navigateTo({
-    url: '/pages/goodsList/index?keyword=' + searchValue.value
-  })
+    url: "/pages/goodsList/index?keyword=" + searchValue.value,
+  });
 }
 
 const onShareAppMessage = () => {
   return {
     title: constConfig.title,
-    imageUrl: '',
-    path: '/pages/index/index'
-  }
-}
-
-
+    imageUrl: "",
+    path: "/pages/index/index",
+  };
+};
 </script>
 
 <style lang="scss">
@@ -136,7 +154,7 @@ const onShareAppMessage = () => {
 
     input {
       flex-grow: 1;
-      background: #F5F5F5;
+      background: #f5f5f5;
       border-radius: 100px;
       height: 60px;
       padding-left: 70px;
@@ -204,8 +222,6 @@ const onShareAppMessage = () => {
   height: calc(100% - 70px);
 }
 
-
-
 .category-left {
   top: 80px;
   width: 200px;
@@ -229,16 +245,13 @@ const onShareAppMessage = () => {
   }
 
   .category-item.active {
-    color: #E8443A;
+    color: #e8443a;
     font-weight: bold;
     background-color: #fff;
-    border-left: 2px solid #E8443A;
+    border-left: 2px solid #e8443a;
     border-bottom: 1px solid #fff;
   }
 }
-
-
-
 
 .sub-category {
   margin-top: 100px;

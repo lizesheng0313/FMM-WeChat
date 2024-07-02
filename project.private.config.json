@@ -134,7 +134,7 @@
   },
   "setting": {
     "compileHotReLoad": true,
-    "urlCheck": true,
+    "urlCheck": false,
     "bigPackageSizeSupport": false
   },
   "libVersion": "2.30.4",

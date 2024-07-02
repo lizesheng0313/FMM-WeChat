@@ -11,7 +11,7 @@
   <view class="goods-search">
     <view class="search">
       <child-icon value="icon-sousuo" size="20" class="icon" />
-      <input bindconfirm="onSearch" :value="handleSearch" @input="handleChange" class="search-icon" placeholder="请输入相关关键词"
+      <input bindconfirm="onSearch" :value="searchValue" @input="handleChange" class="search-icon" placeholder="请输入相关关键词"
         placeholder-class="placeholder-class" @confirm="handleSearch" confirm-type="search" />
     </view>
     <product :productList="searchList" :borderShow="true"></product>
