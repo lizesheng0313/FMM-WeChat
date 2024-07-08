@@ -128,6 +128,13 @@
           "query": "",
           "launchMode": "default",
           "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/protocol/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
         }
       ]
     }
@@ -137,6 +144,6 @@
     "urlCheck": false,
     "bigPackageSizeSupport": false
   },
-  "libVersion": "2.30.4",
+  "libVersion": "3.4.9",
   "projectname": "%E8%82%A5%E7%8C%AB%E7%8C%AB%E6%83%85%E8%B6%A3%E5%95%86%E5%9F%8E"
 }

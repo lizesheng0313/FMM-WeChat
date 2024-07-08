@@ -10,16 +10,36 @@
     <view class="form-group">
       <view class="flexBetWeenCenter reason">
         <view class="form-label">申请原因：</view>
-        <picker class="form-control" mode="selector" :range="reasonList" @change="handleReasonSelected">
-          <view class="picker-content">{{ returnGoods.reason || '请选择申请原因' }}</view>
+        <picker
+          class="form-control"
+          mode="selector"
+          :range="reasonList"
+          @change="handleReasonSelected"
+        >
+          <view class="picker-content">{{
+            returnGoods.reason || "请选择申请原因"
+          }}</view>
         </picker>
       </view>
       <view>
-        <input class="memo" placeholder="请描述申请售后服务的具体原因" @input="handleMemoIput" />
+        <input
+          class="memo"
+          placeholder="请描述申请售后服务的具体原因"
+          @input="handleMemoIput"
+        />
       </view>
       <view class="flex">
-        <image @tap="() => { handlePreviewImage(item) }" v-for="(item, index) in returnGoods?.picture_list" :src="item"
-          mode="aspectFill" class="image-preview" />
+        <image
+          @tap="
+            () => {
+              handlePreviewImage(item);
+            }
+          "
+          v-for="(item, index) in returnGoods?.picture_list"
+          :src="item"
+          mode="aspectFill"
+          class="image-preview"
+        />
         <view class="btn-upload" @tap="handleUploadImage">
           <childIcon value="icon-zhaoxiangji" size="25"></childIcon>
           <view>添加图片</view>
@@ -32,37 +52,37 @@
 </template>
 
 <script setup>
-import Taro, { useLoad } from '@tarojs/taro'
-import { ref } from 'vue';
-import { get, post } from '../../utils/request'
-import childIcon from '../../components/Icon.vue'
-import { getCurrentDate } from '../../utils/utils'
-import constConfig from '../../config/confg'
-const goodsDetails = ref('')
+import Taro, { useLoad } from "@tarojs/taro";
+import { ref } from "vue";
+import { get, post } from "../../utils/request";
+import childIcon from "../../components/Icon.vue";
+import { getCurrentDate } from "../../utils/utils";
+import constConfig from "../../config/confg";
+const goodsDetails = ref("");
 useLoad((e) => {
-  fetchDetails(e.id)
-})
+  fetchDetails(e.id);
+});
 
 const fetchDetails = (id) => {
-  returnGoods.value.id = id
-  get('/api/order/getOrderDetails', {
-    id
-  }).then(res => {
-    goodsDetails.value = res.data
-  })
-}
+  returnGoods.value.id = id;
+  get("/api/order/getOrderDetails", {
+    id,
+  }).then((res) => {
+    goodsDetails.value = res.data;
+  });
+};
 
-const reasonList = ['商品质量/故障', '少件/发错货/未收到货', '其它'];
+const reasonList = ["商品质量/故障", "少件/发错货/未收到货", "其它"];
 const returnGoods = ref({
-  id: '',
-  memo: '',
-  reason: '',
-  picture_list: []
-})
+  id: "",
+  memo: "",
+  reason: "",
+  picture_list: [],
+});
 
 const handleMemoIput = (event) => {
   returnGoods.value.memo = event.detail.value;
-}
+};
 
 function handleReasonSelected(event) {
   const selectedIndex = event.detail.value;
@@ -74,81 +94,86 @@ const handlePreviewImage = (item) => {
     urls: returnGoods.value?.picture_list,
     current: item,
     // 其他选项...
-  })
-}
+  });
+};
 
 async function handleUploadImage() {
   try {
     Taro.chooseImage({
       count: 1,
-      sizeType: ['compressed'],
-      sourceType: ['album', 'camera'],
+      sizeType: ["compressed"],
+      sourceType: ["album", "camera"],
       success: function (res) {
         Taro.showLoading({
-          title: '上传中'
+          title: "上传中",
         });
         Taro.uploadFile({
-          url: `${constConfig.host}/api/uploadImage`,
+          url: `${constConfig.host}/api/admin/upload`,
           filePath: res.tempFilePaths[0],
-          name: 'file',
+          name: "file",
+          formData: {
+            type: "goods_return",
+          },
           header: {
-            'authorization': wx.getStorageSync('authorization') || ''
+            type: "returnImage",
+            authorization: wx.getStorageSync("authorization") || "",
           },
           success(res) {
             Taro.hideLoading();
-            const response = JSON.parse(res.data)
-            returnGoods.value.picture_list.push(`${constConfig.staticHost}${response.data.fileName}`)
+            const response = JSON.parse(res.data);
+            returnGoods.value.picture_list.push(
+              `${constConfig.staticHost}/return_images/${response.data.fileName}`
+            );
           },
           fail() {
             wx.showToast({
-              title: '上传失败',
-              icon: 'none',
+              title: "上传失败",
+              icon: "none",
             });
-          }
-        })
-      }
+          },
+        });
+      },
     });
   } catch (err) {
     wx.showToast({
       title: err,
-      icon: 'none',
+      icon: "none",
     });
-    console.log(err)
+    console.log(err);
   }
 }
 
 async function handleSubmit() {
   if (!returnGoods.value.reason) {
     Taro.showToast({
-      title: '请输入完整信息',
-      icon: 'none'
-    })
+      title: "请输入完整信息",
+      icon: "none",
+    });
     return;
   }
   const params = {
     ...returnGoods.value,
-    picture_list: returnGoods.value.picture_list.join(',')
-  }
-  post('/api/order/returnGoods', params).then(res => {
+    picture_list: returnGoods.value.picture_list.join(","),
+  };
+  post("/api/order/returnGoods", params).then((res) => {
     Taro.redirectTo({
-      url: '/pagesA/returnDetails/index?id=' + res.data
-    })
-  })
+      url: "/pagesA/returnDetails/index?id=" + res.data,
+    });
+  });
 }
 
 const onShareAppMessage = () => {
   return {
     title: constConfig.title,
-    imageUrl: '',
-    path: '/pages/index/index'
-  }
-}
-
+    imageUrl: "",
+    path: "/pages/index/index",
+  };
+};
 </script>
 
-<style  lang="scss">
+<style lang="scss">
 .return-goods {
-  background: #F0F1F3;
+  background: #f0f1f3;
   min-height: 100vh;
 
   .goods_info {
@@ -169,13 +194,13 @@ const onShareAppMessage = () => {
     }
 
     .sku {
-      color: #A8A8A8;
+      color: #a8a8a8;
       font-size: 24px;
     }
 
     .price {
       margin-top: 10px;
-      color: #E8443A;
+      color: #e8443a;
       font-weight: bold;
       font-size: 30px;
     }
@@ -231,7 +256,7 @@ const onShareAppMessage = () => {
     color: #333;
 
     .total {
-      color: #A8A8A8;
+      color: #a8a8a8;
     }
   }
 
@@ -240,6 +265,5 @@ const onShareAppMessage = () => {
     height: 150px;
     margin-right: 10px;
   }
-
 }
 </style>
