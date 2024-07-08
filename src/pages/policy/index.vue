@@ -1,6 +1,6 @@
 <template>
   <view>
-    <rich-text :nodes="nodes"></rich-text>
+    <rich-text :nodes="nodes" />
   </view>
 </template>
 <script setup>
