@@ -1,8 +1,7 @@
-
 <template>
   <view class="my-index">
     <view class="header flexCenter">
-      <image src="https://static.zjkdongao.com/image/tmp_74a9501757289358b6455212f2553567.jpg" class="header_img"></image>
+      <image src="https://zjkdongao.com/image/tmp_74a9501757289358b6455212f2553567.jpg" class="header_img"></image>
       <view class="user-info">
         <view>快乐肥猫</view>
         <view class="vip flexCenterAll">普通用户</view>
@@ -18,8 +17,7 @@
       </view>
     </view>
     <view class="order_list flexCenter">
-      <view v-for="item in orderList" @tap="handleJumpOrderList(item)" :key="item?.order"
-        class="order-box flexDSpaceCenterEnd relative">
+      <view v-for="item in orderList" @tap="handleJumpOrderList(item)" :key="item?.order" class="order-box flexDSpaceCenterEnd relative">
         <child-icon :color="item?.color" :value="item?.icon" size="30"></child-icon>
         <view>
           <view>{{ item?.title }}</view>
@@ -44,47 +42,47 @@
 </template>
 
 <script setup>
-import constConfig from '../../config/confg'
-import Taro, { useRouter } from '@tarojs/taro'
-import { useDidShow } from '@tarojs/taro'
-import { get } from '../../utils/request'
-import { ref, reactive } from 'vue'
-import childIcon from '../../components/Icon.vue'
+import constConfig from '../../config/confg';
+import Taro, { useRouter } from '@tarojs/taro';
+import { useDidShow } from '@tarojs/taro';
+import { get } from '../../utils/request';
+import { ref, reactive } from 'vue';
+import childIcon from '../../components/Icon.vue';
 
 useDidShow(() => {
-  get('/api/order/getOrderStatusCount').then(res => {
-    orderList.value[0].value = res.data.pending_payment_count
-    orderList.value[1].value = res.data.pending_delivery_count
-    orderList.value[2].value = res.data.shipped_order_count
-    orderList.value[4].value = res.data.return_order_count
-  })
-})
+  get('/api/order/getOrderStatusCount').then((res) => {
+    orderList.value[0].value = res.data.pending_payment_count;
+    orderList.value[1].value = res.data.pending_delivery_count;
+    orderList.value[2].value = res.data.shipped_order_count;
+    orderList.value[4].value = res.data.return_order_count;
+  });
+});
 
 const handleJumpOrderList = (item) => {
   if (item.title === '退货/退款') {
     Taro.navigateTo({
-      url: '/pagesA/returnList/index'
-    })
-    return
+      url: '/pagesA/returnList/index',
+    });
+    return;
   }
   Taro.navigateTo({
-    url: `/pagesA/orderList/index?order=${item.order}&order_status=${item.order_status || ''}&pay_status=${item.pay_status || ''}`
-  })
-}
+    url: `/pagesA/orderList/index?order=${item.order}&order_status=${item.order_status || ''}&pay_status=${item.pay_status || ''}`,
+  });
+};
 
 const handleJumpInfo = (item) => {
   Taro.navigateTo({
-    url: item.path
-  })
-}
+    url: item.path,
+  });
+};
 const otherList = ref([
   {
     title: '地址管理',
     icon: 'icon-31dingwei',
     path: '/pages/address/index',
-    color: "#000"
-  }
-])
+    color: '#000',
+  },
+]);
 const orderList = ref([
   {
     title: '待付款',
@@ -93,7 +91,6 @@ const orderList = ref([
     value: 0,
     pay_status: '0',
     order_status: '',
-
   },
   {
     title: '待发货',
@@ -109,7 +106,7 @@ const orderList = ref([
     order: 3,
     value: 0,
     pay_status: '',
-    order_status: '20'
+    order_status: '20',
   },
   {
     title: '已完成',
@@ -117,32 +114,32 @@ const orderList = ref([
     order: 4,
     value: 0,
     pay_status: '',
-    order_status: '40'
+    order_status: '40',
   },
   {
     title: '退货/退款',
     icon: 'icon-tuichu',
     value: 0,
-    color: "#000"
+    color: '#000',
   },
-])
+]);
 const onShareAppMessage = () => {
   return {
     title: constConfig.title,
     imageUrl: '',
-    path: '/pages/index/index'
-  }
-}
+    path: '/pages/index/index',
+  };
+};
 </script>
 <style lang="scss">
 .my-index {
   .header {
     margin-top: 20px;
     margin: 30px 20px 20px 20px;
-    background: #E8443A;
+    background: #e8443a;
     border-radius: 15px;
     height: 200px;
-    padding-left: 40px
+    padding-left: 40px;
   }
 
   .total {
@@ -152,9 +149,8 @@ const onShareAppMessage = () => {
     width: 30px;
     height: 30px;
     border-radius: 100px;
-    background: #E8443A;
+    background: #e8443a;
     color: #fff;
-
   }
 
   .order_list {

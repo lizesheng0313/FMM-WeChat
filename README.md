@@ -14,7 +14,7 @@
   演示账号：anshunli
   演示密码：anshunli1994
 - 对应前端小程序
-
+  小程序由于不能提交审核，域名无法更新 需要看效果的可以加我微信 开通体验版本
   <img src="https://zjkdongao.cn/images/default/fmm1.jpg" width="300">
   <img src="https://zjkdongao.cn/images/default/fmm2.jpg" width="300">
 
