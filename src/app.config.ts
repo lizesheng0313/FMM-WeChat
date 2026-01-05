@@ -31,12 +31,12 @@ export default {
         "orderList/index",
         "orderDetails/index",
       ],
-      plugins: {
-        logisticsPlugin: {
-          version: "2.2.28",
-          provider: "wx9ad912bf20548d92",
-        },
-      },
+      // plugins: {
+      //   logisticsPlugin: {
+      //     version: "2.2.28",
+      //     provider: "wx9ad912bf20548d92",
+      //   },
+      // },
     },
   ],
   requiredPrivateInfos: ["chooseAddress"],

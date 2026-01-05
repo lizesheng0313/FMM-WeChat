@@ -72,6 +72,7 @@
 import constConfig from '../../config/confg'
 import Taro, { useReachBottom } from '@tarojs/taro'
 import { get } from '../../utils/request'
+import { formatImageUrl, formatImageList } from '../../utils/utils'
 import childIcon from '../../components/Icon.vue'
 import productVue from '../../components/Product.vue'
 import { ref, watch, reactive,onMounted } from 'vue'
@@ -113,10 +114,16 @@ const handleJump = (item) => {
 }
 const total = ref(0)
 get('/api/home/getClassifcation',{is_show_home:1}).then(res=>{
-  iconList.value = res?.data?.list
+  iconList.value = res?.data?.list?.map(item => ({
+    ...item,
+    icon: formatImageUrl(item.icon)
+  })) || []
 })
 get('/api/home/getBanner').then(res => {
-  swiperList.value = res.data.list
+  swiperList.value = res.data.list?.map(item => ({
+    ...item,
+    url: formatImageUrl(item.url)
+  })) || []
 })
 get('/api/home/getClassRecommendIfcation').then(res => {
   randomList.value = getRandomItems(res.data.list, res.data.list?.length)
@@ -124,10 +131,16 @@ get('/api/home/getClassRecommendIfcation').then(res => {
 })
 
 get('/api/home/getHomeGoods', { recommend: 1}).then(res => {
-  recommendList.value = res.data.list
+  recommendList.value = res.data.list?.map(item => ({
+    ...item,
+    pictureUrl: formatImageUrl(item.pictureUrl)
+  })) || []
 })
 get('/api/home/getHomeGoods', { latest: 1}).then(res => {
-  latestList.value = res.data.list
+  latestList.value = res.data.list?.map(item => ({
+    ...item,
+    pictureUrl: formatImageUrl(item.pictureUrl)
+  })) || []
 })
 
 function handleSubItemClick(item) {
@@ -168,7 +181,10 @@ watch(currentWatch, (newValue, oldValue) => {
   page.classification = newValue
   page.pageIndex = 1
   get('/api/home/getClassGoods', { ...page}).then(res => {
-    classificationList.value = res.data.list
+    classificationList.value = res.data.list?.map(item => ({
+      ...item,
+      pictureUrl: formatImageUrl(item.pictureUrl)
+    })) || []
     total.value = res.data.total
   })
 }
@@ -200,7 +216,11 @@ useReachBottom(() => {
     })
     get('/api/home/getClassGoods', page).then(res => {
       Taro.hideLoading()
-      classificationList.value = classificationList.value.concat(res.data.list)
+      const processedList = res.data.list?.map(item => ({
+        ...item,
+        pictureUrl: formatImageUrl(item.pictureUrl)
+      })) || []
+      classificationList.value = classificationList.value.concat(processedList)
       total.value = res.data.total
     })
   }

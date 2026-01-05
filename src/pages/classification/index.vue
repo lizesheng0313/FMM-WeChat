@@ -57,6 +57,7 @@
 import Taro, { useLoad, usePageScroll } from "@tarojs/taro";
 import { ref } from "vue";
 import { get, post } from "../../utils/request";
+import { formatImageUrl } from "../../utils/utils";
 import childIcon from "../../components/Icon.vue";
 import constConfig from "../../config/confg";
 
@@ -76,7 +77,15 @@ async function getClassification() {
       eid: app?.miniProgram?.appId,
     });
     leftList.value = data.leftList;
-    rightList.value = data.rightList;
+
+    // 格式化右侧分类的图标URL
+    rightList.value = data.rightList.map(categoryGroup =>
+      categoryGroup.map(item => ({
+        ...item,
+        icon: formatImageUrl(item.icon)
+      }))
+    );
+
     currentIndex.value = 0;
     setTimeout(() => {
       Taro.createSelectorQuery()

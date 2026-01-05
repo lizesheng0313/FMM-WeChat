@@ -35,6 +35,7 @@
 import constConfig from "../../config/confg";
 import Taro, { useReachBottom, useLoad } from "@tarojs/taro";
 import { get } from "../../utils/request";
+import { formatImageUrl } from "../../utils/utils";
 import { ref, reactive } from "vue";
 import searchListView from "../../components/searchList.vue";
 import childIcon from "../../components/Icon.vue";
@@ -56,7 +57,10 @@ useLoad((e) => {
     handleSearch();
   }
   get("/api/home/getHomeGoods", { recommend: 1 }).then((res) => {
-    recommendList.value = res.data.list;
+    recommendList.value = res.data.list?.map(item => ({
+      ...item,
+      pictureUrl: formatImageUrl(item.pictureUrl)
+    })) || [];
   });
 });
 const searchList = ref([]);
@@ -73,7 +77,10 @@ const handleSearch = () => {
     isLoad.value = true;
     page.pageIndex = 1;
     Taro.hideLoading();
-    searchList.value = res.data.list;
+    searchList.value = res.data.list?.map(item => ({
+      ...item,
+      pictureUrl: formatImageUrl(item.pictureUrl)
+    })) || [];
     total.value = res.data.total;
   });
 };
@@ -92,7 +99,11 @@ useReachBottom(() => {
     }).then((res) => {
       page.pageIndex += 1;
       Taro.hideLoading();
-      searchList.value = searchList.value.concat(res.data.list);
+      const formattedList = res.data.list?.map(item => ({
+        ...item,
+        pictureUrl: formatImageUrl(item.pictureUrl)
+      })) || [];
+      searchList.value = searchList.value.concat(formattedList);
       total.value = res.data.total;
     });
   }

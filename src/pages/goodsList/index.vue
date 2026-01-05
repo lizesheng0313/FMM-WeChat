@@ -26,6 +26,7 @@
 import constConfig from '../../config/confg'
 import Taro, { useReachBottom, useLoad } from '@tarojs/taro'
 import { get } from '../../utils/request'
+import { formatImageUrl } from '../../utils/utils'
 import { ref, reactive } from 'vue'
 import childIcon from '../../components/Icon.vue'
 import product from '../../components/Product.vue'
@@ -56,7 +57,10 @@ useLoad((e) => {
 
 const handleSearchGoods = () => {
   get('/api/home/getClassGoods', page).then(res => {
-    searchList.value = res.data.list
+    searchList.value = res.data.list?.map(item => ({
+      ...item,
+      pictureUrl: formatImageUrl(item.pictureUrl)
+    })) || []
     total.value = res.data.total
   })
 }
@@ -71,9 +75,11 @@ const handleSearch = () => {
   get('/api/searchGoods', page).then(res => {
     page.pageIndex = 1
     Taro.hideLoading()
-    searchList.value = res.data.list
+    searchList.value = res.data.list?.map(item => ({
+      ...item,
+      pictureUrl: formatImageUrl(item.pictureUrl)
+    })) || []
     total.value = res.data.total
-
   })
 }
 
@@ -88,7 +94,11 @@ useReachBottom(() => {
     const url = page.classification ? '/api/home/getClassGoods' : '/api/searchGoods'
     get(url, page).then(res => {
       Taro.hideLoading()
-      searchList.value = searchList.value.concat(res.data.list)
+      const formattedList = res.data.list?.map(item => ({
+        ...item,
+        pictureUrl: formatImageUrl(item.pictureUrl)
+      })) || []
+      searchList.value = searchList.value.concat(formattedList)
       total.value = res.data.total
     })
   }

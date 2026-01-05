@@ -118,6 +118,7 @@ import { useRouter } from '@tarojs/taro'
 import Taro from '@tarojs/taro'
 import { ref, reactive } from 'vue'
 import { get, post } from '../../utils/request'
+import { formatImageUrl, formatImageList, formatRichText } from '../../utils/utils'
 import childIcon from '../../components/Icon.vue'
 import navTitle from '../../components/navTitle.vue'
 let goodsInfo = {}
@@ -146,6 +147,28 @@ get('/api/goods/getDetails', {
     });
   }
   res.data.specification = result
+
+  // 格式化图片URL
+  if (res.data.pictureList) {
+    res.data.pictureList = formatImageList(res.data.pictureList)
+  }
+  if (res.data.goods_picture) {
+    res.data.goods_picture = formatImageUrl(res.data.goods_picture)
+  }
+
+  // 格式化SKU中的图片
+  if (res.data.sku && Array.isArray(res.data.sku)) {
+    res.data.sku = res.data.sku.map(item => ({
+      ...item,
+      goods_picture: formatImageUrl(item.goods_picture)
+    }))
+  }
+
+  // 格式化富文本中的图片URL
+  if (res.data.introduction) {
+    res.data.introduction = formatRichText(res.data.introduction)
+  }
+
   goodsDetils.value = res.data
   goodsInfo = res.data
   currentSelect.value = goodsDetils.value?.sku[0]
